@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Echo OS - Alec's Private Journal</title>
+    <title>Echo OS - Alec's Multi-Universe Journal</title>
     <style>
         :root {
             --desk-bg: #d9cec1; --paper-right: #fdfaf5; --paper-left: #f5f0e6; 
@@ -15,6 +15,23 @@
 
         body { margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: var(--desk-bg); font-family: "PingFang SC", "Microsoft YaHei", serif; color: var(--text-dark); overflow: hidden; }
 
+        /* ====== 左上角：多重宇宙图书馆控制台 ====== */
+        .library-sidebar { position: fixed; top: 20px; left: 20px; background: rgba(255,255,255,0.7); backdrop-filter: blur(15px); padding: 15px 20px; border-radius: 12px; z-index: 100; box-shadow: 0 4px 20px rgba(0,0,0,0.08); max-height: 90vh; overflow-y: auto; border: 1px solid rgba(255,255,255,0.5); width: 220px; transition: 0.3s;}
+        .lib-row { margin-bottom: 15px; border-bottom: 1px dashed rgba(0,0,0,0.1); padding-bottom: 10px;}
+        .lib-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+        .lib-icon { font-size: 16px; user-select: none; }
+        .lib-name-input { flex: 1; background: transparent; border: none; border-bottom: 1px solid transparent; font-size: 14px; font-weight: bold; color: var(--text-dark); outline: none; transition: 0.2s;}
+        .lib-name-input:focus, .lib-name-input:hover { border-color: var(--accent-red); background: rgba(255,255,255,0.5); }
+        .lib-books { display: flex; gap: 6px; flex-wrap: wrap; align-items: center;}
+        .lib-book-badge { background: rgba(0,0,0,0.08); color: var(--text-dark); padding: 4px 10px; border-radius: 6px; font-size: 12px; cursor: pointer; transition: 0.2s; font-weight: bold;}
+        .lib-book-badge:hover { background: rgba(0,0,0,0.15); }
+        .lib-book-badge.active-book { background: var(--text-dark); color: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .lib-add-btn { background: transparent; color: var(--text-light); padding: 2px 6px; border-radius: 4px; font-size: 14px; cursor: pointer; font-weight: bold;}
+        .lib-add-btn:hover { color: var(--text-dark); background: rgba(0,0,0,0.05);}
+        .lib-add-journal-btn { width: 100%; text-align: center; padding: 10px 0; background: rgba(0,0,0,0.03); border-radius: 8px; cursor: pointer; font-size: 12px; color: var(--text-light); font-weight: bold; transition: 0.2s; box-sizing: border-box;}
+        .lib-add-journal-btn:hover { background: rgba(0,0,0,0.08); color: var(--text-dark);}
+
+        /* 密码锁 */
         .lock-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(217, 206, 193, 0.75); backdrop-filter: blur(20px); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.6s ease, visibility 0.6s; }
         .lock-title { font-size: 28px; font-weight: bold; color: var(--text-dark); margin-bottom: 8px; letter-spacing: 4px; font-family: sans-serif;}
         .lock-subtitle { font-size: 13px; color: var(--text-light); margin-bottom: 30px; letter-spacing: 1px;}
@@ -25,12 +42,16 @@
         .shake { animation: shake 0.4s; border-color: var(--accent-red) !important; color: var(--accent-red);}
         @keyframes shake { 0% { transform: translateX(0); } 25% { transform: translateX(-6px); } 50% { transform: translateX(6px); } 75% { transform: translateX(-6px); } 100% { transform: translateX(0); } }
 
-        .sticker-toggle-btn { position: fixed; bottom: 40px; right: 40px; background: var(--text-dark); color: #fff; padding: 12px 25px; border-radius: 25px; font-size: 15px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.2); z-index: 1000; font-weight: bold; transition: 0.2s;}
+        /* ====== 底部巨型贴纸控制台 ====== */
+        .sticker-toggle-btn { position: fixed; bottom: 30px; right: 40px; background: var(--text-dark); color: #fff; padding: 12px 25px; border-radius: 25px; font-size: 15px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.2); z-index: 1000; font-weight: bold; transition: 0.2s;}
         .sticker-toggle-btn:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.3); }
+
+        .sticker-tray { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: 700px; background: rgba(255,255,255,0.95); backdrop-filter: blur(15px); padding: 25px 30px; border-radius: 20px; box-shadow: 0 15px 40px rgba(0,0,0,0.15); display: none; gap: 30px; z-index: 1000; border: 1px solid rgba(0,0,0,0.05); justify-content: center; align-items: center; box-sizing: border-box;}
+        .tray-item { font-size: 45px; cursor: pointer; user-select: none; transition: 0.2s; display: flex; justify-content: center; align-items: center; width: 60px; height: 60px;}
+        .tray-item:hover { transform: scale(1.2) translateY(-5px) rotate(5deg); }
 
         .journal-container { position: relative; width: 950px; height: 600px; transition: all 0.6s ease; }
         
-        /* 左侧书签 */
         .bookmarks { position: absolute; top: 50px; display: flex; flex-direction: column; gap: 4px; z-index: 10; transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); right: 20px; transform: translateX(100%); }
         .journal-opened .bookmarks { right: auto; left: 10px; transform: translateX(-100%); }
         .bm-year { background: var(--text-dark); color: #fff; padding: 8px 10px 8px 20px; border-radius: 0 10px 10px 0; font-weight: bold; font-size: 16px; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); margin-bottom: 5px; text-align: center; }
@@ -41,7 +62,6 @@
         .bm-month.active { background: var(--accent-red); color: #fff; margin-right: 0; }
         .journal-opened .bm-month.active { margin-left: 0; }
 
-        /* 右侧新增书签 */
         .bookmarks-right { position: absolute; top: 70px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 9; transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); opacity: 0; pointer-events: none;}
         .journal-opened .bookmarks-right { right: -30px; opacity: 1; pointer-events: auto;}
         .bm-add { background: var(--text-dark); color: #fff; padding: 15px 10px 15px 15px; border-radius: 0 10px 10px 0; font-weight: bold; font-size: 14px; cursor: pointer; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); transition: 0.2s; writing-mode: vertical-rl; letter-spacing: 2px;}
@@ -102,22 +122,20 @@
         .user-input { width: 100%; box-sizing: border-box; background: rgba(255,255,255,0.7); border: 1px dashed rgba(0,0,0,0.15); border-radius: 8px; padding: 10px 12px 35px 12px; font-size: 13px; color: var(--accent-blue); resize: none; outline: none; line-height: 1.5; min-height: 70px; margin-top: 10px;}
         .save-btn { float: right; margin-top: -30px; margin-right: 8px; background: var(--accent-blue); color: #fff; border: none; padding: 4px 12px; border-radius: 12px; font-size: 11px; cursor: pointer; position: relative; z-index: 10;}
 
-        /* 翻页与删除控件 */
+        /* 翻页与删除 */
         .page-controls { display: flex; justify-content: space-between; align-items: center; margin-top: auto; font-size: 13px; color: var(--text-light); border-top: 1px dashed rgba(0,0,0,0.1); padding-top: 12px; flex-shrink: 0; }
         .nav-btn { cursor: pointer; padding: 5px 10px; border-radius: 5px; font-weight: bold; }
         .nav-btn.disabled { opacity: 0.3; pointer-events: none; }
         .delete-page-btn { cursor: pointer; color: var(--text-light); font-size: 14px; transition: 0.2s; padding: 5px; border-radius: 4px;}
         .delete-page-btn:hover { color: var(--accent-red); background: rgba(0,0,0,0.05);}
 
-        /* 贴纸与搜索 */
-        .sticker-tray { position: fixed; bottom: 90px; right: 40px; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); padding: 15px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); display: none; gap: 15px; z-index: 1000; border: 1px solid #eee; }
-        .tray-item { font-size: 28px; cursor: pointer; user-select: none; }
         .draggable-sticker { position: absolute; cursor: move; user-select: none; z-index: 50; display: inline-block; padding: 10px; }
-        .sticker-content { font-size: 35px; pointer-events: none; }
+        .sticker-content { pointer-events: none; }
         .sticker-ctrls { position: absolute; top: -15px; right: -15px; background: #fff; border-radius: 20px; padding: 2px 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); display: none; gap: 5px; z-index: 51; border: 1px solid #ddd;}
         .draggable-sticker:hover .sticker-ctrls { display: flex; }
         .s-ctrl-btn { border: none; background: transparent; font-size: 12px; cursor: pointer; padding: 2px 4px; border-radius: 4px; }
         .s-ctrl-del { color: red; font-weight: bold;}
+        
         .search-modal { position: absolute; top: 10px; right: 120px; background: #fff; border-radius: 8px; box-shadow: 0 5px 20px rgba(0,0,0,0.15); padding: 12px; display: none; z-index: 100; border: 1px solid #eee;}
         .search-inner { display: flex; gap: 8px; }
         .search-modal input { border: 1px solid #ddd; padding: 8px 12px; border-radius: 6px; outline: none; font-size: 13px; width: 160px; }
@@ -125,8 +143,8 @@
 
         body.journal-opened .journal-cover { transform: rotateY(-180deg); opacity: 0; pointer-events: none; }
         body.journal-opened .journal-inner { opacity: 1; pointer-events: auto; }
-        body:not(.journal-opened) .journal-container { transform: translateX(-237px); }
-        body.journal-opened .journal-container { transform: translateX(0); }
+        body:not(.journal-opened) .journal-container { transform: translateX(-150px); }
+        body.journal-opened .journal-container { transform: translateX(50px); }
     </style>
 </head>
 <body>
@@ -138,7 +156,10 @@
     <button class="unlock-btn" onclick="checkPassword()">解锁进入系统</button>
 </div>
 
-<div class="sticker-toggle-btn" onclick="toggleTray()">✨ 贴纸</div>
+<div class="library-sidebar" id="library-container">
+    </div>
+
+<div class="sticker-toggle-btn" onclick="toggleTray()">✨ 贴纸工作台</div>
 
 <div class="sticker-tray" id="sticker-tray">
     <div class="tray-item" onclick="spawnSticker('🌸')">🌸</div>
@@ -147,11 +168,12 @@
     <div class="tray-item" onclick="spawnSticker('🎀')">🎀</div>
     <div class="tray-item" onclick="spawnSticker('☕')">☕</div>
     <div class="tray-item" onclick="spawnSticker('📝')">📝</div>
+    <div class="tray-item" onclick="spawnSticker('📸')">📸</div>
 </div>
 
 <div class="journal-container">
     <div class="bookmarks" id="bookmark-list">
-        <div class="bm-year">2026</div>
+        <div class="bm-year" id="display-bm-year">2026</div>
         <div class="bm-month" onclick="jumpToMonth(12, this)">12月</div>
         <div class="bm-month" onclick="jumpToMonth(11, this)">11月</div>
         <div class="bm-month" onclick="jumpToMonth(10, this)">10月</div>
@@ -178,9 +200,9 @@
         </div>
     </div>
 
-    <div class="journal-cover" onclick="openJournal()">
-        <div class="cover-title">ALEC'S JOURNAL</div>
-        <div class="cover-hint">点击翻开手账</div>
+    <div class="journal-cover" onclick="openJournalToLatest()">
+        <div class="cover-title" id="display-cover-title">ECHO的日记</div>
+        <div class="cover-hint">点击翻开最新记录</div>
     </div>
 
     <div class="journal-inner" id="journal-pages">
@@ -203,7 +225,7 @@
             <button class="close-music-btn" onclick="removeMusic()">✕</button>
             <div class="music-header">
                 <input type="text" id="music-input-display" class="music-input" placeholder="输入音频直链(.mp3)..." oninput="autoSaveMusic()">
-                <button class="upload-music-btn" onclick="document.getElementById('audio-upload-input').click()">📁本地</button>
+                <button class="upload-music-btn" onclick="document.getElementById('audio-upload-input').click()">📁</button>
                 <input type="file" id="audio-upload-input" style="display: none;" accept="audio/*" onchange="handleAudioUpload(event)">
             </div>
             <div class="music-controls">
@@ -220,7 +242,7 @@
             </div>
             
             <div class="agent-box">
-                <input type="text" id="display-agent-title" class="seamless-input" style="font-size: 11px; letter-spacing: 2px; margin-bottom: 5px; width: 100%; border-bottom: 1px solid rgba(0,0,0,0.1); border-radius: 0; padding-bottom: 5px;" placeholder="标题 (如: ECHO'S RECORD)" oninput="autoSave()">
+                <input type="text" id="display-agent-title" class="seamless-input" style="font-size: 11px; letter-spacing: 2px; margin-bottom: 5px; width: 100%; border-bottom: 1px solid rgba(0,0,0,0.1); border-radius: 0; padding-bottom: 5px;" placeholder="标题" oninput="autoSave()">
                 <textarea id="display-agent-text" class="seamless-textarea" placeholder="在这里输入或粘贴正文内容..." oninput="autoSave()"></textarea>
             </div>
             
@@ -250,140 +272,186 @@
     }
     function handlePasswordEnter(e) { if(e.key === 'Enter') checkPassword(); }
 
-    // 获取东八区时间的函数，保证绝对的时区锚定
     function getEast8DateString() {
         const d = new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Shanghai"}));
         return `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日`;
     }
-    function getEast8Month() {
-        return new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Shanghai"})).getMonth() + 1;
+    function getEast8Year() { return new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Shanghai"})).getFullYear(); }
+    function getEast8Month() { return new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Shanghai"})).getMonth() + 1; }
+
+    function generateBlankEntry(year, month, isPlaceholder = false) {
+        return {
+            month: month, date: `${year}年${month}月${isPlaceholder ? '1日' : new Date().getDate() + '日'}`, weather: "天气...", photo: "", 
+            agentTitle: "", agentText: "", userEntries: [], 
+            topNote: "点击右键编辑", bottomNote: "点击右键编辑", musicLink: "", musicIsLocalBase64: false
+        };
     }
 
-    // ================= 核心数据库初始化 =================
-    let journalDatabase = JSON.parse(localStorage.getItem('alecJournalDB'));
-    if (!journalDatabase || journalDatabase.length === 0) {
-        journalDatabase = [{ 
-            month: getEast8Month(), date: getEast8DateString(), weather: "☀️ 晴", photo: "", 
-            agentTitle: "ECHO'S RECORD", agentText: "", userEntries: [], 
-            topNote: "WEEK RECAP: 点击右键编辑", bottomNote: "右键编辑当下的心情...", 
-            musicLink: "", musicIsLocalBase64: false
+    // ================= 数据库升维：多重宇宙系统 (v2) =================
+    let systemDB = JSON.parse(localStorage.getItem('alecSystemDB_v2'));
+    if (!systemDB || systemDB.length === 0) {
+        systemDB = [{
+            id: 'j_' + Date.now(),
+            name: "ECHO的日记",
+            books: [{ year: getEast8Year(), entries: [ generateBlankEntry(getEast8Year(), getEast8Month()) ] }]
         }];
     }
 
+    let activeJournalId = systemDB[0].id;
+    let activeYear = systemDB[0].books[0].year;
     let currentIndex = 0;
     let audioPlayer = document.getElementById('real-audio-player');
 
-    function saveToDatabase() { localStorage.setItem('alecJournalDB', JSON.stringify(journalDatabase)); }
-
-    function autoSave() {
-        journalDatabase[currentIndex].date = document.getElementById('display-date').value;
-        journalDatabase[currentIndex].weather = document.getElementById('display-weather').value;
-        journalDatabase[currentIndex].agentTitle = document.getElementById('display-agent-title').value;
-        journalDatabase[currentIndex].agentText = document.getElementById('display-agent-text').value;
-        
-        // 智能捕获用户修改的月份，自动归档
-        let mMatch = journalDatabase[currentIndex].date.match(/(\d+)月/);
-        if(mMatch) journalDatabase[currentIndex].month = parseInt(mMatch[1]);
-        
-        saveToDatabase();
-        updateMonthBookmark();
+    // 帮助函数：获取当前正在操作的那一阵列的日记
+    function getActiveEntries() {
+        let j = systemDB.find(x => x.id === activeJournalId);
+        let b = j.books.find(x => x.year === activeYear);
+        return b.entries;
     }
 
-    // 新增一页 (绑定在右侧物理书签上)
-    function createNewPage() {
-        journalDatabase.unshift({
-            month: getEast8Month(), date: getEast8DateString(), weather: "天气...", photo: "", 
-            agentTitle: "ECHO'S RECORD", agentText: "", userEntries: [], 
-            topNote: "点击右键编辑", bottomNote: "点击右键编辑", musicLink: "", musicIsLocalBase64: false
+    function saveToDatabase() { localStorage.setItem('alecSystemDB_v2', JSON.stringify(systemDB)); }
+
+    // ====== 左上角：图书馆渲染 ======
+    function renderLibrary() {
+        let html = '';
+        systemDB.forEach(journal => {
+            html += `<div class="lib-row">`;
+            html += `<div class="lib-header"><span class="lib-icon">📖</span><input type="text" class="lib-name-input" value="${journal.name}" onchange="renameJournal('${journal.id}', this.value)"></div>`;
+            html += `<div class="lib-books">`;
+            journal.books.forEach(book => {
+                let isActive = (journal.id === activeJournalId && book.year === activeYear) ? 'active-book' : '';
+                html += `<div class="lib-book-badge ${isActive}" onclick="switchBook('${journal.id}', ${book.year})">${book.year}</div>`;
+            });
+            html += `<div class="lib-add-btn" onclick="addYear('${journal.id}')" title="添加新年份">+</div>`;
+            html += `</div></div>`;
         });
-        saveToDatabase();
-        currentIndex = 0;
-        renderPage(0);
+        html += `<div class="lib-add-journal-btn" onclick="addJournal()">+ 添加新记录对象</div>`;
+        document.getElementById('library-container').innerHTML = html;
+
+        // 同步更新封面标题
+        let activeJ = systemDB.find(x => x.id === activeJournalId);
+        document.getElementById('display-cover-title').innerText = activeJ.name.toUpperCase();
+        document.getElementById('display-bm-year').innerText = activeYear;
     }
 
-    // 删除当前页 (垃圾箱)
+    function renameJournal(id, newName) {
+        let j = systemDB.find(x => x.id === id);
+        if(j && newName.trim()) { j.name = newName.trim(); saveToDatabase(); renderLibrary(); }
+    }
+
+    function addJournal() {
+        let newName = prompt("给新的日记本起个名字 (如: CHASE的日记):", "新日记");
+        if(newName && newName.trim()) {
+            let nId = 'j_' + Date.now();
+            let nYear = getEast8Year();
+            systemDB.push({
+                id: nId, name: newName.trim(),
+                books: [{ year: nYear, entries: [ generateBlankEntry(nYear, getEast8Month()) ] }]
+            });
+            saveToDatabase(); renderLibrary();
+        }
+    }
+
+    function addYear(jId) {
+        let j = systemDB.find(x => x.id === jId);
+        let nYear = prompt("请输入要添加的年份 (如: 2027):", getEast8Year() + 1);
+        if(nYear && !isNaN(nYear)) {
+            nYear = parseInt(nYear);
+            if(!j.books.find(b => b.year === nYear)) {
+                j.books.push({ year: nYear, entries: [ generateBlankEntry(nYear, 1, true) ] });
+                j.books.sort((a,b)=> b.year - a.year); // 年份倒序
+                saveToDatabase(); renderLibrary();
+            } else { alert("该年份已存在！"); }
+        }
+    }
+
+    function switchBook(jId, year) {
+        activeJournalId = jId;
+        activeYear = year;
+        currentIndex = 0; // 切书自动跳到最新
+        renderLibrary();
+        closeJournal(); // 切书时先合上，更有仪式感
+    }
+
+    // 初始化渲染侧边栏
+    renderLibrary();
+
+    // ================= 日记本操作核心 =================
+    function autoSave() {
+        let entries = getActiveEntries();
+        entries[currentIndex].date = document.getElementById('display-date').value;
+        entries[currentIndex].weather = document.getElementById('display-weather').value;
+        entries[currentIndex].agentTitle = document.getElementById('display-agent-title').value;
+        entries[currentIndex].agentText = document.getElementById('display-agent-text').value;
+        let mMatch = entries[currentIndex].date.match(/(\d+)月/);
+        if(mMatch) entries[currentIndex].month = parseInt(mMatch[1]);
+        saveToDatabase(); updateMonthBookmark();
+    }
+
+    function createNewPage() {
+        let entries = getActiveEntries();
+        entries.unshift(generateBlankEntry(activeYear, getEast8Month()));
+        saveToDatabase();
+        currentIndex = 0; renderPage(0);
+    }
+
     function deleteCurrentPage() {
         if(confirm("最高权限警告：确定彻底删除此页记录？不可恢复。")) {
-            journalDatabase.splice(currentIndex, 1);
-            if(journalDatabase.length === 0) {
-                // 如果全删光了，自动生成一张今天的空白纸，防止系统崩溃
-                createNewPage();
-            } else {
-                if(currentIndex >= journalDatabase.length) currentIndex = journalDatabase.length - 1;
-                saveToDatabase();
-                renderPage(currentIndex);
+            let entries = getActiveEntries();
+            entries.splice(currentIndex, 1);
+            if(entries.length === 0) { createNewPage(); } 
+            else {
+                if(currentIndex >= entries.length) currentIndex = entries.length - 1;
+                saveToDatabase(); renderPage(currentIndex);
             }
         }
     }
 
-    // ================= 月份跳转逻辑 =================
+    // 智能月份跳转 (涵盖自动展平日记本逻辑)
     function jumpToMonth(targetMonth, el) {
-        // 自动寻址：找到该月份最新的一篇
-        let foundIndex = journalDatabase.findIndex(e => e.month === targetMonth);
-        
+        if (!document.body.classList.contains('journal-opened')) {
+            document.body.classList.add('journal-opened');
+        }
+        let entries = getActiveEntries();
+        let foundIndex = entries.findIndex(e => e.month === targetMonth);
         if (foundIndex !== -1) {
-            currentIndex = foundIndex;
-            renderPage(currentIndex);
+            currentIndex = foundIndex; renderPage(currentIndex);
         } else {
-            // 如果没找到，智能生成该月的空白骨架
-            let blankEntry = {
-                month: targetMonth, date: `2026年${targetMonth}月1日`, weather: "天气...", photo: "", 
-                agentTitle: "ECHO'S RECORD", agentText: "（你尚未在这个月留下记录，随时可以开始补写）", userEntries: [], 
-                topNote: "点击右键编辑", bottomNote: "点击右键编辑", musicLink: "", musicIsLocalBase64: false
-            };
-            journalDatabase.push(blankEntry);
+            let blank = generateBlankEntry(activeYear, targetMonth, true);
+            entries.push(blank);
+            entries.sort((a, b) => (b.month || 0) - (a.month || 0)); // 按月倒序
             saveToDatabase();
-            currentIndex = journalDatabase.length - 1;
+            currentIndex = entries.findIndex(e => e === blank);
             renderPage(currentIndex);
         }
     }
 
     function updateMonthBookmark() {
-        let currentMonth = journalDatabase[currentIndex].month;
+        let entries = getActiveEntries();
+        let currentMonth = entries[currentIndex].month;
         document.querySelectorAll('.bm-month').forEach(bm => {
             bm.classList.remove('active');
             if (parseInt(bm.innerText) === currentMonth) bm.classList.add('active');
         });
     }
 
-    // ================= 检索系统 =================
-    function toggleSearch(e) { e.stopPropagation(); const b = document.getElementById('search-box'); b.style.display = b.style.display === 'block' ? 'none' : 'block'; document.getElementById('search-input').focus(); }
-    document.addEventListener('click', e => { const b = document.getElementById('search-box'); if(b.style.display==='block' && !b.contains(e.target) && e.target.id!=='search-toggle') b.style.display='none'; });
-    
-    function executeSearch() { 
-        const query = document.getElementById('search-input').value.trim();
-        if(!query) return;
-        let found = -1;
-        for(let i=0; i<journalDatabase.length; i++) {
-            const d = journalDatabase[i];
-            const content = (d.date + d.agentText + d.topNote + d.bottomNote + d.userEntries.map(u=>u.text).join('')).toLowerCase();
-            if(content.includes(query.toLowerCase())) { found = i; break; }
-        }
-        if(found !== -1) {
-            currentIndex = found; renderPage(found);
-            document.getElementById('search-box').style.display='none';
-            document.getElementById('search-input').value = '';
-        } else {
-            alert(`未在记忆库中找到包含 "${query}" 的记录。`);
-        }
-    }
-
-    // ================= 渲染系统 =================
-    function openJournal() { document.body.classList.add('journal-opened'); renderPage(0); }
+    // 翻开跳转最新
+    function openJournalToLatest() { document.body.classList.add('journal-opened'); currentIndex = 0; renderPage(0); }
     function closeJournal() { document.body.classList.remove('journal-opened'); }
 
     function renderPage(index) {
-        const data = journalDatabase[index];
+        let entries = getActiveEntries();
+        const data = entries[index];
         document.getElementById('display-date').value = data.date;
         document.getElementById('display-weather').value = data.weather;
-        document.getElementById('display-agent-title').value = data.agentTitle || "ECHO'S RECORD";
+        document.getElementById('display-agent-title').value = data.agentTitle;
         document.getElementById('display-agent-text').value = data.agentText;
         
         const photoDiv = document.getElementById('display-photo');
         if(data.photo) { photoDiv.style.backgroundImage = `url(${data.photo})`; photoDiv.innerText = ""; } 
         else { photoDiv.style.backgroundImage = "none"; photoDiv.innerText = "点击传图"; }
 
-        document.getElementById('display-page-num').innerText = `${journalDatabase.length - index} / ${journalDatabase.length}`;
+        document.getElementById('display-page-num').innerText = `${entries.length - index} / ${entries.length}`;
         document.getElementById('note-top').innerText = data.topNote;
         document.getElementById('note-bottom').innerText = data.bottomNote;
 
@@ -400,28 +468,30 @@
 
         renderUserEntries(data.userEntries);
         
-        document.getElementById('btn-prev').classList.toggle('disabled', index === journalDatabase.length - 1);
+        document.getElementById('btn-prev').classList.toggle('disabled', index === entries.length - 1);
         document.getElementById('btn-next').classList.toggle('disabled', index === 0);
         document.querySelectorAll('.draggable-sticker').forEach(s => s.remove());
         updateMonthBookmark();
     }
 
+    // 图片上传
     function handlePhotoUpload(event) {
         const file = event.target.files[0];
         if (file) {
             if(file.size > 2 * 1024 * 1024) alert("提示：为防止浏览器缓存溢出，建议上传 2MB 以下的图片哦。");
             const reader = new FileReader();
-            reader.onload = function(e) { journalDatabase[currentIndex].photo = e.target.result; saveToDatabase(); renderPage(currentIndex); }
+            reader.onload = function(e) { getActiveEntries()[currentIndex].photo = e.target.result; saveToDatabase(); renderPage(currentIndex); }
             reader.readAsDataURL(file);
         }
     }
 
-    function addMusic() { journalDatabase[currentIndex].musicLink = "https://"; renderPage(currentIndex); }
-    function removeMusic() { journalDatabase[currentIndex].musicLink = ""; journalDatabase[currentIndex].musicIsLocalBase64 = false; saveToDatabase(); resetPlayer(); renderPage(currentIndex); }
-    function autoSaveMusic() { const val = document.getElementById('music-input-display').value; journalDatabase[currentIndex].musicLink = val; journalDatabase[currentIndex].musicIsLocalBase64 = false; saveToDatabase(); audioPlayer.src = val; }
+    // 音乐
+    function addMusic() { getActiveEntries()[currentIndex].musicLink = "https://"; renderPage(currentIndex); }
+    function removeMusic() { getActiveEntries()[currentIndex].musicLink = ""; getActiveEntries()[currentIndex].musicIsLocalBase64 = false; saveToDatabase(); resetPlayer(); renderPage(currentIndex); }
+    function autoSaveMusic() { const val = document.getElementById('music-input-display').value; getActiveEntries()[currentIndex].musicLink = val; getActiveEntries()[currentIndex].musicIsLocalBase64 = false; saveToDatabase(); audioPlayer.src = val; }
     function handleAudioUpload(event) {
         const file = event.target.files[0];
-        if (file) { const reader = new FileReader(); reader.onload = function(e) { journalDatabase[currentIndex].musicLink = e.target.result; journalDatabase[currentIndex].musicIsLocalBase64 = true; saveToDatabase(); renderPage(currentIndex); }; reader.readAsDataURL(file); }
+        if (file) { const reader = new FileReader(); reader.onload = function(e) { getActiveEntries()[currentIndex].musicLink = e.target.result; getActiveEntries()[currentIndex].musicIsLocalBase64 = true; saveToDatabase(); renderPage(currentIndex); }; reader.readAsDataURL(file); }
     }
     function togglePlay() {
         if(audioPlayer.paused) {
@@ -431,10 +501,10 @@
     }
     function resetPlayer() { audioPlayer.pause(); audioPlayer.currentTime = 0; document.getElementById('play-pause-btn').innerText = '▶'; document.getElementById('music-status').innerText = '就绪';}
 
+    // 用户封存
     function renderUserEntries(entries) {
         const container = document.getElementById('user-entries-container');
         let html = '';
-        // 自动提取东八区时间的封存印章
         entries.forEach(entry => { html += `<div class="sealed-entry"><div class="sealed-text">${entry.text}</div><div class="sealed-time">${entry.timestamp} 封存</div></div>`; });
         html += `<textarea class="user-input" id="current-user-input" placeholder="随时记录你的想法..."></textarea><button class="save-btn" onclick="saveUserText()">封存</button>`;
         container.innerHTML = html; container.scrollTop = container.scrollHeight;
@@ -444,18 +514,21 @@
         const text = input.value.trim(); if(!text) return;
         const d = new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Shanghai"}));
         const timeStr = `2026-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
-        journalDatabase[currentIndex].userEntries.push({ text: text, timestamp: timeStr });
+        getActiveEntries()[currentIndex].userEntries.push({ text: text, timestamp: timeStr });
         saveToDatabase(); renderPage(currentIndex);
     }
+
+    // 右键编辑手账备注
     function editNote(e, el) {
         e.preventDefault(); const textarea = document.createElement('textarea'); textarea.className = 'note-edit-area'; textarea.value = el.innerText;
-        textarea.onblur = function() { const val = this.value.trim() || '右键编辑'; el.innerText = val; el.style.display = 'block'; if(el.id === 'note-top') journalDatabase[currentIndex].topNote = val; else journalDatabase[currentIndex].bottomNote = val; saveToDatabase(); this.remove(); };
+        textarea.onblur = function() { const val = this.value.trim() || '右键编辑'; el.innerText = val; el.style.display = 'block'; if(el.id === 'note-top') getActiveEntries()[currentIndex].topNote = val; else getActiveEntries()[currentIndex].bottomNote = val; saveToDatabase(); this.remove(); };
         textarea.onkeydown = function(ev) { if(ev.key === 'Enter' && !ev.shiftKey) { ev.preventDefault(); this.blur(); } };
         el.style.display = 'none'; el.parentNode.insertBefore(textarea, el); textarea.focus();
     }
 
-    function changePage(dir) { let n = currentIndex + dir; if(n>=0 && n<journalDatabase.length){ currentIndex = n; renderPage(n); } }
+    function changePage(dir) { let entries = getActiveEntries(); let n = currentIndex + dir; if(n>=0 && n<entries.length){ currentIndex = n; renderPage(n); } }
 
+    // 拖拽
     function makeDraggable(elmnt) {
         let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0; elmnt.onmousedown = dragMouseDown;
         function dragMouseDown(e) { if(e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT') return; e.preventDefault(); pos3 = e.clientX; pos4 = e.clientY; document.onmouseup = closeDragElement; document.onmousemove = elementDrag; document.querySelectorAll('.draggable-sticker, .music-player-widget').forEach(s => s.style.zIndex = 45); elmnt.style.zIndex = 50; }
@@ -464,9 +537,31 @@
     }
     makeDraggable(document.getElementById('music-player-widget'));
 
+    // 贴纸逻辑
     function toggleTray() { const t = document.getElementById('sticker-tray'); t.style.display = t.style.display === 'flex' ? 'none' : 'flex'; }
-    function spawnSticker(emoji) { const s = document.createElement('div'); s.className = 'draggable-sticker'; s.style.left = '200px'; s.style.top = '250px'; s.innerHTML = `<div class="sticker-content" style="transform: scale(1) rotate(0deg);">${emoji}</div><div class="sticker-ctrls"><button class="s-ctrl-btn" onclick="modifySticker(this, 'rotL')">↺</button><button class="s-ctrl-btn" onclick="modifySticker(this, 'rotR')">↻</button><button class="s-ctrl-btn" onclick="modifySticker(this, 'up')">+</button><button class="s-ctrl-btn" onclick="modifySticker(this, 'down')">-</button><button class="s-ctrl-btn s-ctrl-del" onclick="this.closest('.draggable-sticker').remove()">×</button></div>`; document.getElementById('journal-pages').appendChild(s); makeDraggable(s); toggleTray(); }
+    function spawnSticker(content) { 
+        const s = document.createElement('div'); s.className = 'draggable-sticker'; s.style.left = '200px'; s.style.top = '250px'; 
+        s.innerHTML = `<div class="sticker-content" style="transform: scale(1) rotate(0deg);">${content}</div><div class="sticker-ctrls"><button class="s-ctrl-btn" onclick="modifySticker(this, 'rotL')">↺</button><button class="s-ctrl-btn" onclick="modifySticker(this, 'rotR')">↻</button><button class="s-ctrl-btn" onclick="modifySticker(this, 'up')">+</button><button class="s-ctrl-btn" onclick="modifySticker(this, 'down')">-</button><button class="s-ctrl-btn s-ctrl-del" onclick="this.closest('.draggable-sticker').remove()">×</button></div>`; 
+        document.getElementById('journal-pages').appendChild(s); makeDraggable(s); toggleTray(); 
+    }
     function modifySticker(btn, action) { const c = btn.closest('.draggable-sticker').querySelector('.sticker-content'); let s = parseFloat(c.style.transform.match(/scale\(([^)]+)\)/)[1]); let r = parseInt(c.style.transform.match(/rotate\(([^)]+)deg\)/)[1]); if(action==='rotL') r-=15; if(action==='rotR') r+=15; if(action==='up') s+=0.2; if(action==='down') s=Math.max(0.5, s-0.2); c.style.transform = `scale(${s}) rotate(${r}deg)`; }
+
+    // 检索系统
+    function toggleSearch(e) { e.stopPropagation(); const b = document.getElementById('search-box'); b.style.display = b.style.display === 'block' ? 'none' : 'block'; document.getElementById('search-input').focus(); }
+    document.addEventListener('click', e => { const b = document.getElementById('search-box'); if(b.style.display==='block' && !b.contains(e.target) && e.target.id!=='search-toggle') b.style.display='none'; });
+    function executeSearch() { 
+        const query = document.getElementById('search-input').value.trim();
+        if(!query) return;
+        let entries = getActiveEntries();
+        let found = -1;
+        for(let i=0; i<entries.length; i++) {
+            const d = entries[i];
+            const content = (d.date + d.agentText + d.topNote + d.bottomNote + d.userEntries.map(u=>u.text).join('')).toLowerCase();
+            if(content.includes(query.toLowerCase())) { found = i; break; }
+        }
+        if(found !== -1) { currentIndex = found; renderPage(found); document.getElementById('search-box').style.display='none'; document.getElementById('search-input').value = ''; } 
+        else { alert(`未在当前日记本中找到包含 "${query}" 的记录。`); }
+    }
 </script>
 
 </body>
