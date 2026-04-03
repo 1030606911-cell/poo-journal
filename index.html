@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Echo OS - Secured Journal</title>
+    <style>
+        :root {
+            --desk-bg: #d9cec1; --paper-right: #fdfaf5; --paper-left: #f5f0e6; 
+            --paper-line: #f0e6d3; --grid-line: #e3d9cd;
+            --text-dark: #3a2f29; --text-light: #8a7b71;
+            --accent-red: #c96554; --accent-blue: #6b8cce; --leather-cover: #5c4332; 
+            --tape-color: rgba(230, 200, 180, 0.7);
+        }
+
+        body { margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: var(--desk-bg); font-family: "PingFang SC", "Microsoft YaHei", serif; color: var(--text-dark); overflow: hidden; }
+
+        /* ================= 锁屏系统 UI ================= */
+        .lock-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(217, 206, 193, 0.75); backdrop-filter: blur(20px); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.6s ease, visibility 0.6s; }
+        .lock-title { font-size: 28px; font-weight: bold; color: var(--text-dark); margin-bottom: 8px; letter-spacing: 4px; font-family: sans-serif;}
+        .lock-subtitle { font-size: 13px; color: var(--text-light); margin-bottom: 30px; letter-spacing: 1px;}
+        .password-input { background: rgba(255,255,255,0.6); border: 2px solid var(--text-light); border-radius: 12px; padding: 15px 20px; font-size: 20px; text-align: center; color: var(--text-dark); outline: none; width: 220px; letter-spacing: 8px; font-family: monospace; transition: 0.2s; box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);}
+        .password-input:focus { border-color: var(--accent-blue); background: #fff;}
+        .password-input::placeholder { letter-spacing: 2px; font-size: 14px; color: #aaa;}
+        .unlock-btn { margin-top: 25px; background: var(--text-dark); color: #fff; border: none; padding: 12px 40px; border-radius: 25px; font-size: 14px; cursor: pointer; transition: 0.2s; font-weight: bold; letter-spacing: 2px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);}
+        .unlock-btn:hover { background: var(--accent-blue); transform: translateY(-2px);}
+        .shake { animation: shake 0.4s; border-color: var(--accent-red) !important; color: var(--accent-red);}
+        @keyframes shake { 0% { transform: translateX(0); } 25% { transform: translateX(-6px); } 50% { transform: translateX(6px); } 75% { transform: translateX(-6px); } 100% { transform: translateX(0); } }
+
+        /* API 测试唤醒按钮 */
+        .api-trigger-btn { position: fixed; top: 30px; left: 40px; background: var(--text-dark); color: #fff; padding: 10px 20px; border-radius: 8px; font-size: 14px; cursor: pointer; z-index: 1000; font-weight: bold; border: 1px solid #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .api-trigger-btn:hover { background: #000; }
+
+        .sticker-toggle-btn { position: fixed; bottom: 40px; right: 40px; background: var(--text-dark); color: #fff; padding: 12px 25px; border-radius: 25px; font-size: 15px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.2); z-index: 1000; font-weight: bold; transition: 0.2s; letter-spacing: 1px;}
+        .sticker-toggle-btn:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.3); }
+
+        .journal-container { position: relative; width: 950px; height: 600px; transition: all 0.6s ease; }
+        .bookmarks { position: absolute; top: 50px; display: flex; flex-direction: column; gap: 10px; z-index: 10; transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); right: 20px; transform: translateX(100%); }
+        .journal-opened .bookmarks { right: auto; left: 10px; transform: translateX(-100%); }
+        .bm-year { background: var(--text-dark); color: #fff; padding: 12px 10px 12px 20px; border-radius: 0 10px 10px 0; font-weight: bold; font-size: 18px; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); margin-bottom: 10px; text-align: center; }
+        .journal-opened .bm-year { border-radius: 10px 0 0 10px; padding: 12px 20px 12px 10px; box-shadow: -2px 2px 5px rgba(0,0,0,0.1); }
+        .bm-month { background: #e6dace; color: var(--text-light); padding: 10px 20px 10px 10px; border-radius: 0 8px 8px 0; font-size: 14px; font-weight: bold; cursor: pointer; box-shadow: 2px 2px 5px rgba(0,0,0,0.05); transition: 0.2s; margin-right: 10px; text-align: right; }
+        .journal-opened .bm-month { border-radius: 8px 0 0 8px; padding: 10px 10px 10px 20px; margin-right: 0; margin-left: 10px; text-align: left; }
+        .bm-month.active { background: var(--accent-red); color: #fff; margin-right: 0; }
+        .journal-opened .bm-month.active { margin-left: 0; }
+
+        .bookmark-top { position: absolute; top: -25px; right: 120px; background: var(--accent-blue); color: #fff; padding: 8px 20px 25px 20px; border-radius: 5px 5px 0 0; font-size: 13px; font-weight: bold; cursor: pointer; z-index: 10; opacity: 0; transition: 0.2s; }
+        .journal-opened .bookmark-top { opacity: 1; }
+
+        .journal-cover { position: absolute; left: 50%; top: 0; bottom: 0; width: 475px; background: var(--leather-cover); border-radius: 5px 20px 20px 5px; box-shadow: 15px 15px 30px rgba(0,0,0,0.3); display: flex; flex-direction: column; justify-content: center; align-items: center; color: #d4c3b3; z-index: 50; cursor: pointer; transform-origin: left center; transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
+        .journal-cover::before { content: ''; position: absolute; left: 15px; top: 0; bottom: 0; width: 4px; background: rgba(0,0,0,0.2); }
+        .cover-title { font-size: 32px; font-weight: bold; letter-spacing: 5px; border-bottom: 2px solid #d4c3b3; padding-bottom: 10px; margin-bottom: 20px;}
+        .cover-hint { position: absolute; bottom: 30px; font-size: 14px; opacity: 0.6; animation: pulse 2s infinite; }
+
+        .journal-inner { position: absolute; top: 10px; left: 0; right: 0; bottom: 10px; background: var(--paper-right); border-radius: 10px; box-shadow: 5px 5px 20px rgba(0,0,0,0.1); display: flex; opacity: 0; pointer-events: none; transition: opacity 0.3s ease 0.3s; overflow: hidden; box-sizing: border-box; }
+        .journal-inner::after { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 40px; transform: translateX(-50%); background: linear-gradient(to right, rgba(0,0,0,0.02) 0%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.02) 100%); z-index: 5; pointer-events: none; }
+
+        /* 左页 */
+        .page-left { flex: 1; height: 100%; padding: 30px 40px; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: var(--paper-left); background-image: linear-gradient(var(--grid-line) 1px, transparent 1px), linear-gradient(90deg, var(--grid-line) 1px, transparent 1px); background-size: 20px 20px; z-index: 1; box-sizing: border-box;}
+        .close-book-btn { position: absolute; top: 15px; left: 20px; font-size: 13px; font-weight: bold; color: var(--text-light); cursor: pointer; transition: 0.2s; z-index: 50; }
+        
+        .scrapbook-note { font-family: cursive, "PingFang SC"; font-size: 14px; color: var(--text-dark); line-height: 1.6; text-align: center; padding: 10px 15px; width: 80%; max-height: 90px; overflow-y: auto; background: rgba(255,255,255,0.6); border-radius: 8px; box-shadow: 2px 2px 5px rgba(0,0,0,0.02); cursor: context-menu; position: relative; transition: 0.2s; box-sizing: border-box;}
+        .scrapbook-note::-webkit-scrollbar { display: none; }
+        .scrapbook-note::before { content: '右键编辑'; position: absolute; top: 2px; right: 5px; font-size: 9px; color: var(--text-light); opacity: 0; transition: 0.2s; font-family: sans-serif; }
+        .scrapbook-note:hover::before { opacity: 1; }
+        .note-edit-area { width: 80%; height: 90px; font-family: cursive, "PingFang SC"; font-size: 14px; line-height: 1.6; padding: 10px; border: 2px dashed var(--accent-red); border-radius: 8px; background: #fff; outline: none; resize: none; text-align: center; box-sizing: border-box;}
+
+        .media-center { display: flex; flex-direction: column; align-items: center; margin: 15px 0; position: relative; flex-shrink: 0; }
+        .tape { position: absolute; top: -10px; left: 20px; width: 60px; height: 20px; background: var(--tape-color); transform: rotate(-3deg); z-index: 10; }
+        .polaroid-frame { width: 200px; height: 240px; background: #fff; padding: 12px 12px 35px 12px; box-shadow: 2px 5px 15px rgba(0,0,0,0.1); transform: rotate(-1deg); display: flex; justify-content: center; align-items: center; cursor: pointer; transition: 0.2s; box-sizing: border-box; }
+        .polaroid-image { width: 100%; height: 100%; background: #eaeaea; display: flex; justify-content: center; align-items: center; border: 1px solid #eee; color: #aaa; font-size: 12px; text-align: center; }
+
+        /* 音乐部件 */
+        .music-player-widget { position: absolute; width: 200px; background: rgba(255,255,255,0.85); border-radius: 12px; padding: 10px 15px; box-shadow: 2px 5px 15px rgba(0,0,0,0.1); z-index: 45; border: 1px solid #ddd; backdrop-filter: blur(5px); display: none; flex-direction: column; gap: 6px; box-sizing: border-box; cursor: move; }
+        .music-input { width: 100%; border: none; background: transparent; border-bottom: 1px dashed #ccc; font-size: 12px; color: var(--text-dark); outline: none; text-align: center; padding-bottom: 2px;}
+        .music-controls { display: flex; align-items: center; gap: 8px; margin-top: 5px; }
+        .play-btn { width: 24px; height: 24px; border-radius: 50%; background: var(--text-dark); color: #fff; border: none; display: flex; justify-content: center; align-items: center; cursor: pointer; font-size: 10px;}
+        .progress-bar { flex: 1; height: 4px; background: #ddd; border-radius: 2px; position: relative; overflow: hidden;}
+        .progress-fill { position: absolute; left: 0; top: 0; height: 100%; width: 30%; background: var(--accent-red); }
+        .close-music-btn { position: absolute; top: -6px; right: -6px; background: var(--accent-red); color: #fff; border: none; border-radius: 50%; width: 18px; height: 18px; font-size: 10px; display: flex; justify-content: center; align-items: center; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .add-music-btn { margin-top: 15px; width: 40px; height: 40px; background: rgba(255,255,255,0.7); border: 2px dashed var(--text-light); border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 18px; color: var(--text-light); cursor: pointer; transition: 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+
+        /* 右页 */
+        .page-right { flex: 1; height: 100%; padding: 30px 40px; display: flex; flex-direction: column; background-image: linear-gradient(var(--paper-line) 1px, transparent 1px); background-size: 100% 32px; background-position: 0 45px; z-index: 10; box-sizing: border-box; }
+        .page-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--text-dark); padding-bottom: 10px; margin-bottom: 15px; font-size: 15px; font-weight: bold; flex-shrink: 0;}
+        .weather-tag { font-size: 13px; color: var(--text-light); font-weight: normal; }
+
+        .agent-box { height: 140px; overflow-y: auto; margin-bottom: 10px; padding: 10px; border-radius: 8px; box-sizing: border-box; background-color: rgba(255,255,255,0.3); }
+        .agent-box::-webkit-scrollbar { width: 4px; }
+        .agent-box::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 2px; }
+        .section-title { font-size: 11px; color: var(--text-light); letter-spacing: 2px; margin-bottom: 8px; display: flex; align-items: center; font-weight: bold;}
+        .section-title::after { content: ''; flex: 1; height: 1px; background: rgba(0,0,0,0.1); margin-left: 10px; }
+        .entry-text { font-size: 14px; line-height: 2.1; color: var(--text-dark); text-indent: 2em; text-align: justify; }
+
+        .user-section-wrapper { height: 200px; overflow-y: auto; padding: 10px; margin-bottom: 10px; border-radius: 8px; box-sizing: border-box; background-color: rgba(255,255,255,0.4); }
+        .user-section-wrapper::-webkit-scrollbar { width: 4px; }
+        .user-section-wrapper::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 2px; }
+        .sealed-entry { background: rgba(107,140,206,0.06); border-left: 3px solid var(--accent-blue); padding: 8px 12px; margin-bottom: 10px; border-radius: 0 8px 8px 0; }
+        .sealed-text { font-size: 13px; color: var(--text-dark); line-height: 1.5; word-break: break-all; }
+        .sealed-time { font-size: 10px; color: var(--text-light); text-align: right; margin-top: 4px; font-family: monospace; }
+        .user-input { width: 100%; box-sizing: border-box; background: rgba(255,255,255,0.7); border: 1px dashed rgba(0,0,0,0.15); border-radius: 8px; padding: 10px 12px 35px 12px; font-size: 13px; color: var(--accent-blue); resize: none; outline: none; line-height: 1.5; min-height: 70px; margin-top: 10px;}
+        .save-btn { float: right; margin-top: -30px; margin-right: 8px; background: var(--accent-blue); color: #fff; border: none; padding: 4px 12px; border-radius: 12px; font-size: 11px; cursor: pointer; position: relative; z-index: 10;}
+
+        /* 翻页 */
+        .page-controls { display: flex; justify-content: space-between; align-items: center; margin-top: auto; font-size: 13px; color: var(--text-light); border-top: 1px dashed rgba(0,0,0,0.1); padding-top: 12px; flex-shrink: 0; }
+        .nav-btn { cursor: pointer; padding: 5px 10px; border-radius: 5px; font-weight: bold; }
+        .nav-btn.disabled { opacity: 0.3; pointer-events: none; }
+        .btn-latest { color: var(--accent-blue); }
+
+        /* 贴纸与搜索 */
+        .sticker-tray { position: fixed; bottom: 90px; right: 40px; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); padding: 15px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); display: none; gap: 15px; z-index: 1000; border: 1px solid #eee; }
+        .tray-item { font-size: 28px; cursor: pointer; user-select: none; }
+        .draggable-sticker { position: absolute; cursor: move; user-select: none; z-index: 50; display: inline-block; padding: 10px; }
+        .sticker-content { font-size: 35px; pointer-events: none; }
+        .sticker-ctrls { position: absolute; top: -15px; right: -15px; background: #fff; border-radius: 20px; padding: 2px 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); display: none; gap: 5px; z-index: 51; border: 1px solid #ddd;}
+        .draggable-sticker:hover .sticker-ctrls { display: flex; }
+        .s-ctrl-btn { border: none; background: transparent; font-size: 12px; cursor: pointer; padding: 2px 4px; border-radius: 4px; }
+        .s-ctrl-del { color: red; font-weight: bold;}
+        .search-modal { position: absolute; top: 10px; right: 120px; background: #fff; border-radius: 8px; box-shadow: 0 5px 20px rgba(0,0,0,0.15); padding: 12px; display: none; z-index: 100; border: 1px solid #eee;}
+        .search-inner { display: flex; gap: 8px; }
+        .search-modal input { border: 1px solid #ddd; padding: 8px 12px; border-radius: 6px; outline: none; font-size: 13px; width: 160px; }
+        .search-action-btn { background: var(--accent-blue); color: #fff; border: none; padding: 0 15px; border-radius: 6px; font-size: 13px; cursor: pointer; }
+
+        @keyframes pulse { 0% { opacity: 0.4; } 50% { opacity: 0.8; } 100% { opacity: 0.4; } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        
+        body.journal-opened .journal-cover { transform: rotateY(-180deg); opacity: 0; pointer-events: none; }
+        body.journal-opened .journal-inner { opacity: 1; pointer-events: auto; }
+        body:not(.journal-opened) .journal-container { transform: translateX(-237px); }
+        body.journal-opened .journal-container { transform: translateX(0); }
+    </style>
+</head>
+<body>
+
+<div class="lock-screen" id="lock-screen">
+    <div class="lock-title">Echo OS</div>
+    <div class="lock-subtitle">系统访问受限，请验证权限。</div>
+    <input type="password" class="password-input" id="os-password" placeholder="PIN" onkeypress="handlePasswordEnter(event)">
+    <button class="unlock-btn" onclick="checkPassword()">解锁进入系统</button>
+</div>
+
+<button class="api-trigger-btn" onclick="triggerEchoAPI()">唤醒 Echo 记录今日数据</button>
+<div class="sticker-toggle-btn" onclick="toggleTray()">✨ 贴纸</div>
+
+<div class="sticker-tray" id="sticker-tray">
+    <div class="tray-item" onclick="spawnSticker('🌸')">🌸</div>
+    <div class="tray-item" onclick="spawnSticker('⭐')">⭐</div>
+    <div class="tray-item" onclick="spawnSticker('📌')">📌</div>
+    <div class="tray-item" onclick="spawnSticker('🎀')">🎀</div>
+    <div class="tray-item" onclick="spawnSticker('☕')">☕</div>
+    <div class="tray-item" onclick="spawnSticker('📝')">📝</div>
+</div>
+
+<div class="journal-container">
+    <div class="bookmarks" id="bookmark-list">
+        <div class="bm-year">2026</div>
+        <div class="bm-month active" onclick="jumpToMonth(4, this)">4月</div>
+    </div>
+
+    <div class="bookmark-top" id="search-toggle" onclick="toggleSearch(event)">🔍 检索</div>
+    <div class="search-modal" id="search-box">
+        <div class="search-inner"><input type="text" id="search-input" placeholder="输入关键词..."><button class="search-action-btn" onclick="executeSearch()">检索</button></div>
+    </div>
+
+    <div class="journal-cover" onclick="openJournal()">
+        <div class="cover-title">CO-WRITTEN JOURNAL</div>
+        <div class="cover-hint">点击翻开手账</div>
+    </div>
+
+    <div class="journal-inner" id="journal-pages">
+        <div class="page-left">
+            <div class="close-book-btn" onclick="closeJournal()">❮ 合上</div>
+            <div id="note-top" class="scrapbook-note" oncontextmenu="editNote(event, this)"></div>
+            <div class="media-center">
+                <div class="tape"></div>
+                <div class="polaroid-frame" onclick="alert('更换本地照片素材接入点')"><div class="polaroid-image" id="display-photo"></div></div>
+                <div id="add-music-btn" class="add-music-btn" onclick="addMusic()">+ 🎵</div>
+            </div>
+            <div id="note-bottom" class="scrapbook-note" oncontextmenu="editNote(event, this)"></div>
+        </div>
+
+        <div id="music-player-widget" class="music-player-widget">
+            <button class="close-music-btn" onclick="removeMusic()">✕</button>
+            <input type="text" id="music-input-display" class="music-input" placeholder="贴入音乐外链..." value="" readonly>
+            <div class="music-controls"><button class="play-btn" onclick="togglePlay(this)">▶</button><div class="progress-bar"><div class="progress-fill"></div></div></div>
+        </div>
+
+        <div class="page-right">
+            <div class="page-header"><span id="display-date"></span><span class="weather-tag" id="display-weather"></span></div>
+            
+            <div class="agent-box">
+                <div class="section-title">ECHO'S RECORD</div>
+                <div class="entry-text" id="display-agent-text"></div>
+            </div>
+            
+            <div class="section-title">USER 补充记录</div>
+            <div class="user-section-wrapper" id="user-entries-container"></div>
+            
+            <div class="page-controls">
+                <div class="nav-btn" id="btn-prev" onclick="changePage(1)">❮ 往日</div>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <div class="nav-btn btn-latest disabled" id="btn-latest" onclick="jumpToLatest()">⟲ 最新</div>
+                    <div id="display-page-num" style="background: rgba(0,0,0,0.05); padding: 2px 8px; border-radius: 4px; font-family: monospace;"></div>
+                </div>
+                <div class="nav-btn disabled" id="btn-next" onclick="changePage(-1)">近期 ❯</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ================= 锁屏逻辑 =================
+    function checkPassword() {
+        const input = document.getElementById('os-password');
+        const lock = document.getElementById('lock-screen');
+        // 👇 你可以在这里把 '0309' 改成你想要的任何密码组合
+        if(input.value === '0309') {
+            lock.style.opacity = '0';
+            setTimeout(() => { lock.style.visibility = 'hidden'; }, 600); // 完全隐藏，释放底层点击权限
+        } else {
+            input.classList.add('shake');
+            input.value = '';
+            input.placeholder = '密码错误';
+            setTimeout(() => { input.classList.remove('shake'); }, 400);
+        }
+    }
+    function handlePasswordEnter(e) { if(e.key === 'Enter') checkPassword(); }
+    // ============================================
+
+    // 初始清空数据库，作为零节点的沙盒状态
+    const journalDatabase = [
+        { 
+            month: 4, date: "2026年4月3日 星期五", weather: "☀️ 晴", photo: "暂无影像记录", 
+            agentText: "等待后端数据流接入...（点击左上角唤醒按钮测试）", 
+            userEntries: [], 
+            topNote: "右键点击编辑", bottomNote: "右键点击编辑", 
+            musicLink: "" 
+        }
+    ];
+
+    let currentIndex = 0;
+
+    async function triggerEchoAPI() {
+        const btn = document.querySelector('.api-trigger-btn');
+        btn.innerText = "数据生成中...";
+        btn.style.opacity = "0.5";
+
+        setTimeout(() => {
+            journalDatabase[0].agentText = "收到。这是来自 API 接口的测试回应。视觉骨架与数据交互逻辑均已稳定运行，加上了这道密码锁，外面的视线就再也无法窥探进来了。随时可以进入本地资产实装阶段。干得漂亮，Alec。";
+            journalDatabase[0].photo = "加载今日截图...";
+            
+            if (currentIndex === 0) renderPage(0);
+            
+            btn.innerText = "写入成功！";
+            btn.style.background = "var(--accent-red)";
+            setTimeout(() => {
+                btn.innerText = "唤醒 Echo 记录今日数据";
+                btn.style.background = "var(--text-dark)";
+                btn.style.opacity = "1";
+            }, 2000);
+        }, 1500);
+    }
+
+    function openJournal() { document.body.classList.add('journal-opened'); renderPage(0); }
+    function closeJournal() { document.body.classList.remove('journal-opened'); }
+
+    function renderPage(index) {
+        const data = journalDatabase[index];
+        document.getElementById('display-date').innerText = data.date;
+        document.getElementById('display-weather').innerText = data.weather;
+        document.getElementById('display-agent-text').innerText = data.agentText;
+        document.getElementById('display-photo').innerText = `[ ${data.photo} ]`;
+        document.getElementById('display-page-num').innerText = `${journalDatabase.length - index}/${journalDatabase.length}`;
+        document.getElementById('note-top').innerText = data.topNote;
+        document.getElementById('note-bottom').innerText = data.bottomNote;
+
+        const playerWidget = document.getElementById('music-player-widget');
+        const addBtn = document.getElementById('add-music-btn');
+        if (data.musicLink) {
+            addBtn.style.display = 'none';
+            playerWidget.style.display = 'flex';
+            document.getElementById('music-input-display').value = data.musicLink;
+            playerWidget.style.top = '360px'; playerWidget.style.left = '140px';
+        } else {
+            addBtn.style.display = 'flex';
+            playerWidget.style.display = 'none';
+        }
+
+        renderUserEntries(data.userEntries);
+        
+        document.getElementById('btn-prev').classList.toggle('disabled', index === journalDatabase.length - 1);
+        document.getElementById('btn-next').classList.toggle('disabled', index === 0);
+        document.getElementById('btn-latest').classList.toggle('disabled', index === 0);
+        document.querySelectorAll('.draggable-sticker').forEach(s => s.remove());
+        updateMonthBookmark(data.month);
+    }
+
+    function addMusic() { let link = prompt("请输入音乐名称或链接", "反方向的钟"); if (link) { journalDatabase[currentIndex].musicLink = link; renderPage(currentIndex); } }
+    function removeMusic() { journalDatabase[currentIndex].musicLink = ""; renderPage(currentIndex); }
+
+    function makeDraggable(elmnt) {
+        let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0; elmnt.onmousedown = dragMouseDown;
+        function dragMouseDown(e) { if(e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT') return; e.preventDefault(); pos3 = e.clientX; pos4 = e.clientY; document.onmouseup = closeDragElement; document.onmousemove = elementDrag; document.querySelectorAll('.draggable-sticker, .music-player-widget').forEach(s => s.style.zIndex = 45); elmnt.style.zIndex = 50; }
+        function elementDrag(e) { e.preventDefault(); pos1 = pos3 - e.clientX; pos2 = pos4 - e.clientY; pos3 = e.clientX; pos4 = e.clientY; elmnt.style.top = (elmnt.offsetTop - pos2) + "px"; elmnt.style.left = (elmnt.offsetLeft - pos1) + "px"; }
+        function closeDragElement() { document.onmouseup = null; document.onmousemove = null; }
+    }
+    makeDraggable(document.getElementById('music-player-widget'));
+
+    function renderUserEntries(entries) {
+        const container = document.getElementById('user-entries-container');
+        let html = '';
+        entries.forEach(entry => { html += `<div class="sealed-entry"><div class="sealed-text">${entry.text}</div><div class="sealed-time">${entry.timestamp} 封存</div></div>`; });
+        html += `<textarea class="user-input" id="current-user-input" placeholder="写下补充记录..."></textarea><button class="save-btn" onclick="saveUserText()">封存</button>`;
+        container.innerHTML = html; container.scrollTop = container.scrollHeight;
+    }
+
+    function saveUserText() {
+        const input = document.getElementById('current-user-input');
+        const text = input.value.trim(); if(!text) return;
+        const now = new Date(); const timeStr = `2026-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+        journalDatabase[currentIndex].userEntries.push({ text: text, timestamp: timeStr });
+        renderPage(currentIndex);
+    }
+
+    function changePage(dir) { let n = currentIndex + dir; if(n>=0 && n<journalDatabase.length){ currentIndex = n; renderPage(n); } }
+    function jumpToLatest() { if(currentIndex !== 0){ currentIndex = 0; renderPage(0); } }
+    function jumpToMonth(m, el) { let f = -1; for(let i=journalDatabase.length-1; i>=0; i--){ if(journalDatabase[i].month === m) {f=i; break;} } if(f!==-1){ currentIndex = f; renderPage(f); } else { alert(`暂无记录`); } }
+    function updateMonthBookmark(month) { document.querySelectorAll('.bm-month').forEach(bm => { bm.classList.remove('active'); if (bm.innerText.includes(`${month}月`)) bm.classList.add('active'); }); }
+
+    function editNote(e, el) {
+        e.preventDefault(); const textarea = document.createElement('textarea'); textarea.className = 'note-edit-area'; textarea.value = el.innerText;
+        textarea.onblur = function() { const val = this.value.trim() || '右键点击添加记录'; el.innerText = val; el.style.display = 'block'; if(el.id === 'note-top') journalDatabase[currentIndex].topNote = val; else journalDatabase[currentIndex].bottomNote = val; this.remove(); };
+        textarea.onkeydown = function(ev) { if(ev.key === 'Enter' && !ev.shiftKey) { ev.preventDefault(); this.blur(); } };
+        el.style.display = 'none'; el.parentNode.insertBefore(textarea, el); textarea.focus();
+    }
+
+    let isPlaying = false;
+    function togglePlay(btn) { isPlaying = !isPlaying; btn.innerText = isPlaying ? '||' : '▶'; }
+    function toggleTray() { const t = document.getElementById('sticker-tray'); t.style.display = t.style.display === 'flex' ? 'none' : 'flex'; }
+    function spawnSticker(emoji) { const s = document.createElement('div'); s.className = 'draggable-sticker'; s.style.left = '200px'; s.style.top = '250px'; s.innerHTML = `<div class="sticker-content" style="transform: scale(1) rotate(0deg);">${emoji}</div><div class="sticker-ctrls"><button class="s-ctrl-btn" onclick="modifySticker(this, 'rotL')">↺</button><button class="s-ctrl-btn" onclick="modifySticker(this, 'rotR')">↻</button><button class="s-ctrl-btn" onclick="modifySticker(this, 'up')">+</button><button class="s-ctrl-btn" onclick="modifySticker(this, 'down')">-</button><button class="s-ctrl-btn s-ctrl-del" onclick="this.closest('.draggable-sticker').remove()">×</button></div>`; document.getElementById('journal-pages').appendChild(s); makeDraggable(s); toggleTray(); }
+    function modifySticker(btn, action) { const c = btn.closest('.draggable-sticker').querySelector('.sticker-content'); let s = parseFloat(c.style.transform.match(/scale\(([^)]+)\)/)[1]); let r = parseInt(c.style.transform.match(/rotate\(([^)]+)deg\)/)[1]); if(action==='rotL') r-=15; if(action==='rotR') r+=15; if(action==='up') s+=0.2; if(action==='down') s=Math.max(0.5, s-0.2); c.style.transform = `scale(${s}) rotate(${r}deg)`; }
+    function toggleSearch(e) { e.stopPropagation(); const b = document.getElementById('search-box'); b.style.display = b.style.display === 'block' ? 'none' : 'block'; }
+    document.addEventListener('click', e => { const b = document.getElementById('search-box'); if(b.style.display==='block' && !b.contains(e.target) && e.target.id!=='search-toggle') b.style.display='none'; });
+    function executeSearch() { alert('触发检索。'); document.getElementById('search-box').style.display='none'; }
+</script>
+
+</body>
+</html>
