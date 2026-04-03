@@ -29,10 +29,19 @@
         .sticker-toggle-btn:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.3); }
 
         .journal-container { position: relative; width: 950px; height: 600px; transition: all 0.6s ease; }
-        .bookmarks { position: absolute; top: 50px; display: flex; flex-direction: column; gap: 10px; z-index: 10; transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); right: 20px; transform: translateX(100%); }
+        .bookmarks { position: absolute; top: 50px; display: flex; flex-direction: column; gap: 4px; z-index: 10; transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); right: 20px; transform: translateX(100%); }
         .journal-opened .bookmarks { right: auto; left: 10px; transform: translateX(-100%); }
-        .bm-year { background: var(--text-dark); color: #fff; padding: 12px 10px 12px 20px; border-radius: 0 10px 10px 0; font-weight: bold; font-size: 18px; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); margin-bottom: 10px; text-align: center; }
-        .journal-opened .bm-year { border-radius: 10px 0 0 10px; padding: 12px 20px 12px 10px; box-shadow: -2px 2px 5px rgba(0,0,0,0.1); }
+        .bm-year { background: var(--text-dark); color: #fff; padding: 8px 10px 8px 20px; border-radius: 0 10px 10px 0; font-weight: bold; font-size: 16px; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); margin-bottom: 5px; text-align: center; }
+        .journal-opened .bm-year { border-radius: 10px 0 0 10px; padding: 8px 20px 8px 10px; box-shadow: -2px 2px 5px rgba(0,0,0,0.1); }
+        .bm-month { background: #e6dace; color: var(--text-light); padding: 6px 20px 6px 10px; border-radius: 0 8px 8px 0; font-size: 13px; font-weight: bold; cursor: pointer; box-shadow: 2px 2px 5px rgba(0,0,0,0.05); transition: 0.2s; margin-right: 10px; text-align: right; }
+        .journal-opened .bm-month { border-radius: 8px 0 0 8px; padding: 6px 10px 6px 20px; margin-right: 0; margin-left: 10px; text-align: left; }
+        .bm-month:hover { background: #dcd0c3; }
+        .bm-month.active { background: var(--accent-red); color: #fff; margin-right: 0; }
+        .journal-opened .bm-month.active { margin-left: 0; }
+
+        .bookmark-top { position: absolute; top: -25px; right: 120px; background: var(--accent-blue); color: #fff; padding: 8px 20px 25px 20px; border-radius: 5px 5px 0 0; font-size: 13px; font-weight: bold; cursor: pointer; z-index: 10; opacity: 0; transition: 0.2s; }
+        .journal-opened .bookmark-top { opacity: 1; }
+        .bookmark-top:hover { top: -35px; }
 
         .journal-cover { position: absolute; left: 50%; top: 0; bottom: 0; width: 475px; background: var(--leather-cover); border-radius: 5px 20px 20px 5px; box-shadow: 15px 15px 30px rgba(0,0,0,0.3); display: flex; flex-direction: column; justify-content: center; align-items: center; color: #d4c3b3; z-index: 50; cursor: pointer; transform-origin: left center; transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
         .journal-cover::before { content: ''; position: absolute; left: 15px; top: 0; bottom: 0; width: 4px; background: rgba(0,0,0,0.2); }
@@ -56,7 +65,6 @@
         .polaroid-frame { width: 200px; height: 240px; background: #fff; padding: 12px 12px 35px 12px; box-shadow: 2px 5px 15px rgba(0,0,0,0.1); transform: rotate(-1deg); display: flex; justify-content: center; align-items: center; cursor: pointer; transition: 0.2s; box-sizing: border-box; overflow: hidden;}
         .polaroid-image { width: 100%; height: 100%; background-color: #eaeaea; background-size: cover; background-position: center; display: flex; justify-content: center; align-items: center; border: 1px solid #eee; color: #aaa; font-size: 12px; text-align: center; }
 
-        /* 音乐部件 (增强版) */
         .music-player-widget { position: absolute; width: 210px; background: rgba(255,255,255,0.9); border-radius: 12px; padding: 10px 15px; box-shadow: 2px 5px 15px rgba(0,0,0,0.15); z-index: 45; border: 1px solid #ddd; backdrop-filter: blur(5px); display: none; flex-direction: column; gap: 6px; box-sizing: border-box; cursor: move; }
         .music-header { display: flex; align-items: center; gap: 5px; }
         .music-input { flex: 1; border: none; background: transparent; border-bottom: 1px dashed #ccc; font-size: 11px; color: var(--text-dark); outline: none; text-align: left; padding-bottom: 2px;}
@@ -77,9 +85,7 @@
         .seamless-textarea:hover, .seamless-textarea:focus { border-color: rgba(0,0,0,0.1); background: rgba(255,255,255,0.5); border-radius: 8px;}
 
         .agent-box { height: 140px; margin-bottom: 10px; padding: 5px; border-radius: 8px; box-sizing: border-box; background-color: rgba(255,255,255,0.3); display: flex; flex-direction: column;}
-        .section-title { font-size: 11px; color: var(--text-light); letter-spacing: 2px; margin-bottom: 8px; display: flex; align-items: center; font-weight: bold; flex-shrink: 0; padding-left: 5px;}
-        .section-title::after { content: ''; flex: 1; height: 1px; background: rgba(0,0,0,0.1); margin-left: 10px; }
-
+        
         .user-section-wrapper { height: 200px; overflow-y: auto; padding: 10px; margin-bottom: 10px; border-radius: 8px; box-sizing: border-box; background-color: rgba(255,255,255,0.4); }
         .user-section-wrapper::-webkit-scrollbar { width: 4px; }
         .user-section-wrapper::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 2px; }
@@ -96,7 +102,7 @@
         .add-page-btn { background: rgba(0,0,0,0.05); padding: 2px 8px; border-radius: 4px; cursor: pointer; font-weight: bold; transition: 0.2s;}
         .add-page-btn:hover { background: var(--text-dark); color: #fff;}
 
-        /* 贴纸 */
+        /* 贴纸与搜索 */
         .sticker-tray { position: fixed; bottom: 90px; right: 40px; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); padding: 15px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); display: none; gap: 15px; z-index: 1000; border: 1px solid #eee; }
         .tray-item { font-size: 28px; cursor: pointer; user-select: none; }
         .draggable-sticker { position: absolute; cursor: move; user-select: none; z-index: 50; display: inline-block; padding: 10px; }
@@ -105,6 +111,10 @@
         .draggable-sticker:hover .sticker-ctrls { display: flex; }
         .s-ctrl-btn { border: none; background: transparent; font-size: 12px; cursor: pointer; padding: 2px 4px; border-radius: 4px; }
         .s-ctrl-del { color: red; font-weight: bold;}
+        .search-modal { position: absolute; top: 10px; right: 120px; background: #fff; border-radius: 8px; box-shadow: 0 5px 20px rgba(0,0,0,0.15); padding: 12px; display: none; z-index: 100; border: 1px solid #eee;}
+        .search-inner { display: flex; gap: 8px; }
+        .search-modal input { border: 1px solid #ddd; padding: 8px 12px; border-radius: 6px; outline: none; font-size: 13px; width: 160px; }
+        .search-action-btn { background: var(--accent-blue); color: #fff; border: none; padding: 0 15px; border-radius: 6px; font-size: 13px; cursor: pointer; }
 
         body.journal-opened .journal-cover { transform: rotateY(-180deg); opacity: 0; pointer-events: none; }
         body.journal-opened .journal-inner { opacity: 1; pointer-events: auto; }
@@ -135,7 +145,26 @@
 <div class="journal-container">
     <div class="bookmarks" id="bookmark-list">
         <div class="bm-year">2026</div>
-        <div class="bm-month active" onclick="jumpToLatest()">今日</div>
+        <div class="bm-month" onclick="jumpToMonth(12, this)">12月</div>
+        <div class="bm-month" onclick="jumpToMonth(11, this)">11月</div>
+        <div class="bm-month" onclick="jumpToMonth(10, this)">10月</div>
+        <div class="bm-month" onclick="jumpToMonth(9, this)">9月</div>
+        <div class="bm-month" onclick="jumpToMonth(8, this)">8月</div>
+        <div class="bm-month" onclick="jumpToMonth(7, this)">7月</div>
+        <div class="bm-month" onclick="jumpToMonth(6, this)">6月</div>
+        <div class="bm-month" onclick="jumpToMonth(5, this)">5月</div>
+        <div class="bm-month" onclick="jumpToMonth(4, this)">4月</div>
+        <div class="bm-month" onclick="jumpToMonth(3, this)">3月</div>
+        <div class="bm-month" onclick="jumpToMonth(2, this)">2月</div>
+        <div class="bm-month" onclick="jumpToMonth(1, this)">1月</div>
+    </div>
+
+    <div class="bookmark-top" id="search-toggle" onclick="toggleSearch(event)">🔍 检索</div>
+    <div class="search-modal" id="search-box">
+        <div class="search-inner">
+            <input type="text" id="search-input" placeholder="输入关键字..." onkeypress="if(event.key==='Enter') executeSearch()">
+            <button class="search-action-btn" onclick="executeSearch()">检索</button>
+        </div>
     </div>
 
     <div class="journal-cover" onclick="openJournal()">
@@ -162,7 +191,7 @@
         <div id="music-player-widget" class="music-player-widget">
             <button class="close-music-btn" onclick="removeMusic()">✕</button>
             <div class="music-header">
-                <input type="text" id="music-input-display" class="music-input" placeholder="输入音频外链..." oninput="autoSaveMusic()">
+                <input type="text" id="music-input-display" class="music-input" placeholder="输入音频直链(.mp3)..." oninput="autoSaveMusic()">
                 <button class="upload-music-btn" onclick="document.getElementById('audio-upload-input').click()">📁本地</button>
                 <input type="file" id="audio-upload-input" style="display: none;" accept="audio/*" onchange="handleAudioUpload(event)">
             </div>
@@ -180,17 +209,17 @@
             </div>
             
             <div class="agent-box">
-                <div class="section-title">ECHO'S RECORD</div>
-                <textarea id="display-agent-text" class="seamless-textarea" placeholder="把我的回答粘贴在这里..." oninput="autoSave()"></textarea>
+                <input type="text" id="display-agent-title" class="seamless-input" style="font-size: 11px; letter-spacing: 2px; margin-bottom: 5px; width: 100%; border-bottom: 1px solid rgba(0,0,0,0.1); border-radius: 0; padding-bottom: 5px;" placeholder="标题 (如: ECHO'S RECORD)" oninput="autoSave()">
+                <textarea id="display-agent-text" class="seamless-textarea" placeholder="在这里输入或粘贴正文内容..." oninput="autoSave()"></textarea>
             </div>
             
-            <div class="section-title">ALEC 想说</div>
+            <div class="section-title" style="margin-top:5px; border-bottom: 1px solid rgba(0,0,0,0.1); padding-bottom:5px;">ALEC 想说</div>
             <div class="user-section-wrapper" id="user-entries-container"></div>
             
             <div class="page-controls">
                 <div class="nav-btn" id="btn-prev" onclick="changePage(1)">❮ 往日</div>
                 <div style="display: flex; align-items: center; gap: 15px;">
-                    <div class="nav-btn btn-latest disabled" id="btn-latest" onclick="jumpToLatest()">⟲ 最新</div>
+                    <div class="nav-btn btn-latest" id="btn-latest" onclick="jumpToLatest()">⟲ 最新</div>
                     <div id="display-page-num" style="background: rgba(0,0,0,0.05); padding: 2px 8px; border-radius: 4px; font-family: monospace;"></div>
                     <div class="add-page-btn" onclick="createNewPage()" title="创建新的一天">+</div>
                 </div>
@@ -201,7 +230,6 @@
 </div>
 
 <script>
-    // 密码锁
     function checkPassword() {
         const input = document.getElementById('os-password');
         const lock = document.getElementById('lock-screen');
@@ -210,12 +238,11 @@
     }
     function handlePasswordEnter(e) { if(e.key === 'Enter') checkPassword(); }
 
-    // ================= 核心：本地记忆存储 (LocalStorage) =================
-    // 获取本地数据，如果从未用过，就初始化一个空白页
+    // ================= 核心数据库初始化 =================
     let journalDatabase = JSON.parse(localStorage.getItem('alecJournalDB')) || [
         { 
-            date: "2026年4月4日 星期六", weather: "☀️ 晴", photo: "", 
-            agentText: "", userEntries: [], 
+            month: 4, date: "2026年4月4日 星期六", weather: "☀️ 晴", photo: "", 
+            agentTitle: "ECHO'S RECORD", agentText: "", userEntries: [], 
             topNote: "WEEK RECAP: 点击右键编辑", bottomNote: "右键编辑当下的心情...", 
             musicLink: "", musicIsLocalBase64: false
         }
@@ -224,24 +251,25 @@
     let currentIndex = 0;
     let audioPlayer = document.getElementById('real-audio-player');
 
-    function saveToDatabase() {
-        localStorage.setItem('alecJournalDB', JSON.stringify(journalDatabase));
-    }
+    function saveToDatabase() { localStorage.setItem('alecJournalDB', JSON.stringify(journalDatabase)); }
 
     function autoSave() {
-        // 实时获取输入框里的字，存进数据库
         journalDatabase[currentIndex].date = document.getElementById('display-date').value;
         journalDatabase[currentIndex].weather = document.getElementById('display-weather').value;
+        journalDatabase[currentIndex].agentTitle = document.getElementById('display-agent-title').value;
         journalDatabase[currentIndex].agentText = document.getElementById('display-agent-text').value;
+        // 尝试从日期中提取月份以维持月份书签的准确性
+        let m = journalDatabase[currentIndex].date.match(/年(\d+)月/);
+        if(m) journalDatabase[currentIndex].month = parseInt(m[1]);
         saveToDatabase();
     }
 
     function createNewPage() {
-        // 在最前面插入新的一天
         const now = new Date();
         const dateStr = `${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日`;
         journalDatabase.unshift({
-            date: dateStr, weather: "天气...", photo: "", agentText: "", userEntries: [], 
+            month: now.getMonth()+1, date: dateStr, weather: "天气...", photo: "", 
+            agentTitle: "ECHO'S RECORD", agentText: "", userEntries: [], 
             topNote: "点击右键编辑", bottomNote: "点击右键编辑", musicLink: "", musicIsLocalBase64: false
         });
         saveToDatabase();
@@ -249,46 +277,95 @@
         renderPage(0);
     }
 
-    // ================= 渲染系统 =================
+    // ================= 月份跳转与空白页生成逻辑 =================
+    function jumpToMonth(targetMonth, el) {
+        let foundIndex = -1;
+        // 寻找该月份最新的一篇
+        for (let i = 0; i < journalDatabase.length; i++) {
+            if (journalDatabase[i].month === targetMonth) {
+                foundIndex = i; break;
+            }
+        }
+        
+        if (foundIndex !== -1) {
+            currentIndex = foundIndex;
+            renderPage(currentIndex);
+        } else {
+            // 如果没找到，智能生成该月的空白骨架
+            let blankEntry = {
+                month: targetMonth, date: `2026年${targetMonth}月1日`, weather: "天气...", photo: "", 
+                agentTitle: "ECHO'S RECORD", agentText: "（你尚未在这个月留下记录）", userEntries: [], 
+                topNote: "点击右键编辑", bottomNote: "点击右键编辑", musicLink: "", musicIsLocalBase64: false
+            };
+            journalDatabase.push(blankEntry);
+            // 按照月份从大到小重新排序（保证翻页逻辑正常）
+            journalDatabase.sort((a, b) => (b.month || 0) - (a.month || 0));
+            saveToDatabase();
+            // 重新定位并渲染
+            currentIndex = journalDatabase.findIndex(e => e === blankEntry);
+            renderPage(currentIndex);
+        }
+    }
+
+    function updateMonthBookmark() {
+        let currentMonth = journalDatabase[currentIndex].month;
+        document.querySelectorAll('.bm-month').forEach(bm => {
+            bm.classList.remove('active');
+            if (bm.innerText === `${currentMonth}月`) bm.classList.add('active');
+        });
+    }
+
+    // ================= 检索系统复活 =================
+    function toggleSearch(e) { e.stopPropagation(); const b = document.getElementById('search-box'); b.style.display = b.style.display === 'block' ? 'none' : 'block'; document.getElementById('search-input').focus(); }
+    document.addEventListener('click', e => { const b = document.getElementById('search-box'); if(b.style.display==='block' && !b.contains(e.target) && e.target.id!=='search-toggle') b.style.display='none'; });
+    
+    function executeSearch() { 
+        const query = document.getElementById('search-input').value.trim();
+        if(!query) return;
+        let found = -1;
+        for(let i=0; i<journalDatabase.length; i++) {
+            const d = journalDatabase[i];
+            const content = (d.date + d.agentText + d.topNote + d.bottomNote + d.userEntries.map(u=>u.text).join('')).toLowerCase();
+            if(content.includes(query.toLowerCase())) { found = i; break; }
+        }
+        if(found !== -1) {
+            currentIndex = found; renderPage(found);
+            document.getElementById('search-box').style.display='none';
+            document.getElementById('search-input').value = '';
+        } else {
+            alert(`未在日记中找到包含 "${query}" 的记录。`);
+        }
+    }
+
+    // ================= 渲染与数据绑定 =================
     function openJournal() { document.body.classList.add('journal-opened'); renderPage(0); }
     function closeJournal() { document.body.classList.remove('journal-opened'); }
 
     function renderPage(index) {
         const data = journalDatabase[index];
-        // 渲染无痕输入框里的值
         document.getElementById('display-date').value = data.date;
         document.getElementById('display-weather').value = data.weather;
+        document.getElementById('display-agent-title').value = data.agentTitle || "ECHO'S RECORD";
         document.getElementById('display-agent-text').value = data.agentText;
         
-        // 渲染照片
         const photoDiv = document.getElementById('display-photo');
-        if(data.photo) {
-            photoDiv.style.backgroundImage = `url(${data.photo})`;
-            photoDiv.innerText = "";
-        } else {
-            photoDiv.style.backgroundImage = "none";
-            photoDiv.innerText = "点击传图";
-        }
+        if(data.photo) { photoDiv.style.backgroundImage = `url(${data.photo})`; photoDiv.innerText = ""; } 
+        else { photoDiv.style.backgroundImage = "none"; photoDiv.innerText = "点击传图"; }
 
         document.getElementById('display-page-num').innerText = `${journalDatabase.length - index}/${journalDatabase.length}`;
         document.getElementById('note-top').innerText = data.topNote;
         document.getElementById('note-bottom').innerText = data.bottomNote;
 
-        // 渲染音乐部件
         const playerWidget = document.getElementById('music-player-widget');
         const addBtn = document.getElementById('add-music-btn');
-        resetPlayer(); // 切页停止播放
+        resetPlayer(); 
         
         if (data.musicLink || data.musicIsLocalBase64) {
-            addBtn.style.display = 'none';
-            playerWidget.style.display = 'flex';
+            addBtn.style.display = 'none'; playerWidget.style.display = 'flex';
             document.getElementById('music-input-display').value = data.musicIsLocalBase64 ? "[本地音频已加载]" : data.musicLink;
             playerWidget.style.top = '360px'; playerWidget.style.left = '140px';
             if(data.musicLink) audioPlayer.src = data.musicLink;
-        } else {
-            addBtn.style.display = 'flex';
-            playerWidget.style.display = 'none';
-        }
+        } else { addBtn.style.display = 'flex'; playerWidget.style.display = 'none'; }
 
         renderUserEntries(data.userEntries);
         
@@ -296,67 +373,34 @@
         document.getElementById('btn-next').classList.toggle('disabled', index === 0);
         document.getElementById('btn-latest').classList.toggle('disabled', index === 0);
         document.querySelectorAll('.draggable-sticker').forEach(s => s.remove());
+        updateMonthBookmark();
     }
 
-    // ================= 照片上传逻辑 =================
     function handlePhotoUpload(event) {
         const file = event.target.files[0];
         if (file) {
-            // 提醒：Base64 存 LocalStorage 有 5MB 上限，对于纯文本日记足够，但图片建议压缩
-            if(file.size > 2 * 1024 * 1024) alert("提示：为防止浏览器缓存溢出，建议上传 2MB 以下的图片哦。");
+            if(file.size > 2 * 1024 * 1024) alert("提示：建议上传压缩过的图片以防本地缓存溢出。");
             const reader = new FileReader();
-            reader.onload = function(e) {
-                const base64Data = e.target.result;
-                journalDatabase[currentIndex].photo = base64Data;
-                saveToDatabase();
-                renderPage(currentIndex);
-            }
+            reader.onload = function(e) { journalDatabase[currentIndex].photo = e.target.result; saveToDatabase(); renderPage(currentIndex); }
             reader.readAsDataURL(file);
         }
     }
 
-    // ================= 音乐引擎 =================
     function addMusic() { journalDatabase[currentIndex].musicLink = "https://"; renderPage(currentIndex); }
     function removeMusic() { journalDatabase[currentIndex].musicLink = ""; journalDatabase[currentIndex].musicIsLocalBase64 = false; saveToDatabase(); resetPlayer(); renderPage(currentIndex); }
-    
-    function autoSaveMusic() {
-        const val = document.getElementById('music-input-display').value;
-        journalDatabase[currentIndex].musicLink = val;
-        journalDatabase[currentIndex].musicIsLocalBase64 = false;
-        saveToDatabase();
-        audioPlayer.src = val; // 尝试解析外链
-    }
-
+    function autoSaveMusic() { const val = document.getElementById('music-input-display').value; journalDatabase[currentIndex].musicLink = val; journalDatabase[currentIndex].musicIsLocalBase64 = false; saveToDatabase(); audioPlayer.src = val; }
     function handleAudioUpload(event) {
         const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                journalDatabase[currentIndex].musicLink = e.target.result;
-                journalDatabase[currentIndex].musicIsLocalBase64 = true;
-                saveToDatabase();
-                renderPage(currentIndex);
-            }
-            reader.readAsDataURL(file);
-        }
+        if (file) { const reader = new FileReader(); reader.onload = function(e) { journalDatabase[currentIndex].musicLink = e.target.result; journalDatabase[currentIndex].musicIsLocalBase64 = true; saveToDatabase(); renderPage(currentIndex); }; reader.readAsDataURL(file); }
     }
-
     function togglePlay() {
         if(audioPlayer.paused) {
-            if(!audioPlayer.src) { alert("请先贴入正确的音频外链，或上传本地音乐文件。"); return; }
-            audioPlayer.play().then(() => {
-                document.getElementById('play-pause-btn').innerText = '||';
-                document.getElementById('music-status').innerText = '播放中';
-            }).catch(e => alert("无法播放该外链，请尝试上传本地文件。"));
-        } else {
-            audioPlayer.pause();
-            document.getElementById('play-pause-btn').innerText = '▶';
-            document.getElementById('music-status').innerText = '已暂停';
-        }
+            if(!audioPlayer.src) { alert("请上传本地音乐或输入纯音频(.mp3)直链。"); return; }
+            audioPlayer.play().then(() => { document.getElementById('play-pause-btn').innerText = '||'; document.getElementById('music-status').innerText = '播放中'; }).catch(e => alert("无法播放，请尝试本地文件。"));
+        } else { audioPlayer.pause(); document.getElementById('play-pause-btn').innerText = '▶'; document.getElementById('music-status').innerText = '已暂停'; }
     }
     function resetPlayer() { audioPlayer.pause(); audioPlayer.currentTime = 0; document.getElementById('play-pause-btn').innerText = '▶'; document.getElementById('music-status').innerText = '就绪';}
 
-    // ================= Alec 想说 (封存逻辑) =================
     function renderUserEntries(entries) {
         const container = document.getElementById('user-entries-container');
         let html = '';
@@ -364,16 +408,13 @@
         html += `<textarea class="user-input" id="current-user-input" placeholder="随时记录你的想法..."></textarea><button class="save-btn" onclick="saveUserText()">封存</button>`;
         container.innerHTML = html; container.scrollTop = container.scrollHeight;
     }
-
     function saveUserText() {
         const input = document.getElementById('current-user-input');
         const text = input.value.trim(); if(!text) return;
         const now = new Date(); const timeStr = `2026-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
         journalDatabase[currentIndex].userEntries.push({ text: text, timestamp: timeStr });
-        saveToDatabase();
-        renderPage(currentIndex);
+        saveToDatabase(); renderPage(currentIndex);
     }
-
     function editNote(e, el) {
         e.preventDefault(); const textarea = document.createElement('textarea'); textarea.className = 'note-edit-area'; textarea.value = el.innerText;
         textarea.onblur = function() { const val = this.value.trim() || '右键编辑'; el.innerText = val; el.style.display = 'block'; if(el.id === 'note-top') journalDatabase[currentIndex].topNote = val; else journalDatabase[currentIndex].bottomNote = val; saveToDatabase(); this.remove(); };
@@ -381,7 +422,6 @@
         el.style.display = 'none'; el.parentNode.insertBefore(textarea, el); textarea.focus();
     }
 
-    // ================= 基础交互机制 =================
     function changePage(dir) { let n = currentIndex + dir; if(n>=0 && n<journalDatabase.length){ currentIndex = n; renderPage(n); } }
     function jumpToLatest() { if(currentIndex !== 0){ currentIndex = 0; renderPage(0); } }
 
