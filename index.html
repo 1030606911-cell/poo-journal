@@ -29,6 +29,8 @@
         .sticker-toggle-btn:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.3); }
 
         .journal-container { position: relative; width: 950px; height: 600px; transition: all 0.6s ease; }
+        
+        /* 左侧书签 */
         .bookmarks { position: absolute; top: 50px; display: flex; flex-direction: column; gap: 4px; z-index: 10; transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); right: 20px; transform: translateX(100%); }
         .journal-opened .bookmarks { right: auto; left: 10px; transform: translateX(-100%); }
         .bm-year { background: var(--text-dark); color: #fff; padding: 8px 10px 8px 20px; border-radius: 0 10px 10px 0; font-weight: bold; font-size: 16px; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); margin-bottom: 5px; text-align: center; }
@@ -38,6 +40,12 @@
         .bm-month:hover { background: #dcd0c3; }
         .bm-month.active { background: var(--accent-red); color: #fff; margin-right: 0; }
         .journal-opened .bm-month.active { margin-left: 0; }
+
+        /* 右侧新增书签 */
+        .bookmarks-right { position: absolute; top: 70px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 9; transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); opacity: 0; pointer-events: none;}
+        .journal-opened .bookmarks-right { right: -30px; opacity: 1; pointer-events: auto;}
+        .bm-add { background: var(--text-dark); color: #fff; padding: 15px 10px 15px 15px; border-radius: 0 10px 10px 0; font-weight: bold; font-size: 14px; cursor: pointer; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); transition: 0.2s; writing-mode: vertical-rl; letter-spacing: 2px;}
+        .bm-add:hover { background: var(--accent-red); transform: translateX(5px);}
 
         .bookmark-top { position: absolute; top: -25px; right: 120px; background: var(--accent-blue); color: #fff; padding: 8px 20px 25px 20px; border-radius: 5px 5px 0 0; font-size: 13px; font-weight: bold; cursor: pointer; z-index: 10; opacity: 0; transition: 0.2s; }
         .journal-opened .bookmark-top { opacity: 1; }
@@ -78,7 +86,6 @@
         .page-right { flex: 1; height: 100%; padding: 30px 40px; display: flex; flex-direction: column; background-image: linear-gradient(var(--paper-line) 1px, transparent 1px); background-size: 100% 32px; background-position: 0 45px; z-index: 10; box-sizing: border-box; }
         .page-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--text-dark); padding-bottom: 8px; margin-bottom: 15px; flex-shrink: 0;}
         
-        /* 无痕输入框 */
         .seamless-input { border: 1px dashed transparent; background: transparent; font-size: 15px; font-weight: bold; color: var(--text-dark); outline: none; transition: 0.2s; padding: 2px 5px; font-family: inherit;}
         .seamless-input:hover, .seamless-input:focus { border-color: rgba(0,0,0,0.1); background: rgba(255,255,255,0.5); border-radius: 4px; }
         .seamless-textarea { width: 100%; height: 100%; border: 1px dashed transparent; background: transparent; font-size: 14px; line-height: 2.1; color: var(--text-dark); outline: none; resize: none; font-family: inherit; padding: 5px; text-indent: 2em; box-sizing: border-box;}
@@ -95,12 +102,12 @@
         .user-input { width: 100%; box-sizing: border-box; background: rgba(255,255,255,0.7); border: 1px dashed rgba(0,0,0,0.15); border-radius: 8px; padding: 10px 12px 35px 12px; font-size: 13px; color: var(--accent-blue); resize: none; outline: none; line-height: 1.5; min-height: 70px; margin-top: 10px;}
         .save-btn { float: right; margin-top: -30px; margin-right: 8px; background: var(--accent-blue); color: #fff; border: none; padding: 4px 12px; border-radius: 12px; font-size: 11px; cursor: pointer; position: relative; z-index: 10;}
 
+        /* 翻页与删除控件 */
         .page-controls { display: flex; justify-content: space-between; align-items: center; margin-top: auto; font-size: 13px; color: var(--text-light); border-top: 1px dashed rgba(0,0,0,0.1); padding-top: 12px; flex-shrink: 0; }
         .nav-btn { cursor: pointer; padding: 5px 10px; border-radius: 5px; font-weight: bold; }
         .nav-btn.disabled { opacity: 0.3; pointer-events: none; }
-        .btn-latest { color: var(--accent-blue); }
-        .add-page-btn { background: rgba(0,0,0,0.05); padding: 2px 8px; border-radius: 4px; cursor: pointer; font-weight: bold; transition: 0.2s;}
-        .add-page-btn:hover { background: var(--text-dark); color: #fff;}
+        .delete-page-btn { cursor: pointer; color: var(--text-light); font-size: 14px; transition: 0.2s; padding: 5px; border-radius: 4px;}
+        .delete-page-btn:hover { color: var(--accent-red); background: rgba(0,0,0,0.05);}
 
         /* 贴纸与搜索 */
         .sticker-tray { position: fixed; bottom: 90px; right: 40px; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); padding: 15px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); display: none; gap: 15px; z-index: 1000; border: 1px solid #eee; }
@@ -157,6 +164,10 @@
         <div class="bm-month" onclick="jumpToMonth(3, this)">3月</div>
         <div class="bm-month" onclick="jumpToMonth(2, this)">2月</div>
         <div class="bm-month" onclick="jumpToMonth(1, this)">1月</div>
+    </div>
+
+    <div class="bookmarks-right">
+        <div class="bm-add" onclick="createNewPage()" title="创建全新的一页">+ 新增记录</div>
     </div>
 
     <div class="bookmark-top" id="search-toggle" onclick="toggleSearch(event)">🔍 检索</div>
@@ -219,11 +230,12 @@
             <div class="page-controls">
                 <div class="nav-btn" id="btn-prev" onclick="changePage(1)">❮ 往日</div>
                 <div style="display: flex; align-items: center; gap: 15px;">
-                    <div class="nav-btn btn-latest" id="btn-latest" onclick="jumpToLatest()">⟲ 最新</div>
                     <div id="display-page-num" style="background: rgba(0,0,0,0.05); padding: 2px 8px; border-radius: 4px; font-family: monospace;"></div>
-                    <div class="add-page-btn" onclick="createNewPage()" title="创建新的一天">+</div>
                 </div>
-                <div class="nav-btn disabled" id="btn-next" onclick="changePage(-1)">近期 ❯</div>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div class="delete-page-btn" onclick="deleteCurrentPage()" title="删除当前页">🗑️</div>
+                    <div class="nav-btn disabled" id="btn-next" onclick="changePage(-1)">近期 ❯</div>
+                </div>
             </div>
         </div>
     </div>
@@ -238,15 +250,25 @@
     }
     function handlePasswordEnter(e) { if(e.key === 'Enter') checkPassword(); }
 
+    // 获取东八区时间的函数，保证绝对的时区锚定
+    function getEast8DateString() {
+        const d = new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Shanghai"}));
+        return `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日`;
+    }
+    function getEast8Month() {
+        return new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Shanghai"})).getMonth() + 1;
+    }
+
     // ================= 核心数据库初始化 =================
-    let journalDatabase = JSON.parse(localStorage.getItem('alecJournalDB')) || [
-        { 
-            month: 4, date: "2026年4月4日 星期六", weather: "☀️ 晴", photo: "", 
+    let journalDatabase = JSON.parse(localStorage.getItem('alecJournalDB'));
+    if (!journalDatabase || journalDatabase.length === 0) {
+        journalDatabase = [{ 
+            month: getEast8Month(), date: getEast8DateString(), weather: "☀️ 晴", photo: "", 
             agentTitle: "ECHO'S RECORD", agentText: "", userEntries: [], 
             topNote: "WEEK RECAP: 点击右键编辑", bottomNote: "右键编辑当下的心情...", 
             musicLink: "", musicIsLocalBase64: false
-        }
-    ];
+        }];
+    }
 
     let currentIndex = 0;
     let audioPlayer = document.getElementById('real-audio-player');
@@ -258,17 +280,19 @@
         journalDatabase[currentIndex].weather = document.getElementById('display-weather').value;
         journalDatabase[currentIndex].agentTitle = document.getElementById('display-agent-title').value;
         journalDatabase[currentIndex].agentText = document.getElementById('display-agent-text').value;
-        // 尝试从日期中提取月份以维持月份书签的准确性
-        let m = journalDatabase[currentIndex].date.match(/年(\d+)月/);
-        if(m) journalDatabase[currentIndex].month = parseInt(m[1]);
+        
+        // 智能捕获用户修改的月份，自动归档
+        let mMatch = journalDatabase[currentIndex].date.match(/(\d+)月/);
+        if(mMatch) journalDatabase[currentIndex].month = parseInt(mMatch[1]);
+        
         saveToDatabase();
+        updateMonthBookmark();
     }
 
+    // 新增一页 (绑定在右侧物理书签上)
     function createNewPage() {
-        const now = new Date();
-        const dateStr = `${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日`;
         journalDatabase.unshift({
-            month: now.getMonth()+1, date: dateStr, weather: "天气...", photo: "", 
+            month: getEast8Month(), date: getEast8DateString(), weather: "天气...", photo: "", 
             agentTitle: "ECHO'S RECORD", agentText: "", userEntries: [], 
             topNote: "点击右键编辑", bottomNote: "点击右键编辑", musicLink: "", musicIsLocalBase64: false
         });
@@ -277,15 +301,25 @@
         renderPage(0);
     }
 
-    // ================= 月份跳转与空白页生成逻辑 =================
-    function jumpToMonth(targetMonth, el) {
-        let foundIndex = -1;
-        // 寻找该月份最新的一篇
-        for (let i = 0; i < journalDatabase.length; i++) {
-            if (journalDatabase[i].month === targetMonth) {
-                foundIndex = i; break;
+    // 删除当前页 (垃圾箱)
+    function deleteCurrentPage() {
+        if(confirm("最高权限警告：确定彻底删除此页记录？不可恢复。")) {
+            journalDatabase.splice(currentIndex, 1);
+            if(journalDatabase.length === 0) {
+                // 如果全删光了，自动生成一张今天的空白纸，防止系统崩溃
+                createNewPage();
+            } else {
+                if(currentIndex >= journalDatabase.length) currentIndex = journalDatabase.length - 1;
+                saveToDatabase();
+                renderPage(currentIndex);
             }
         }
+    }
+
+    // ================= 月份跳转逻辑 =================
+    function jumpToMonth(targetMonth, el) {
+        // 自动寻址：找到该月份最新的一篇
+        let foundIndex = journalDatabase.findIndex(e => e.month === targetMonth);
         
         if (foundIndex !== -1) {
             currentIndex = foundIndex;
@@ -294,15 +328,12 @@
             // 如果没找到，智能生成该月的空白骨架
             let blankEntry = {
                 month: targetMonth, date: `2026年${targetMonth}月1日`, weather: "天气...", photo: "", 
-                agentTitle: "ECHO'S RECORD", agentText: "（你尚未在这个月留下记录）", userEntries: [], 
+                agentTitle: "ECHO'S RECORD", agentText: "（你尚未在这个月留下记录，随时可以开始补写）", userEntries: [], 
                 topNote: "点击右键编辑", bottomNote: "点击右键编辑", musicLink: "", musicIsLocalBase64: false
             };
             journalDatabase.push(blankEntry);
-            // 按照月份从大到小重新排序（保证翻页逻辑正常）
-            journalDatabase.sort((a, b) => (b.month || 0) - (a.month || 0));
             saveToDatabase();
-            // 重新定位并渲染
-            currentIndex = journalDatabase.findIndex(e => e === blankEntry);
+            currentIndex = journalDatabase.length - 1;
             renderPage(currentIndex);
         }
     }
@@ -311,11 +342,11 @@
         let currentMonth = journalDatabase[currentIndex].month;
         document.querySelectorAll('.bm-month').forEach(bm => {
             bm.classList.remove('active');
-            if (bm.innerText === `${currentMonth}月`) bm.classList.add('active');
+            if (parseInt(bm.innerText) === currentMonth) bm.classList.add('active');
         });
     }
 
-    // ================= 检索系统复活 =================
+    // ================= 检索系统 =================
     function toggleSearch(e) { e.stopPropagation(); const b = document.getElementById('search-box'); b.style.display = b.style.display === 'block' ? 'none' : 'block'; document.getElementById('search-input').focus(); }
     document.addEventListener('click', e => { const b = document.getElementById('search-box'); if(b.style.display==='block' && !b.contains(e.target) && e.target.id!=='search-toggle') b.style.display='none'; });
     
@@ -333,11 +364,11 @@
             document.getElementById('search-box').style.display='none';
             document.getElementById('search-input').value = '';
         } else {
-            alert(`未在日记中找到包含 "${query}" 的记录。`);
+            alert(`未在记忆库中找到包含 "${query}" 的记录。`);
         }
     }
 
-    // ================= 渲染与数据绑定 =================
+    // ================= 渲染系统 =================
     function openJournal() { document.body.classList.add('journal-opened'); renderPage(0); }
     function closeJournal() { document.body.classList.remove('journal-opened'); }
 
@@ -352,7 +383,7 @@
         if(data.photo) { photoDiv.style.backgroundImage = `url(${data.photo})`; photoDiv.innerText = ""; } 
         else { photoDiv.style.backgroundImage = "none"; photoDiv.innerText = "点击传图"; }
 
-        document.getElementById('display-page-num').innerText = `${journalDatabase.length - index}/${journalDatabase.length}`;
+        document.getElementById('display-page-num').innerText = `${journalDatabase.length - index} / ${journalDatabase.length}`;
         document.getElementById('note-top').innerText = data.topNote;
         document.getElementById('note-bottom').innerText = data.bottomNote;
 
@@ -371,7 +402,6 @@
         
         document.getElementById('btn-prev').classList.toggle('disabled', index === journalDatabase.length - 1);
         document.getElementById('btn-next').classList.toggle('disabled', index === 0);
-        document.getElementById('btn-latest').classList.toggle('disabled', index === 0);
         document.querySelectorAll('.draggable-sticker').forEach(s => s.remove());
         updateMonthBookmark();
     }
@@ -379,7 +409,7 @@
     function handlePhotoUpload(event) {
         const file = event.target.files[0];
         if (file) {
-            if(file.size > 2 * 1024 * 1024) alert("提示：建议上传压缩过的图片以防本地缓存溢出。");
+            if(file.size > 2 * 1024 * 1024) alert("提示：为防止浏览器缓存溢出，建议上传 2MB 以下的图片哦。");
             const reader = new FileReader();
             reader.onload = function(e) { journalDatabase[currentIndex].photo = e.target.result; saveToDatabase(); renderPage(currentIndex); }
             reader.readAsDataURL(file);
@@ -404,6 +434,7 @@
     function renderUserEntries(entries) {
         const container = document.getElementById('user-entries-container');
         let html = '';
+        // 自动提取东八区时间的封存印章
         entries.forEach(entry => { html += `<div class="sealed-entry"><div class="sealed-text">${entry.text}</div><div class="sealed-time">${entry.timestamp} 封存</div></div>`; });
         html += `<textarea class="user-input" id="current-user-input" placeholder="随时记录你的想法..."></textarea><button class="save-btn" onclick="saveUserText()">封存</button>`;
         container.innerHTML = html; container.scrollTop = container.scrollHeight;
@@ -411,7 +442,8 @@
     function saveUserText() {
         const input = document.getElementById('current-user-input');
         const text = input.value.trim(); if(!text) return;
-        const now = new Date(); const timeStr = `2026-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+        const d = new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Shanghai"}));
+        const timeStr = `2026-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
         journalDatabase[currentIndex].userEntries.push({ text: text, timestamp: timeStr });
         saveToDatabase(); renderPage(currentIndex);
     }
@@ -423,7 +455,6 @@
     }
 
     function changePage(dir) { let n = currentIndex + dir; if(n>=0 && n<journalDatabase.length){ currentIndex = n; renderPage(n); } }
-    function jumpToLatest() { if(currentIndex !== 0){ currentIndex = 0; renderPage(0); } }
 
     function makeDraggable(elmnt) {
         let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0; elmnt.onmousedown = dragMouseDown;
