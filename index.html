@@ -19,8 +19,8 @@
             font-family: "PingFang SC", "Microsoft YaHei", serif; color: var(--text-dark); overflow: hidden; 
         }
 
-        /* ====== 左上角控制台 (强制降维至底层) ====== */
-        .library-sidebar { position: fixed; top: 20px; left: 20px; background: rgba(255,255,255,0.7); backdrop-filter: blur(15px); padding: 15px 20px; border-radius: 12px; z-index: 1; box-shadow: 0 4px 20px rgba(0,0,0,0.08); max-height: 90vh; overflow-y: auto; border: 1px solid rgba(255,255,255,0.5); width: 220px; transition: 0.3s;}
+        /* ====== 左上角控制台 (被最高权限强制打入底层深渊) ====== */
+        .library-sidebar { position: fixed; top: 20px; left: 20px; background: rgba(255,255,255,0.7); backdrop-filter: blur(15px); padding: 15px 20px; border-radius: 12px; z-index: 0 !important; box-shadow: 0 4px 20px rgba(0,0,0,0.08); max-height: 90vh; overflow-y: auto; border: 1px solid rgba(255,255,255,0.5); width: 220px; transition: 0.3s;}
         .lib-row { margin-bottom: 15px; border-bottom: 1px dashed rgba(0,0,0,0.1); padding-bottom: 10px;}
         .lib-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
         .lib-icon { font-size: 16px; user-select: none; }
@@ -57,8 +57,8 @@
         .tray-item { font-size: 45px; cursor: pointer; user-select: none; transition: 0.2s; display: flex; justify-content: center; align-items: center; width: 60px; height: 60px;}
         .tray-item:hover { transform: scale(1.2) translateY(-5px) rotate(5deg); }
 
-        /* ====== 日记本整体容器 (强制提权至 z-index: 100) ====== */
-        .journal-container { position: relative; width: 950px; height: 600px; transition: all 0.6s ease; z-index: 100; }
+        /* ====== 日记本整体容器 (被赋予最高指令层级) ====== */
+        .journal-container { position: relative; width: 950px; height: 600px; transition: all 0.6s ease; z-index: 100 !important; }
         
         .bookmarks { position: absolute; top: 38px; left: 935px; display: flex; flex-direction: column; gap: 5px; transition: left 0.6s cubic-bezier(0.4, 0, 0.2, 1); z-index: 10; }
         .journal-opened .bookmarks { left: -60px; }
@@ -77,13 +77,13 @@
         .bm-add { background: var(--text-dark); color: #fff; padding: 15px 10px 15px 15px; border-radius: 0 10px 10px 0; font-weight: bold; font-size: 15px; cursor: pointer; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); transition: 0.2s; writing-mode: vertical-rl; letter-spacing: 2px; margin-left: -10px; position: relative; z-index: 10;}
         .bm-add:hover { background: var(--accent-red); padding-right: 15px;}
 
-        /* ====== 新增：底部挂件书签 (照片与便签) ====== */
+        /* 底部挂件书签 */
         .bookmarks-bottom { position: absolute; bottom: -20px; left: 80px; display: flex; gap: 15px; z-index: 9; transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); opacity: 0; pointer-events: none;}
         .journal-opened .bookmarks-bottom { bottom: -35px; opacity: 1; pointer-events: auto;}
         .bm-bottom-btn { background: var(--text-dark); color: #fff; padding: 8px 18px 25px 18px; border-radius: 0 0 10px 10px; font-weight: bold; font-size: 13px; cursor: pointer; box-shadow: 2px 5px 10px rgba(0,0,0,0.2); transition: 0.2s; position: relative; z-index: 10;}
         .bm-bottom-btn:hover { background: var(--accent-red); padding-top: 15px; bottom: -8px;}
 
-        /* ====== 检索组件 (垂直抽屉式伸缩) ====== */
+        /* 检索组件 */
         .bookmark-top { position: absolute; top: -10px; right: 120px; background: var(--accent-blue); color: #fff; padding: 8px 10px 25px 10px; border-radius: 8px 8px 0 0; font-size: 14px; font-weight: bold; cursor: pointer; z-index: 10; opacity: 0; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); box-sizing: border-box; overflow: hidden; width: 140px; display: flex; flex-direction: column; align-items: center; box-shadow: 0 -2px 10px rgba(0,0,0,0.1);}
         .journal-opened .bookmark-top { opacity: 1; top: -30px;}
         .bookmark-top:not(.searching):hover { top: -38px; }
@@ -102,29 +102,41 @@
         .journal-inner { position: absolute; top: 10px; left: 0; right: 0; bottom: 10px; background: var(--paper-right); border-radius: 10px; box-shadow: 10px 10px 40px rgba(0,0,0,0.5); display: flex; opacity: 0; pointer-events: none; transition: opacity 0.3s ease 0.3s; overflow: hidden; box-sizing: border-box; z-index: 20;}
         .journal-inner::after { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 40px; transform: translateX(-50%); background: linear-gradient(to right, rgba(0,0,0,0.02) 0%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.02) 100%); z-index: 5; pointer-events: none; }
 
-        /* 左页 (已极其纯净) */
+        /* 左页 */
         .page-left { flex: 1; height: 100%; padding: 30px 40px; position: relative; display: flex; flex-direction: column; background-color: var(--paper-left); background-image: linear-gradient(var(--grid-line) 1px, transparent 1px), linear-gradient(90deg, var(--grid-line) 1px, transparent 1px); background-size: 20px 20px; z-index: 1; box-sizing: border-box;}
         .close-book-btn { position: absolute; top: 15px; left: 20px; font-size: 13px; font-weight: bold; color: var(--text-light); cursor: pointer; z-index: 50; transition: 0.2s;}
         .close-book-btn:hover { color: var(--text-dark); }
 
-        /* ====== 照片与便签的终极自由框架 ====== */
-        .draggable-photo, .draggable-text, .draggable-sticker { position: absolute; cursor: move; user-select: none; z-index: 40; display: inline-block; padding: 10px; }
+        /* ====== 照片与画板级可编辑便签的终极框架 ====== */
+        .draggable-photo, .draggable-text, .draggable-sticker { position: absolute; cursor: move; user-select: none; z-index: 40; display: inline-block; padding: 15px; }
         
-        /* 极其真实的拍立得相框材质 */
+        /* 拍立得相框 */
         .polaroid-wrapper { background: #fff; padding: 8px 8px 30px 8px; box-shadow: 2px 5px 15px rgba(0,0,0,0.15); width: 150px; height: 175px; box-sizing: border-box; display: flex; flex-direction: column; pointer-events: none;}
         .polaroid-photo { width: 100%; height: 100%; background-size: cover; background-position: center; background-color: #eaeaea; border: 1px solid rgba(0,0,0,0.05);}
         
-        /* 透明无感便签 */
-        .text-content { font-family: cursive, "PingFang SC"; font-size: 15px; color: var(--text-dark); line-height: 1.6; padding: 8px 12px; white-space: pre-wrap; text-align: left; transition: outline 0.2s; cursor: pointer;}
-        .draggable-text:hover .text-content { outline: 1px dashed rgba(0,0,0,0.15); border-radius: 4px; background: rgba(255,255,255,0.4); }
+        /* 沉浸式文本框设计 (废弃丑陋弹窗，直接在纸上输写) */
+        .text-content { 
+            font-family: cursive, "PingFang SC"; font-size: 15px; line-height: 1.6; 
+            padding: 8px 12px; white-space: pre-wrap; text-align: left; 
+            border: 1px dashed transparent; min-width: 120px; min-height: 30px;
+            transition: 0.2s; outline: none; cursor: text;
+        }
+        .draggable-text:hover .text-content { border-color: rgba(0,0,0,0.15); border-radius: 4px; background: rgba(255,255,255,0.4); }
+        .text-content:focus { border-color: var(--accent-red); background: rgba(255,255,255,0.8); border-radius: 4px;}
 
         .sticker-content { pointer-events: none; }
-        .sticker-ctrls { position: absolute; top: -15px; right: -15px; background: #fff; border-radius: 20px; padding: 2px 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); display: none; gap: 5px; z-index: 51; border: 1px solid #ddd;}
+        .sticker-ctrls { position: absolute; top: -5px; right: -5px; background: #fff; border-radius: 20px; padding: 3px 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.25); display: none; gap: 5px; z-index: 51; border: 1px solid #ddd; align-items: center;}
         .draggable-sticker:hover .sticker-ctrls, .draggable-photo:hover .sticker-ctrls, .draggable-text:hover .sticker-ctrls { display: flex; }
+        
+        /* 专属调色盘按钮 */
+        .s-ctrl-color { width: 16px; height: 16px; padding: 0; border: 1px solid rgba(0,0,0,0.1); border-radius: 50%; cursor: pointer; background: transparent; overflow: hidden; margin-right: 2px;}
+        .s-ctrl-color::-webkit-color-swatch-wrapper { padding: 0; }
+        .s-ctrl-color::-webkit-color-swatch { border: none; border-radius: 50%; }
+
         .s-ctrl-btn { border: none; background: transparent; font-size: 12px; cursor: pointer; padding: 2px 4px; border-radius: 4px; }
         .s-ctrl-del { color: red; font-weight: bold;}
 
-        /* 音乐部件悬浮在左侧底部 */
+        /* 音乐部件 */
         .add-music-btn { position: absolute; bottom: 30px; left: 40px; width: 40px; height: 40px; background: rgba(255,255,255,0.7); border: 2px dashed var(--text-light); border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 18px; color: var(--text-light); cursor: pointer; transition: 0.2s; z-index: 10;}
         .add-music-btn:hover { background: #fff; color: var(--text-dark); border-color: var(--text-dark); }
         .music-player-widget { position: absolute; width: 210px; background: rgba(255,255,255,0.9); border-radius: 12px; padding: 10px 15px; box-shadow: 2px 5px 15px rgba(0,0,0,0.15); z-index: 45; border: 1px solid #ddd; backdrop-filter: blur(5px); display: none; flex-direction: column; gap: 6px; box-sizing: border-box; cursor: move; }
@@ -227,7 +239,7 @@
     </div>
 
     <div class="journal-inner" id="journal-pages">
-        <div class="page-left">
+        <div class="page-left" id="page-left-zone">
             <div class="close-book-btn" onclick="closeJournal()">❮ 合上</div>
             <div id="add-music-btn" class="add-music-btn" onclick="addMusic()">🎵</div>
         </div>
@@ -291,7 +303,7 @@
     function generateBlankEntry(year, month, isPlaceholder = false) {
         return {
             month: month, date: `${year}年${month}月${isPlaceholder ? '1日' : getEast8Date().getDate() + '日'}`, weather: "天气...",
-            photos: [], texts: [], // 升维数据结构：支持无限多张独立摆放的照片和便签
+            photos: [], texts: [], 
             agentTitle: "", agentText: "", userEntries: [], 
             musicLink: "", musicIsLocalBase64: false
         };
@@ -304,21 +316,12 @@
     if (!systemDB || systemDB.length === 0) {
         systemDB = [{ id: 'j_' + Date.now(), name: "ECHO的日记", books: [{ year: realYear, entries: [ generateBlankEntry(realYear, realMonth) ] }] }];
     } else {
-        // [底层自愈] 清除未来幽灵记录，并将旧版的孤立备注升维成可拖拽的透明便签
         systemDB.forEach(j => {
             j.books.forEach(b => { 
                 if (b.year === realYear) b.entries = b.entries.filter(e => e.month <= realMonth); 
                 b.entries.forEach(e => {
                     if(!e.photos) e.photos = [];
                     if(!e.texts) e.texts = [];
-                    // 转化旧备注 (绝不丢弃任何文字)
-                    if(e.topNote && e.topNote !== "点击右键编辑" && e.topNote !== "WEEK RECAP: 点击右键编辑") {
-                        e.texts.push({ text: e.topNote, left: '60px', top: '40px', transform: 'scale(1) rotate(0deg)' });
-                    }
-                    if(e.bottomNote && e.bottomNote !== "点击右键编辑") {
-                        e.texts.push({ text: e.bottomNote, left: '60px', top: '400px', transform: 'scale(1) rotate(0deg)' });
-                    }
-                    delete e.topNote; delete e.bottomNote;
                 });
             });
             j.books = j.books.filter(b => b.year <= realYear);
@@ -405,11 +408,11 @@
         });
     }
 
-    // ================= 照片流与透明便签系统 =================
+    // ================= 照片流与透明便签的终极编辑器 =================
     function renderPhotosAndTexts(entry) {
         document.querySelectorAll('.draggable-photo, .draggable-text').forEach(el => el.remove());
         
-        // 渲染相册序列 (带拍立得相框)
+        // 渲染拍立得相册
         if(entry.photos) {
             entry.photos.forEach((pData, idx) => {
                 const s = document.createElement('div'); s.className = 'draggable-photo'; s.dataset.idx = idx;
@@ -421,13 +424,18 @@
             });
         }
         
-        // 渲染文字序列 (透明底框，双击编辑)
+        // 渲染沉浸式文本框 (可直接打字，带独立调色盘)
         if(entry.texts) {
             entry.texts.forEach((tData, idx) => {
+                let color = tData.color || '#3a2f29';
+                if(color.startsWith('var')) color = '#3a2f29'; // 兼容旧颜色
                 const s = document.createElement('div'); s.className = 'draggable-text'; s.dataset.idx = idx;
                 s.style.left = tData.left; s.style.top = tData.top;
-                s.innerHTML = `<div class="text-content" style="transform: ${tData.transform};" ondblclick="editTextNode(this)" title="双击可编辑文字">${tData.text}</div>
-                               <div class="sticker-ctrls"><button class="s-ctrl-btn" onclick="modifyMedia(this, 'rotL', 'text')">↺</button><button class="s-ctrl-btn" onclick="modifyMedia(this, 'rotR', 'text')">↻</button><button class="s-ctrl-btn" onclick="modifyMedia(this, 'up', 'text')">+</button><button class="s-ctrl-btn" onclick="modifyMedia(this, 'down', 'text')">-</button><button class="s-ctrl-btn s-ctrl-del" onclick="deleteMedia(this, 'text')">×</button></div>`;
+                s.innerHTML = `<div class="text-content" style="transform: ${tData.transform}; color: ${color};" contenteditable="true" onblur="saveMediaState()" title="点击直接输入文字">${tData.text}</div>
+                               <div class="sticker-ctrls">
+                                   <input type="color" class="s-ctrl-color" value="${color}" onchange="changeTextColor(this)" title="修改文字颜色">
+                                   <button class="s-ctrl-btn" onclick="modifyMedia(this, 'rotL', 'text')">↺</button><button class="s-ctrl-btn" onclick="modifyMedia(this, 'rotR', 'text')">↻</button><button class="s-ctrl-btn" onclick="modifyMedia(this, 'up', 'text')">+</button><button class="s-ctrl-btn" onclick="modifyMedia(this, 'down', 'text')">-</button><button class="s-ctrl-btn s-ctrl-del" onclick="deleteMedia(this, 'text')">×</button>
+                               </div>`;
                 document.getElementById('journal-pages').appendChild(s);
                 makeDraggable(s, true);
             });
@@ -447,25 +455,23 @@
         }
     }
 
-    // 唤起新便签
+    // 唤起新画板级便签
     function addTextNode() {
-        let txt = prompt("输入要添加的便签内容：");
-        if(txt && txt.trim()) {
-            getActiveEntries()[currentIndex].texts.push({ text: txt.trim(), left: '60px', top: '150px', transform: 'scale(1) rotate(0deg)' });
-            saveToDatabase(); renderPage(currentIndex);
-        }
+        getActiveEntries()[currentIndex].texts.push({ 
+            text: "在此输入内容...", left: '80px', top: '150px', transform: 'scale(1) rotate(0deg)', color: '#3a2f29' 
+        });
+        saveToDatabase(); renderPage(currentIndex);
     }
 
-    // 双击修改便签
-    function editTextNode(el) {
-        let newVal = prompt("修改便签文字：", el.innerText);
-        if(newVal !== null && newVal.trim() !== "") {
-            el.innerText = newVal;
-            saveMediaState(); // 修改完立刻静默保存
-        }
+    // 文字专属：调色引擎
+    function changeTextColor(inputEl) {
+        const node = inputEl.closest('.draggable-text');
+        const textContent = node.querySelector('.text-content');
+        textContent.style.color = inputEl.value;
+        saveMediaState();
     }
 
-    // 通用的物理变形算法 (通吃照片和便签)
+    // 物理变形算法
     function modifyMedia(btn, action, type) { 
         const node = btn.closest(`.draggable-${type}`); const c = node.querySelector(type === 'photo' ? '.polaroid-wrapper' : '.text-content'); 
         let s = parseFloat(c.style.transform.match(/scale\(([^)]+)\)/)[1]); let r = parseInt(c.style.transform.match(/rotate\(([^)]+)deg\)/)[1]); 
@@ -481,7 +487,7 @@
         saveToDatabase(); renderPage(currentIndex);
     }
     
-    // 静默序列化保存所有挂件的坐标和角度
+    // 静默序列化引擎：保存坐标、角度、颜色、文本
     function saveMediaState() {
         let entries = getActiveEntries();
         document.querySelectorAll('.draggable-photo').forEach(node => {
@@ -494,9 +500,12 @@
         document.querySelectorAll('.draggable-text').forEach(node => {
             let idx = parseInt(node.dataset.idx);
             if(entries[currentIndex].texts[idx]) {
-                entries[currentIndex].texts[idx].left = node.style.left; entries[currentIndex].texts[idx].top = node.style.top;
-                entries[currentIndex].texts[idx].text = node.querySelector('.text-content').innerText;
-                entries[currentIndex].texts[idx].transform = node.querySelector('.text-content').style.transform;
+                let textEl = node.querySelector('.text-content');
+                entries[currentIndex].texts[idx].left = node.style.left; 
+                entries[currentIndex].texts[idx].top = node.style.top;
+                entries[currentIndex].texts[idx].text = textEl.innerText;
+                entries[currentIndex].texts[idx].transform = textEl.style.transform;
+                entries[currentIndex].texts[idx].color = textEl.style.color;
             }
         });
         saveToDatabase();
@@ -510,7 +519,7 @@
         document.getElementById('display-date').value = data.date; document.getElementById('display-weather').value = data.weather; document.getElementById('display-agent-title').value = data.agentTitle; document.getElementById('display-agent-text').value = data.agentText;
         document.getElementById('display-page-num').innerText = `${entries.length - index} / ${entries.length}`;
 
-        // 核心渲染：把照片流和便签流全部铺在纸上
+        // 画布装载
         renderPhotosAndTexts(data);
 
         const playerWidget = document.getElementById('music-player-widget'); const addBtn = document.getElementById('add-music-btn');
@@ -528,10 +537,14 @@
         updateMonthBookmark();
     }
 
-    // ====== 拖拽物理引擎 ======
+    // ====== 智能拖拽物理引擎 ======
     function makeDraggable(elmnt, needsSave = false) {
         let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0; elmnt.onmousedown = dragMouseDown;
-        function dragMouseDown(e) { if(e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT') return; e.preventDefault(); pos3 = e.clientX; pos4 = e.clientY; document.onmouseup = closeDragElement; document.onmousemove = elementDrag; document.querySelectorAll('.draggable-sticker, .draggable-photo, .draggable-text, .music-player-widget').forEach(s => s.style.zIndex = 45); elmnt.style.zIndex = 50; }
+        function dragMouseDown(e) { 
+            // 保护输入操作：如果点击的是文本框本体、或者是调色按钮，系统让步，禁止拖动
+            if(e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' || e.target.isContentEditable) return; 
+            e.preventDefault(); pos3 = e.clientX; pos4 = e.clientY; document.onmouseup = closeDragElement; document.onmousemove = elementDrag; document.querySelectorAll('.draggable-sticker, .draggable-photo, .draggable-text, .music-player-widget').forEach(s => s.style.zIndex = 45); elmnt.style.zIndex = 50; 
+        }
         function elementDrag(e) { e.preventDefault(); pos1 = pos3 - e.clientX; pos2 = pos4 - e.clientY; pos3 = e.clientX; pos4 = e.clientY; elmnt.style.top = (elmnt.offsetTop - pos2) + "px"; elmnt.style.left = (elmnt.offsetLeft - pos1) + "px"; }
         function closeDragElement() { document.onmouseup = null; document.onmousemove = null; if(needsSave) saveMediaState(); }
     }
@@ -562,7 +575,6 @@
     }
     function modifySticker(btn, action) { const c = btn.closest('.draggable-sticker').querySelector('.sticker-content'); let s = parseFloat(c.style.transform.match(/scale\(([^)]+)\)/)[1]); let r = parseInt(c.style.transform.match(/rotate\(([^)]+)deg\)/)[1]); if(action==='rotL') r-=15; if(action==='rotR') r+=15; if(action==='up') s+=0.2; if(action==='down') s=Math.max(0.5, s-0.2); c.style.transform = `scale(${s}) rotate(${r}deg)`; }
 
-    // 抽拉式检索
     function openSearch(e) { e.stopPropagation(); const c = document.getElementById('search-container'); if(!c.classList.contains('searching')) { c.classList.add('searching'); setTimeout(()=>document.getElementById('search-input').focus(), 300); } }
     document.addEventListener('click', e => { const c = document.getElementById('search-container'); if(c.classList.contains('searching') && !c.contains(e.target)) { c.classList.remove('searching'); } });
     function executeSearch(e) { 
