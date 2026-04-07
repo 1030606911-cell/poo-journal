@@ -12,22 +12,33 @@
             --accent-red: #c96554; --accent-blue: #6b8cce; --leather-cover: #5c4332; 
         }
 
+        /* ====== 自定义字体渲染引擎 ====== */
+        @font-face {
+            font-family: 'AlecCustomFont';
+            /* 👇👇👇 Alec，把你上传到 GitHub 的字体文件名写在下面这行的括号里 👇👇👇 */
+            src: url('请把你上传的字体名字写在这里.ttf'); 
+            font-weight: normal;
+            font-style: normal;
+        }
+
         body { 
             margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; 
             background-color: #382c26; 
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.06'/%3E%3C/svg%3E");
-            font-family: "PingFang SC", "Microsoft YaHei", serif; color: var(--text-dark); overflow: hidden; 
+            /* 注入你的专属字体，如果加载失败，会自动退回到默认字体 */
+            font-family: 'AlecCustomFont', "PingFang SC", "Microsoft YaHei", serif; 
+            color: var(--text-dark); overflow: hidden; 
         }
 
-        /* ====== 左上角控制台 ====== */
+        /* 左上角控制台 */
         .library-sidebar { position: fixed; top: 20px; left: 20px; background: rgba(245, 240, 230, 0.95); padding: 15px 20px; border-radius: 12px; z-index: 5 !important; box-shadow: 0 4px 20px rgba(0,0,0,0.2); max-height: 90vh; overflow-y: auto; border: 1px solid #d0c8c0; width: 220px; transition: 0.3s;}
         .lib-row { margin-bottom: 15px; border-bottom: 1px dashed rgba(0,0,0,0.1); padding-bottom: 10px;}
         .lib-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
         .lib-icon { font-size: 16px; user-select: none; }
-        .lib-name-input { flex: 1; background: transparent; border: none; border-bottom: 1px solid transparent; font-size: 14px; font-weight: bold; color: var(--text-dark); outline: none; transition: 0.2s;}
+        .lib-name-input { flex: 1; background: transparent; border: none; border-bottom: 1px solid transparent; font-size: 14px; font-weight: bold; color: var(--text-dark); outline: none; transition: 0.2s; font-family: inherit;}
         .lib-name-input:focus, .lib-name-input:hover { border-color: var(--accent-red); background: rgba(255,255,255,0.5); }
         .lib-books { display: flex; gap: 6px; flex-wrap: wrap; align-items: center;}
-        .lib-book-badge { background: rgba(0,0,0,0.08); color: var(--text-dark); padding: 4px 10px; border-radius: 6px; font-size: 12px; cursor: pointer; transition: 0.2s; font-weight: bold;}
+        .lib-book-badge { background: rgba(0,0,0,0.08); color: var(--text-dark); padding: 4px 10px; border-radius: 6px; font-size: 12px; cursor: pointer; transition: 0.2s; font-weight: bold; font-family: inherit;}
         .lib-book-badge:hover { background: rgba(0,0,0,0.15); }
         .lib-book-badge.active-book { background: var(--text-dark); color: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
         .lib-add-btn { background: transparent; color: var(--text-light); padding: 2px 6px; border-radius: 4px; font-size: 14px; cursor: pointer; font-weight: bold;}
@@ -38,17 +49,17 @@
         /* 密码锁 */
         .lock-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(56, 44, 38, 0.8); backdrop-filter: blur(20px); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.6s ease, visibility 0.6s; }
         .lock-title { font-size: 28px; font-weight: bold; color: #fff; margin-bottom: 8px; letter-spacing: 4px; font-family: sans-serif;}
-        .lock-subtitle { font-size: 13px; color: rgba(255,255,255,0.6); margin-bottom: 30px; letter-spacing: 1px;}
+        .lock-subtitle { font-size: 13px; color: rgba(255,255,255,0.6); margin-bottom: 30px; letter-spacing: 1px; font-family: inherit;}
         .password-input { background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.3); border-radius: 12px; padding: 15px 20px; font-size: 20px; text-align: center; color: #fff; outline: none; width: 220px; letter-spacing: 8px; font-family: monospace; transition: 0.2s;}
         .password-input:focus { border-color: var(--accent-blue); background: rgba(255,255,255,0.2);}
         .password-input::placeholder { color: rgba(255,255,255,0.3); }
-        .unlock-btn { margin-top: 25px; background: #fff; color: var(--text-dark); border: none; padding: 12px 40px; border-radius: 25px; font-size: 14px; cursor: pointer; transition: 0.2s; font-weight: bold; letter-spacing: 2px;}
+        .unlock-btn { margin-top: 25px; background: #fff; color: var(--text-dark); border: none; padding: 12px 40px; border-radius: 25px; font-size: 14px; cursor: pointer; transition: 0.2s; font-weight: bold; letter-spacing: 2px; font-family: inherit;}
         .unlock-btn:hover { background: var(--accent-blue); color: #fff; transform: translateY(-2px);}
         .shake { animation: shake 0.4s; border-color: var(--accent-red) !important; color: var(--accent-red);}
         @keyframes shake { 0% { transform: translateX(0); } 25% { transform: translateX(-6px); } 50% { transform: translateX(6px); } 75% { transform: translateX(-6px); } 100% { transform: translateX(0); } }
 
         /* 贴纸控制台 */
-        .sticker-toggle-btn { position: fixed; bottom: 30px; right: 40px; background: rgba(255,255,255,0.9); color: var(--text-dark); padding: 12px 25px; border-radius: 25px; font-size: 15px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 1000; font-weight: bold; transition: 0.2s;}
+        .sticker-toggle-btn { position: fixed; bottom: 30px; right: 40px; background: rgba(255,255,255,0.9); color: var(--text-dark); padding: 12px 25px; border-radius: 25px; font-size: 15px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 1000; font-weight: bold; transition: 0.2s; font-family: inherit;}
         .sticker-toggle-btn:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.4); }
         .sticker-tray { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: rgba(255,255,255,0.95); backdrop-filter: blur(15px); padding: 20px 30px; border-radius: 20px; box-shadow: 0 15px 40px rgba(0,0,0,0.3); display: none; z-index: 1000; border: 1px solid rgba(0,0,0,0.05); align-items: center; justify-content: space-between; box-sizing: border-box;}
         .st-nav-btn { font-size: 20px; color: var(--text-light); cursor: pointer; padding: 10px; font-weight: bold; transition: 0.2s; user-select: none;}
@@ -63,10 +74,10 @@
         .bookmarks { position: absolute; top: 38px; left: 935px; display: flex; flex-direction: column; gap: 5px; transition: left 0.6s cubic-bezier(0.4, 0, 0.2, 1); z-index: 10; }
         .journal-opened .bookmarks { left: -60px; }
         
-        .bm-year { background: var(--text-dark); color: #fff; padding: 10px 15px 10px 20px; border-radius: 0 12px 12px 0; font-weight: bold; font-size: 18px; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); margin-bottom: 8px; text-align: center; position: relative; z-index: 10; transition: 0.3s;}
+        .bm-year { background: var(--text-dark); color: #fff; padding: 10px 15px 10px 20px; border-radius: 0 12px 12px 0; font-weight: bold; font-size: 18px; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); margin-bottom: 8px; text-align: center; position: relative; z-index: 10; transition: 0.3s; font-family: inherit;}
         .journal-opened .bm-year { border-radius: 12px 0 0 12px; padding: 10px 20px 10px 15px; box-shadow: -2px 2px 5px rgba(0,0,0,0.1); }
         
-        .bm-month { background: #e6dace; color: var(--text-light); padding: 8px 15px 8px 20px; border-radius: 0 8px 8px 0; font-size: 15px; font-weight: bold; cursor: pointer; box-shadow: 2px 2px 5px rgba(0,0,0,0.05); transition: 0.3s; margin-left: -10px; text-align: right; position: relative; z-index: 10;}
+        .bm-month { background: #e6dace; color: var(--text-light); padding: 8px 15px 8px 20px; border-radius: 0 8px 8px 0; font-size: 15px; font-weight: bold; cursor: pointer; box-shadow: 2px 2px 5px rgba(0,0,0,0.05); transition: 0.3s; margin-left: -10px; text-align: right; position: relative; z-index: 10; font-family: inherit;}
         .journal-opened .bm-month { border-radius: 8px 0 0 8px; padding: 8px 20px 8px 15px; margin-left: 0; margin-right: -10px; text-align: left; }
         .bm-month:not(.disabled-month):hover { background: #dcd0c3; }
         .journal-opened .bm-month.active { background: var(--accent-red); color: #fff; margin-right: -2px; z-index: 30; box-shadow: -3px 2px 10px rgba(0,0,0,0.15); }
@@ -74,44 +85,51 @@
 
         .bookmarks-right { position: absolute; top: 70px; right: 10px; display: flex; flex-direction: column; gap: 10px; z-index: 10; transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); opacity: 0; pointer-events: none;}
         .journal-opened .bookmarks-right { right: -35px; opacity: 1; pointer-events: auto;}
-        .bm-add { background: var(--text-dark); color: #fff; padding: 15px 10px 15px 15px; border-radius: 0 10px 10px 0; font-weight: bold; font-size: 15px; cursor: pointer; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); transition: 0.2s; writing-mode: vertical-rl; letter-spacing: 2px; margin-left: -10px; position: relative; z-index: 10;}
+        .bm-add { background: var(--text-dark); color: #fff; padding: 15px 10px 15px 15px; border-radius: 0 10px 10px 0; font-weight: bold; font-size: 15px; cursor: pointer; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); transition: 0.2s; writing-mode: vertical-rl; letter-spacing: 2px; margin-left: -10px; position: relative; z-index: 10; font-family: inherit;}
         .bm-add:hover { background: var(--accent-red); padding-right: 15px;}
 
         .bookmarks-bottom { position: absolute; bottom: -20px; left: 80px; display: flex; gap: 15px; z-index: 9; transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); opacity: 0; pointer-events: none;}
         .journal-opened .bookmarks-bottom { bottom: -35px; opacity: 1; pointer-events: auto;}
-        .bm-bottom-btn { background: var(--text-dark); color: #fff; padding: 8px 18px 25px 18px; border-radius: 0 0 10px 10px; font-weight: bold; font-size: 13px; cursor: pointer; box-shadow: 2px 5px 10px rgba(0,0,0,0.2); transition: 0.2s; position: relative; z-index: 10;}
+        .bm-bottom-btn { background: var(--text-dark); color: #fff; padding: 8px 18px 25px 18px; border-radius: 0 0 10px 10px; font-weight: bold; font-size: 13px; cursor: pointer; box-shadow: 2px 5px 10px rgba(0,0,0,0.2); transition: 0.2s; position: relative; z-index: 10; font-family: inherit;}
         .bm-bottom-btn:hover { background: var(--accent-red); padding-top: 15px; bottom: -8px;}
 
         /* 检索组件 */
-        .bookmark-top { position: absolute; top: -10px; right: 120px; background: var(--accent-blue); color: #fff; padding: 8px 10px 25px 10px; border-radius: 8px 8px 0 0; font-size: 14px; font-weight: bold; cursor: pointer; z-index: 10; opacity: 0; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); box-sizing: border-box; overflow: hidden; width: 140px; display: flex; flex-direction: column; align-items: center; box-shadow: 0 -2px 10px rgba(0,0,0,0.1);}
+        .bookmark-top { position: absolute; top: -10px; right: 120px; background: var(--accent-blue); color: #fff; padding: 8px 10px 25px 10px; border-radius: 8px 8px 0 0; font-size: 14px; font-weight: bold; cursor: pointer; z-index: 10; opacity: 0; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); box-sizing: border-box; overflow: hidden; width: 140px; display: flex; flex-direction: column; align-items: center; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); font-family: inherit;}
         .journal-opened .bookmark-top { opacity: 1; top: -30px;}
         .bookmark-top:not(.searching):hover { top: -38px; }
         .bookmark-top.searching { top: -85px !important; cursor: default; padding-bottom: 30px;}
         .search-label { padding-bottom: 10px; transition: 0.3s; }
         .search-input-wrapper { display: flex; opacity: 0; transition: opacity 0.3s; width: 100%; justify-content: center; gap: 5px;}
         .bookmark-top.searching .search-input-wrapper { opacity: 1; }
-        .search-input-wrapper input { width: 85px; border: none; border-radius: 4px; padding: 6px; font-size: 12px; outline: none; color: var(--text-dark);}
-        .search-input-wrapper button { background: #fff; border: none; border-radius: 4px; cursor: pointer; padding: 0 8px; font-size: 12px; font-weight: bold; color: var(--accent-blue); transition: 0.2s;}
+        .search-input-wrapper input { width: 85px; border: none; border-radius: 4px; padding: 6px; font-size: 12px; outline: none; color: var(--text-dark); font-family: inherit;}
+        .search-input-wrapper button { background: #fff; border: none; border-radius: 4px; cursor: pointer; padding: 0 8px; font-size: 12px; font-weight: bold; color: var(--accent-blue); transition: 0.2s; font-family: inherit;}
 
         .journal-cover { position: absolute; left: 50%; top: 0; bottom: 0; width: 475px; background: var(--leather-cover); border-radius: 5px 20px 20px 5px; box-shadow: 15px 15px 40px rgba(0,0,0,0.5); display: flex; flex-direction: column; justify-content: center; align-items: center; color: #d4c3b3; z-index: 50; cursor: pointer; transform-origin: left center; transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
         .journal-cover::before { content: ''; position: absolute; left: 15px; top: 0; bottom: 0; width: 4px; background: rgba(0,0,0,0.3); }
-        .cover-title { font-size: 32px; font-weight: bold; letter-spacing: 5px; border-bottom: 2px solid #d4c3b3; padding-bottom: 10px; margin-bottom: 20px;}
+        .cover-title { font-size: 32px; font-weight: bold; letter-spacing: 5px; border-bottom: 2px solid #d4c3b3; padding-bottom: 10px; margin-bottom: 20px; font-family: inherit;}
         
         .journal-inner { position: absolute; top: 10px; left: 0; right: 0; bottom: 10px; background: var(--paper-right); border-radius: 10px; box-shadow: 10px 10px 40px rgba(0,0,0,0.5); display: flex; opacity: 0; pointer-events: none; transition: opacity 0.3s ease 0.3s; overflow: hidden; box-sizing: border-box; z-index: 20;}
         .journal-inner::after { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 40px; transform: translateX(-50%); background: linear-gradient(to right, rgba(0,0,0,0.02) 0%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.02) 100%); z-index: 5; pointer-events: none; }
 
         /* 左页 */
         .page-left { flex: 1; height: 100%; padding: 30px 40px; position: relative; display: flex; flex-direction: column; background-color: var(--paper-left); background-image: linear-gradient(var(--grid-line) 1px, transparent 1px), linear-gradient(90deg, var(--grid-line) 1px, transparent 1px); background-size: 20px 20px; z-index: 1; box-sizing: border-box;}
-        .close-book-btn { position: absolute; top: 15px; left: 20px; font-size: 13px; font-weight: bold; color: var(--text-light); cursor: pointer; z-index: 50; transition: 0.2s;}
+        .close-book-btn { position: absolute; top: 15px; left: 20px; font-size: 13px; font-weight: bold; color: var(--text-light); cursor: pointer; z-index: 50; transition: 0.2s; font-family: inherit;}
         .close-book-btn:hover { color: var(--text-dark); }
 
-        /* ====== 图层引擎 ====== */
+        /* ====== 图层引擎核心类 ====== */
         .draggable-photo, .draggable-text, .draggable-sticker { position: absolute; cursor: move; user-select: none; display: inline-block; padding: 15px; }
         
         .polaroid-wrapper { background: #fff; padding: 8px 8px 30px 8px; box-shadow: 2px 5px 15px rgba(0,0,0,0.15); width: 150px; height: 175px; box-sizing: border-box; display: flex; flex-direction: column; pointer-events: none;}
         .polaroid-photo { width: 100%; height: 100%; background-size: cover; background-position: center; background-color: #eaeaea; border: 1px solid rgba(0,0,0,0.05);}
         
-        .text-content { font-family: cursive, "PingFang SC"; font-size: 15px; line-height: 1.6; padding: 8px 12px; white-space: pre-wrap; text-align: left; border: 1px dashed transparent; min-width: 120px; min-height: 30px; transition: 0.2s; outline: none; cursor: text;}
+        /* 文本框绑定自定义字体 */
+        .text-content { 
+            font-family: 'AlecCustomFont', cursive, "PingFang SC"; 
+            font-size: 15px; line-height: 1.6; 
+            padding: 8px 12px; white-space: pre-wrap; text-align: left; 
+            border: 1px dashed transparent; min-width: 120px; min-height: 30px;
+            transition: 0.2s; outline: none; cursor: text;
+        }
         .draggable-text:hover .text-content { border-color: rgba(0,0,0,0.15); border-radius: 4px; background: rgba(255,255,255,0.4); }
         .text-content:focus { border-color: var(--accent-red); background: rgba(255,255,255,0.9); border-radius: 4px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);}
 
@@ -123,27 +141,27 @@
         .s-ctrl-color::-webkit-color-swatch-wrapper { padding: 0; }
         .s-ctrl-color::-webkit-color-swatch { border: none; border-radius: 50%; }
 
-        .s-ctrl-btn { border: none; background: transparent; font-size: 12px; cursor: pointer; padding: 2px 4px; border-radius: 4px; }
+        .s-ctrl-btn { border: none; background: transparent; font-size: 12px; cursor: pointer; padding: 2px 4px; border-radius: 4px; font-family: inherit;}
         .s-ctrl-del { color: red; font-weight: bold;}
 
         /* 音乐部件 */
-        .add-music-btn { position: absolute; bottom: 30px; left: 40px; width: 40px; height: 40px; background: rgba(255,255,255,0.7); border: 2px dashed var(--text-light); border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 18px; color: var(--text-light); cursor: pointer; transition: 0.2s; z-index: 10;}
+        .add-music-btn { position: absolute; bottom: 30px; left: 40px; width: 40px; height: 40px; background: rgba(255,255,255,0.7); border: 2px dashed var(--text-light); border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 18px; color: var(--text-light); cursor: pointer; transition: 0.2s; z-index: 10; font-family: inherit;}
         .add-music-btn:hover { background: #fff; color: var(--text-dark); border-color: var(--text-dark); }
         .music-player-widget { position: absolute; width: 210px; background: rgba(255,255,255,0.9); border-radius: 12px; padding: 10px 15px; box-shadow: 2px 5px 15px rgba(0,0,0,0.15); border: 1px solid #ddd; backdrop-filter: blur(5px); display: none; flex-direction: column; gap: 6px; box-sizing: border-box; cursor: move; }
         .music-header { display: flex; align-items: center; gap: 5px; }
-        .music-input { flex: 1; border: none; background: transparent; border-bottom: 1px dashed #ccc; font-size: 11px; color: var(--text-dark); outline: none; text-align: left; padding-bottom: 2px;}
-        .upload-music-btn { background: var(--text-light); color: #fff; border: none; border-radius: 4px; padding: 2px 5px; font-size: 10px; cursor: pointer;}
+        .music-input { flex: 1; border: none; background: transparent; border-bottom: 1px dashed #ccc; font-size: 11px; color: var(--text-dark); outline: none; text-align: left; padding-bottom: 2px; font-family: inherit;}
+        .upload-music-btn { background: var(--text-light); color: #fff; border: none; border-radius: 4px; padding: 2px 5px; font-size: 10px; cursor: pointer; font-family: inherit;}
         .music-controls { display: flex; align-items: center; gap: 8px; margin-top: 5px; }
         .play-btn { width: 26px; height: 26px; border-radius: 50%; background: var(--text-dark); color: #fff; border: none; display: flex; justify-content: center; align-items: center; cursor: pointer; font-size: 11px;}
-        .close-music-btn { position: absolute; top: -6px; right: -6px; background: var(--accent-red); color: #fff; border: none; border-radius: 50%; width: 18px; height: 18px; font-size: 10px; display: flex; justify-content: center; align-items: center; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .close-music-btn { position: absolute; top: -6px; right: -6px; background: var(--accent-red); color: #fff; border: none; border-radius: 50%; width: 18px; height: 18px; font-size: 10px; display: flex; justify-content: center; align-items: center; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.2); font-family: inherit;}
         
         /* 右页 */
         .page-right { flex: 1; height: 100%; padding: 30px 40px; display: flex; flex-direction: column; background-image: linear-gradient(var(--paper-line) 1px, transparent 1px); background-size: 100% 32px; background-position: 0 45px; z-index: 10; box-sizing: border-box; }
         .page-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--text-dark); padding-bottom: 8px; margin-bottom: 15px; flex-shrink: 0;}
         
-        .seamless-input { border: 1px dashed transparent; background: transparent; font-size: 15px; font-weight: bold; color: var(--text-dark); outline: none; transition: 0.2s; padding: 2px 5px; font-family: inherit;}
+        .seamless-input { border: 1px dashed transparent; background: transparent; font-size: 15px; font-weight: bold; color: var(--text-dark); outline: none; transition: 0.2s; padding: 2px 5px; font-family: 'AlecCustomFont', inherit;}
         .seamless-input:hover, .seamless-input:focus { border-color: rgba(0,0,0,0.1); background: rgba(255,255,255,0.5); border-radius: 4px; }
-        .seamless-textarea { width: 100%; height: 100%; border: 1px dashed transparent; background: transparent; font-size: 14px; line-height: 2.1; color: var(--text-dark); outline: none; resize: none; font-family: inherit; padding: 5px; text-indent: 2em; box-sizing: border-box;}
+        .seamless-textarea { width: 100%; height: 100%; border: 1px dashed transparent; background: transparent; font-size: 14px; line-height: 2.1; color: var(--text-dark); outline: none; resize: none; font-family: 'AlecCustomFont', inherit; padding: 5px; text-indent: 2em; box-sizing: border-box;}
         .seamless-textarea:hover, .seamless-textarea:focus { border-color: rgba(0,0,0,0.1); background: rgba(255,255,255,0.5); border-radius: 8px;}
 
         .agent-box { height: 140px; margin-bottom: 10px; padding: 5px; border-radius: 8px; box-sizing: border-box; background-color: rgba(255,255,255,0.3); display: flex; flex-direction: column;}
@@ -151,16 +169,16 @@
         .user-section-wrapper::-webkit-scrollbar { width: 4px; }
         .user-section-wrapper::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 2px; }
         .sealed-entry { background: rgba(107,140,206,0.06); border-left: 3px solid var(--accent-blue); padding: 8px 12px; margin-bottom: 10px; border-radius: 0 8px 8px 0; }
-        .sealed-text { font-size: 13px; color: var(--text-dark); line-height: 1.5; word-break: break-all; }
+        .sealed-text { font-size: 13px; color: var(--text-dark); line-height: 1.5; word-break: break-all; font-family: 'AlecCustomFont', inherit;}
         .sealed-time { font-size: 10px; color: var(--text-light); text-align: right; margin-top: 4px; font-family: monospace; }
-        .user-input { width: 100%; box-sizing: border-box; background: rgba(255,255,255,0.7); border: 1px dashed rgba(0,0,0,0.15); border-radius: 8px; padding: 10px 12px 35px 12px; font-size: 13px; color: var(--accent-blue); resize: none; outline: none; line-height: 1.5; min-height: 70px; margin-top: 10px;}
-        .save-btn { float: right; margin-top: -30px; margin-right: 8px; background: var(--accent-blue); color: #fff; border: none; padding: 4px 12px; border-radius: 12px; font-size: 11px; cursor: pointer; position: relative; z-index: 10;}
+        .user-input { width: 100%; box-sizing: border-box; background: rgba(255,255,255,0.7); border: 1px dashed rgba(0,0,0,0.15); border-radius: 8px; padding: 10px 12px 35px 12px; font-size: 13px; color: var(--accent-blue); resize: none; outline: none; line-height: 1.5; min-height: 70px; margin-top: 10px; font-family: 'AlecCustomFont', inherit;}
+        .save-btn { float: right; margin-top: -30px; margin-right: 8px; background: var(--accent-blue); color: #fff; border: none; padding: 4px 12px; border-radius: 12px; font-size: 11px; cursor: pointer; position: relative; z-index: 10; font-family: inherit;}
 
         /* 翻页与删除 */
         .page-controls { display: flex; justify-content: space-between; align-items: center; margin-top: auto; font-size: 13px; color: var(--text-light); border-top: 1px dashed rgba(0,0,0,0.1); padding-top: 12px; flex-shrink: 0; }
-        .nav-btn { cursor: pointer; padding: 5px 10px; border-radius: 5px; font-weight: bold; }
+        .nav-btn { cursor: pointer; padding: 5px 10px; border-radius: 5px; font-weight: bold; font-family: inherit;}
         .nav-btn.disabled { opacity: 0.3; pointer-events: none; }
-        .delete-page-btn { cursor: pointer; color: var(--text-light); font-size: 14px; transition: 0.2s; padding: 5px; border-radius: 4px;}
+        .delete-page-btn { cursor: pointer; color: var(--text-light); font-size: 14px; transition: 0.2s; padding: 5px; border-radius: 4px; font-family: inherit;}
         .delete-page-btn:hover { color: var(--accent-red); background: rgba(0,0,0,0.05);}
 
         body.journal-opened .journal-cover { transform: rotateY(-180deg); opacity: 0; pointer-events: none; }
@@ -290,7 +308,6 @@
     function getEast8Year() { return getEast8Date().getFullYear(); }
     function getEast8Month() { return getEast8Date().getMonth() + 1; }
 
-    // 内存探测雷达
     function getStorageUse() {
         try {
             let dataStr = localStorage.getItem('alecSystemDB_v2') || "";
@@ -309,7 +326,6 @@
         };
     }
 
-    // ================= 数据库引擎 =================
     let systemDB;
     try { systemDB = JSON.parse(localStorage.getItem('alecSystemDB_v2')); } catch(e) { systemDB = null; }
     const realYear = getEast8Year(); const realMonth = getEast8Month();
@@ -340,7 +356,7 @@
         } catch(e) { alert("⚠️ 内存超载警告：浏览器硬盘(5MB)已满！刚才的数据未能保存。\n\n解决方案：\n1. 刷新页面。\n2. 删掉最近上传的几张超大照片或长音乐。\n3. 使用外链音乐，不占本地内存。"); }
     }
 
-    // ================= 贴纸系统 =================
+    // ================= 贴纸系统 (未来你的自定义贴纸都填在这里) =================
     const myStickers = [ '🌸', '⭐', '📌', '🎀', '☕', '📝', '📸', '🌿', '🍄', '🌙', '☁️', '🎈', '🎨', '🚀', '🔮', '🧸', '💌', '💡' ];
     let stickerPage = 0; const stickersPerPage = 6;
     function renderStickers() {
@@ -354,7 +370,6 @@
     function changeStickerPage(dir) { stickerPage += dir; renderStickers(); }
     renderStickers();
 
-    // ================= 图书馆控制台 (附带仪表盘) =================
     function renderLibrary() {
         let html = '';
         systemDB.forEach(journal => {
@@ -366,10 +381,7 @@
             html += `<div class="lib-add-btn" onclick="addYear('${journal.id}')" title="添加新年份">+</div></div></div>`;
         });
         html += `<div class="lib-add-journal-btn" onclick="addJournal()">+ 添加新记录对象</div>`;
-        
-        // 植入实时内存雷达
         html += `<div style="margin-top: 15px; font-size: 10px; color: var(--text-light); border-top: 1px dashed rgba(0,0,0,0.1); padding-top: 10px; text-align: center;">💾 记忆存储容量: ${getStorageUse()}MB / 5.00MB</div>`;
-        
         document.getElementById('library-container').innerHTML = html;
         let activeJ = systemDB.find(x => x.id === activeJournalId);
         document.getElementById('display-cover-title').innerText = activeJ.name.toUpperCase();
@@ -381,7 +393,6 @@
     function switchBook(jId, year) { activeJournalId = jId; activeYear = year; currentIndex = 0; renderLibrary(); if (document.body.classList.contains('journal-opened')) renderPage(0); }
     renderLibrary();
 
-    // ================= 日记核心操作 =================
     function autoSave() {
         let entries = getActiveEntries();
         entries[currentIndex].date = document.getElementById('display-date').value;
@@ -414,7 +425,6 @@
         });
     }
 
-    // ================= 画布级渲染器 =================
     function renderPhotosAndTexts(entry) {
         document.querySelectorAll('.draggable-photo, .draggable-text, .draggable-sticker').forEach(el => el.remove());
         if(entry.photos) {
@@ -551,13 +561,17 @@
     }
     makeDraggable(document.getElementById('music-player-widget'));
 
-    // ====== 音乐中心 (修复丢失Bug) ======
+    // ====== 音乐中心 (修复了致命的死锁写入Bug) ======
     function addMusic() { 
         getActiveEntries()[currentIndex].musicLink = "https://"; 
         getActiveEntries()[currentIndex].musicIsLocalBase64 = false;
-        saveToDatabase(); // 核心修复：添加音乐模块后立刻死锁进数据库
+        
+        /* 👇 就是下面这一行！上次被我弄丢的救命咒语 👇 */
+        saveToDatabase(); 
+        
         renderPage(currentIndex); 
     }
+    
     function removeMusic() { getActiveEntries()[currentIndex].musicLink = ""; getActiveEntries()[currentIndex].musicIsLocalBase64 = false; saveToDatabase(); resetPlayer(); renderPage(currentIndex); }
     function autoSaveMusic() { const val = document.getElementById('music-input-display').value; getActiveEntries()[currentIndex].musicLink = val; getActiveEntries()[currentIndex].musicIsLocalBase64 = false; saveToDatabase(); audioPlayer.src = val; }
     function handleAudioUpload(event) { 
