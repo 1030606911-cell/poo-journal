@@ -6,18 +6,27 @@
     <title>Echo OS - Alec's Multi-Universe Journal</title>
     <style>
         :root {
+            --paper-right: #fdfaf5; --paper-left: #f5f0e6; 
+            --paper-line: #f0e6d3; --grid-line: #e3d9cd;
             --text-dark: #3a2f29; --text-light: #8a7b71;
-            --accent-red: #c96554; --accent-blue: #6b8cce; 
+            --accent-red: #c96554; --accent-blue: #6b8cce; --leather-cover: #5c4332; 
+            
+            /* Alec 专属纸张噪点机理 (极其关键的视觉魔法) */
+            --paper-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.15'/%3E%3C/svg%3E");
         }
 
         /* ====== 自定义字体引擎 ====== */
-        @font-face { font-family: 'AlecCustomFont'; src: url('请把你上传的字体名字写在这里.ttf'); font-weight: normal; font-style: normal; }
+        @font-face {
+            font-family: 'AlecCustomFont';
+            /* 把你上传的高级字体名字填在这里 */
+            src: url('请把你上传的字体名字写在这里.ttf'); 
+            font-weight: normal; font-style: normal;
+        }
 
-        /* ====== 视觉资产：空间底图 ====== */
         body { 
             margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; 
             background-color: #382c26; 
-            background-image: url('bg_desktop.jpg'); /* 你的桌面 */
+            background-image: url('bg_desktop.jpg'); /* 你的专属桌面 */
             background-size: cover; background-position: center;
             font-family: 'AlecCustomFont', "PingFang SC", "Microsoft YaHei", serif; 
             color: var(--text-dark); overflow: hidden; 
@@ -43,8 +52,11 @@
         .lock-subtitle { font-size: 13px; color: rgba(255,255,255,0.6); margin-bottom: 30px; letter-spacing: 1px; font-family: inherit;}
         .password-input { background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.3); border-radius: 12px; padding: 15px 20px; font-size: 20px; text-align: center; color: #fff; outline: none; width: 220px; letter-spacing: 8px; font-family: monospace; transition: 0.2s;}
         .password-input:focus { border-color: var(--accent-blue); background: rgba(255,255,255,0.2);}
+        .password-input::placeholder { color: rgba(255,255,255,0.3); }
         .unlock-btn { margin-top: 25px; background: #fff; color: var(--text-dark); border: none; padding: 12px 40px; border-radius: 25px; font-size: 14px; cursor: pointer; transition: 0.2s; font-weight: bold; letter-spacing: 2px; font-family: inherit;}
         .unlock-btn:hover { background: var(--accent-blue); color: #fff; transform: translateY(-2px);}
+        .shake { animation: shake 0.4s; border-color: var(--accent-red) !important; color: var(--accent-red);}
+        @keyframes shake { 0% { transform: translateX(0); } 25% { transform: translateX(-6px); } 50% { transform: translateX(6px); } 75% { transform: translateX(-6px); } 100% { transform: translateX(0); } }
 
         .sticker-toggle-btn { position: fixed; bottom: 30px; right: 40px; background: rgba(255,255,255,0.9); color: var(--text-dark); padding: 12px 25px; border-radius: 25px; font-size: 15px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 1000; font-weight: bold; transition: 0.2s; font-family: inherit;}
         .sticker-toggle-btn:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.4); }
@@ -60,51 +72,41 @@
         .bookmarks { position: absolute; top: 38px; left: 935px; display: flex; flex-direction: column; gap: 5px; transition: left 0.6s cubic-bezier(0.4, 0, 0.2, 1); z-index: 10; }
         .journal-opened .bookmarks { left: -60px; }
         
-        /* ======================================================== */
-        /* ====== 修复区：年份与月份书签 (动态字体悬浮 + 绝对拼合) ====== */
-        /* ======================================================== */
-        
+        /* ========================================================= */
+        /* ====== 绝对重构：带有物理机理的 CSS 书签轴 (提取自你的切图) ====== */
+        /* ========================================================= */
         .bm-year { 
-            width: 60px !important; height: 35px !important; 
-            padding: 0 !important; margin-bottom: 8px; 
-            background: url('ui_tab_year.png') no-repeat center / 100% 100%; 
-            color: #fff !important; /* 恢复年份文字显示，并在你的底图上居中 */
-            display: flex; align-items: center; justify-content: center;
-            font-weight: bold; font-size: 16px; 
-            box-shadow: none !important; background-color: transparent !important; border-radius: 0 !important;
-            position: relative; z-index: 10; font-family: inherit;
+            background-color: #85a4b5; /* 年份蓝 */
+            background-image: var(--paper-noise);
+            color: #fff; padding: 10px 15px 10px 20px; border-radius: 0 12px 12px 0; 
+            font-weight: bold; font-size: 18px; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); 
+            margin-bottom: 8px; text-align: center; position: relative; z-index: 10; transition: 0.3s; font-family: inherit;
         }
+        .journal-opened .bm-year { border-radius: 12px 0 0 12px; padding: 10px 20px 10px 15px; box-shadow: -2px 2px 5px rgba(0,0,0,0.1); }
         
         .bm-month { 
-            width: 50px !important; height: 30px !important; 
-            padding: 0 !important; margin-bottom: 3px; margin-left: 0 !important;
-            background: url('ui_tab_month_normal.png') no-repeat center / 100% 100%; 
-            color: var(--text-dark) !important; /* 恢复月份文字显示 */
-            display: flex; align-items: center; justify-content: center;
-            font-size: 13px; font-weight: bold; 
-            box-shadow: none !important; background-color: transparent !important; border-radius: 0 !important;
-            position: relative; z-index: 10; cursor: pointer; transition: transform 0.3s; font-family: inherit;
+            background-color: #dfb776; /* 常态黄 */
+            background-image: var(--paper-noise);
+            color: #3a2f29; padding: 8px 15px 8px 20px; border-radius: 0 8px 8px 0; 
+            font-size: 15px; font-weight: bold; cursor: pointer; box-shadow: 2px 2px 5px rgba(0,0,0,0.05); transition: 0.3s; 
+            margin-left: -10px; text-align: right; position: relative; z-index: 10; font-family: inherit;
         }
+        .journal-opened .bm-month { border-radius: 8px 0 0 8px; padding: 8px 20px 8px 15px; margin-left: 0; margin-right: -10px; text-align: left; }
+        .bm-month:not(.disabled-month):hover { filter: brightness(0.95); transform: translateX(3px); }
         
-        .bm-month:not(.disabled-month):hover { transform: translateX(4px); }
-        
-        /* 激活态修复：挂载你画的 active 图片 */
         .journal-opened .bm-month.active { 
-            background: url('ui_tab_month_active.png') no-repeat center / 100% 100%; 
-            color: #fff !important; /* 激活时文字变白 */
-            transform: translateX(-6px); 
-            z-index: 30; 
+            background-color: #e08a80 !important; /* 激活红 */
+            color: #fff !important; margin-right: -2px; z-index: 30; box-shadow: -3px 2px 10px rgba(0,0,0,0.15); 
+            transform: translateX(-5px);
         }
         
-        /* 置灰态修复：修正拼写错误 */
         .disabled-month { 
-            background-image: url('ui_tab_month_disabled.png') !important; 
-            color: rgba(0,0,0,0.3) !important; /* 未解锁月份文字变暗 */
-            pointer-events: none; cursor: default; 
+            background-color: #cec5be !important; /* 封锁灰 */
+            color: #988e85 !important; 
+            pointer-events: none; cursor: default; box-shadow: none !important;
         }
-        /* ======================================================== */
+        /* ========================================================= */
 
-        /* 交互悬浮挂件区域 (暂时保持透明文本，直到你画了它们) */
         .bookmarks-right { position: absolute; top: 70px; right: 10px; display: flex; flex-direction: column; gap: 10px; z-index: 10; transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); opacity: 0; pointer-events: none;}
         .journal-opened .bookmarks-right { right: -35px; opacity: 1; pointer-events: auto;}
         .bm-add { background: var(--text-dark); color: #fff; padding: 15px 10px 15px 15px; border-radius: 0 10px 10px 0; font-weight: bold; font-size: 15px; cursor: pointer; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); transition: 0.2s; writing-mode: vertical-rl; letter-spacing: 2px; margin-left: -10px; position: relative; z-index: 10; font-family: inherit;}
@@ -130,21 +132,23 @@
             background-color: transparent; background-image: url('bg_cover.png'); background-size: 100% 100%; 
             border-radius: 5px 20px 20px 5px; box-shadow: 15px 15px 40px rgba(0,0,0,0.5); 
             display: flex; flex-direction: column; justify-content: center; align-items: center; 
-            color: transparent; 
-            z-index: 50; cursor: pointer; transform-origin: left center; transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); 
+            color: transparent; z-index: 50; cursor: pointer; transform-origin: left center; transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); 
         }
-        .cover-title { font-size: 32px; font-weight: bold; border-bottom: none; padding-bottom: 10px; margin-bottom: 20px; font-family: inherit;}
+        .cover-title { font-size: 32px; font-weight: bold; letter-spacing: 5px; border-bottom: none; padding-bottom: 10px; margin-bottom: 20px; font-family: inherit;}
         .cover-hint { display: none; }
         
-        .journal-inner { position: absolute; top: 10px; left: 0; right: 0; bottom: 10px; background: transparent; border-radius: 10px; box-shadow: 10px 10px 40px rgba(0,0,0,0.5); display: flex; opacity: 0; pointer-events: none; transition: opacity 0.3s ease 0.3s; box-sizing: border-box; z-index: 20;}
+        .journal-inner { position: absolute; top: 10px; left: 0; right: 0; bottom: 10px; background: transparent; border-radius: 10px; box-shadow: 10px 10px 40px rgba(0,0,0,0.5); display: flex; opacity: 0; pointer-events: none; transition: opacity 0.3s ease 0.3s; overflow: hidden; box-sizing: border-box; z-index: 20;}
 
+        /* ====== 视觉资产：双页纸张 ====== */
         .page-left { flex: 1; height: 100%; padding: 30px 40px; position: relative; display: flex; flex-direction: column; background: url('bg_page_left.png') no-repeat center / 100% 100%; z-index: 1; box-sizing: border-box;}
         .page-right { flex: 1; height: 100%; padding: 30px 40px; display: flex; flex-direction: column; background: url('bg_page_right.png') no-repeat center / 100% 100%; z-index: 10; box-sizing: border-box; }
-        
-        .close-book-btn { position: absolute; top: 15px; left: 20px; width: 40px; height: 20px; background: url('ui_btn_close.png') no-repeat center / 100% 100%; color: transparent !important; cursor: pointer; z-index: 50; transition: 0.2s;}
-        
+
+        .close-book-btn { position: absolute; top: 15px; left: 20px; font-size: 13px; font-weight: bold; color: var(--text-light); cursor: pointer; z-index: 50; transition: 0.2s; font-family: inherit;}
+        .close-book-btn:hover { color: var(--text-dark); }
+
         .draggable-photo, .draggable-text, .draggable-sticker { position: absolute; cursor: move; user-select: none; display: inline-block; padding: 15px; }
         
+        /* ====== 拍立得照片透底法则 ====== */
         .polaroid-wrapper { position: relative; width: 150px; height: 175px; display: flex; justify-content: center; box-shadow: none; padding: 0; background: transparent; pointer-events: none;}
         .polaroid-frame { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none; }
         .polaroid-photo { position: absolute; top: 12%; left: 8%; width: 84%; height: 68%; background-size: cover; background-position: center; z-index: 1; background-color: #eaeaea; }
@@ -164,55 +168,29 @@
         .s-ctrl-btn { border: none; background: transparent; font-size: 12px; cursor: pointer; padding: 2px 4px; border-radius: 4px; font-family: inherit;}
         .s-ctrl-del { color: red; font-weight: bold;}
 
-        /* ====== 音乐部件 ====== */
+        /* ======================================================== */
+        /* ====== 音乐部件 (绝对定位防御，专治你画的阴影导致错位) ====== */
+        /* ======================================================== */
         .add-music-btn { position: absolute; bottom: 30px; left: 40px; width: 40px; height: 40px; background: rgba(255,255,255,0.7); border: 2px dashed var(--text-light); border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 18px; color: var(--text-light); cursor: pointer; transition: 0.2s; z-index: 10; font-family: inherit;}
         .add-music-btn:hover { background: #fff; color: var(--text-dark); border-color: var(--text-dark); }
         
         .music-player-widget { 
-            position: absolute; 
-            width: 240px; height: 85px; 
+            position: absolute; width: 240px; height: 85px; 
             background: url('bg_music_board.png') no-repeat center / 100% 100%; 
             border: none; box-shadow: none; backdrop-filter: none; 
             padding: 0; margin: 0; box-sizing: border-box; 
             display: none; cursor: move; z-index: 55; 
         }
         
-        .music-input { 
-            position: absolute; 
-            top: 20px; left: 20px; 
-            width: 145px; 
-            border: none; background: transparent; border-bottom: 1px dashed rgba(0,0,0,0.2); 
-            font-size: 12px; color: var(--text-dark); outline: none; text-align: left; padding-bottom: 2px; font-family: inherit;
-        }
+        /* 坐标中枢：如果你换了图发现不对齐，只调这里的 top 和 left 数字 */
+        .music-input { position: absolute; top: 20px; left: 20px; width: 145px; border: none; background: transparent; border-bottom: 1px dashed rgba(0,0,0,0.2); font-size: 12px; color: var(--text-dark); outline: none; text-align: left; padding-bottom: 2px; font-family: inherit; }
+        .upload-music-btn { position: absolute; top: 15px; left: 175px; width: 28px; height: 28px; background: url('ui_music_upload.png') no-repeat center / contain; color: transparent !important; border: none; cursor: pointer; }
+        .play-btn { position: absolute; bottom: 15px; left: 20px; width: 32px; height: 32px; background: url('ui_music_play.png') no-repeat center / contain; background-color: transparent; border-radius: 50%; color: transparent !important; border: none; cursor: pointer; }
+        .play-btn.playing { background: url('ui_music_pause.png') no-repeat center / contain; border-radius: 0; background-color: transparent;}
+        .music-status-text { position: absolute; bottom: 24px; left: 60px; font-size: 11px; color: #888; font-family: inherit; }
+        .close-music-btn { position: absolute; top: -5px; right: -5px; width: 24px; height: 24px; background: url('ui_music_close.png') no-repeat center / contain; color: transparent !important; border: none; cursor: pointer; }
+        /* ======================================================== */
         
-        .upload-music-btn { 
-            position: absolute; 
-            top: 15px; left: 175px; 
-            width: 28px; height: 28px; 
-            background: url('ui_music_upload.png') no-repeat center / 100% 100%; color: transparent !important; border: none; cursor: pointer;
-        }
-        
-        .play-btn { 
-            position: absolute; 
-            bottom: 15px; left: 20px; 
-            width: 32px; height: 32px; 
-            background: url('ui_music_play.png') no-repeat center / 100% 100%; background-color: transparent; border-radius: 50%; color: transparent !important; border: none; cursor: pointer;
-        }
-        .play-btn.playing { background: url('ui_music_pause.png') no-repeat center / 100% 100%; border-radius: 0; background-color: transparent;}
-        
-        .music-status-text {
-            position: absolute;
-            bottom: 24px; left: 60px;
-            font-size: 11px; color: #888; font-family: inherit;
-        }
-
-        .close-music-btn { 
-            position: absolute; 
-            top: -5px; right: -5px; 
-            width: 24px; height: 24px; 
-            background: url('ui_music_close.png') no-repeat center / 100% 100%; color: transparent !important; border: none; cursor: pointer;
-        }
-
         .page-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--text-dark); padding-bottom: 8px; margin-bottom: 15px; flex-shrink: 0;}
         
         .seamless-input { border: 1px dashed transparent; background: transparent; font-size: 15px; font-weight: bold; color: var(--text-dark); outline: none; transition: 0.2s; padding: 2px 5px; font-family: inherit;}
@@ -231,11 +209,10 @@
         .save-btn { float: right; margin-top: -30px; margin-right: 8px; background: var(--accent-blue); color: #fff; border: none; padding: 4px 12px; border-radius: 12px; font-size: 11px; cursor: pointer; position: relative; z-index: 10; font-family: inherit;}
 
         .page-controls { display: flex; justify-content: space-between; align-items: center; margin-top: auto; font-size: 13px; color: var(--text-light); border-top: 1px dashed rgba(0,0,0,0.1); padding-top: 12px; flex-shrink: 0; }
-        #btn-prev { width: 40px; height: 20px; background: url('ui_btn_prev.png') no-repeat center / 100% 100%; color: transparent !important; cursor: pointer; }
-        #btn-next { width: 40px; height: 20px; background: url('ui_btn_next.png') no-repeat center / 100% 100%; color: transparent !important; cursor: pointer; }
+        .nav-btn { cursor: pointer; padding: 5px 10px; border-radius: 5px; font-weight: bold; font-family: inherit;}
         .nav-btn.disabled { opacity: 0.3; pointer-events: none; }
-        .delete-page-btn { width: 30px; height: 30px; background: url('ui_btn_trash.png') no-repeat center / 100% 100%; color: transparent !important; cursor: pointer; transition: 0.2s;}
-        .delete-page-btn:hover { transform: scale(1.1); }
+        .delete-page-btn { cursor: pointer; color: var(--text-light); font-size: 14px; transition: 0.2s; padding: 5px; border-radius: 4px; font-family: inherit;}
+        .delete-page-btn:hover { color: var(--accent-red); background: rgba(0,0,0,0.05);}
 
         body.journal-opened .journal-cover { transform: rotateY(-180deg); opacity: 0; pointer-events: none; }
         body.journal-opened .journal-inner { opacity: 1; pointer-events: auto; }
@@ -253,6 +230,7 @@
 </div>
 
 <div class="library-sidebar" id="library-container"></div>
+
 <div class="sticker-toggle-btn" onclick="toggleTray()">✨ 贴纸工作台</div>
 
 <div class="sticker-tray" id="sticker-tray">
@@ -303,19 +281,22 @@
 
     <div class="journal-inner" id="journal-pages">
         <div class="page-left" id="page-left-zone">
-            <div class="close-book-btn" onclick="closeJournal()">X</div>
+            <div class="close-book-btn" onclick="closeJournal()">❮ 合上</div>
             <div id="add-music-btn" class="add-music-btn" onclick="addMusic()">🎵</div>
         </div>
 
         <div id="music-player-widget" class="music-player-widget">
-            <button class="close-music-btn" onclick="removeMusic()">X</button>
-            <input type="text" id="music-input-display" class="music-input" placeholder="输入 GitHub 地址..." oninput="autoSaveMusic()">
-            <button class="upload-music-btn" onclick="document.getElementById('audio-upload-input').click()">U</button>
-            <input type="file" id="audio-upload-input" style="display: none;" accept="audio/*" onchange="handleAudioUpload(event)">
-            
-            <button class="play-btn" id="play-pause-btn" onclick="togglePlay()">P</button>
-            <span id="music-status" class="music-status-text">就绪</span>
-            <audio id="real-audio-player" style="display:none;" onended="resetPlayer()"></audio>
+            <button class="close-music-btn" onclick="removeMusic()">✕</button>
+            <div class="music-header">
+                <input type="text" id="music-input-display" class="music-input" placeholder="输入音频直链(.mp3)..." oninput="autoSaveMusic()">
+                <button class="upload-music-btn" onclick="document.getElementById('audio-upload-input').click()">📁</button>
+                <input type="file" id="audio-upload-input" style="display: none;" accept="audio/*" onchange="handleAudioUpload(event)">
+            </div>
+            <div class="music-controls">
+                <button class="play-btn" id="play-pause-btn" onclick="togglePlay()"></button>
+                <span id="music-status" class="music-status-text">就绪</span>
+                <audio id="real-audio-player" style="display:none;" onended="resetPlayer()"></audio>
+            </div>
         </div>
 
         <div class="page-right">
@@ -333,13 +314,13 @@
             <div class="user-section-wrapper" id="user-entries-container"></div>
             
             <div class="page-controls">
-                <div class="nav-btn" id="btn-prev" onclick="changePage(1)">P</div>
+                <div class="nav-btn" id="btn-prev" onclick="changePage(1)">❮ 往日</div>
                 <div style="display: flex; align-items: center; gap: 15px;">
                     <div id="display-page-num" style="background: rgba(0,0,0,0.05); padding: 2px 8px; border-radius: 4px; font-family: monospace;"></div>
                 </div>
                 <div style="display: flex; align-items: center; gap: 10px;">
-                    <div class="delete-page-btn" onclick="deleteCurrentPage()" title="删除当前页">T</div>
-                    <div class="nav-btn disabled" id="btn-next" onclick="changePage(-1)">N</div>
+                    <div class="delete-page-btn" onclick="deleteCurrentPage()" title="删除当前页">🗑️</div>
+                    <div class="nav-btn disabled" id="btn-next" onclick="changePage(-1)">近期 ❯</div>
                 </div>
             </div>
         </div>
@@ -434,6 +415,9 @@
         html += `<div class="lib-add-journal-btn" onclick="addJournal()">+ 添加新记录对象</div>`;
         html += `<div style="margin-top: 15px; font-size: 10px; color: var(--text-light); border-top: 1px dashed rgba(0,0,0,0.1); padding-top: 10px; text-align: center;">💾 记忆存储容量: ${getStorageUse()}MB / 5.00MB</div>`;
         document.getElementById('library-container').innerHTML = html;
+        let activeJ = systemDB.find(x => x.id === activeJournalId);
+        document.getElementById('display-cover-title').innerText = activeJ.name.toUpperCase();
+        document.getElementById('display-bm-year').innerText = activeYear;
     }
     function renameJournal(id, newName) { let j = systemDB.find(x => x.id === id); if(j && newName.trim()) { j.name = newName.trim(); saveToDatabase(); renderLibrary(); } }
     function addJournal() { let newName = prompt("给新的日记本起个名字:", "新日记"); if(newName && newName.trim()) { systemDB.push({ id: 'j_' + Date.now(), name: newName.trim(), books: [{ year: realYear, entries: [ generateBlankEntry(realYear, realMonth) ] }] }); saveToDatabase(); renderLibrary(); } }
@@ -577,6 +561,7 @@
     function closeJournal() { document.body.classList.remove('journal-opened'); setTimeout(() => { currentIndex = 0; renderPage(0); }, 600); }
     function openJournalToLatest() { document.body.classList.add('journal-opened'); currentIndex = 0; renderPage(0); }
 
+    // ====== GitHub 洗稿通道 ======
     function processMusicLink(url) {
         let finalUrl = url.trim();
         if (finalUrl.includes('github.com') && finalUrl.includes('/blob/')) {
@@ -600,6 +585,7 @@
             document.getElementById('music-input-display').value = data.musicIsLocalBase64 ? "[本地音频已加载]" : data.musicLink;
             if (!playerWidget.style.top || playerWidget.style.top === '') { playerWidget.style.top = '400px'; playerWidget.style.left = '140px'; }
             playerWidget.style.zIndex = ++globalZIndex;
+            
             if(data.musicLink && data.musicLink !== "https://") {
                 audioPlayer.src = processMusicLink(data.musicLink);
             }
@@ -654,6 +640,7 @@
         const btn = document.getElementById('play-pause-btn');
         if(audioPlayer.paused) { 
             if(!audioPlayer.src || audioPlayer.src.endsWith("https://")) { alert("请先贴入音乐外链或上传本地音乐。"); return; } 
+            
             audioPlayer.play().then(() => { 
                 btn.classList.add('playing'); document.getElementById('music-status').innerText = '播放中'; 
             }).catch(e => alert("这首歌的格式或链接无效。\n（提示：如果你是在 GitHub 复制的普通网页链接，代码已经尝试自动修复它，但如果仍然失败，请确保你的 GitHub 仓库是 Public 公开的，或者直接使用短小的纯 .mp3 网址。）")); 
