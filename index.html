@@ -20,7 +20,7 @@
         }
 
         /* ====== 左上角控制台 (被最高权限强制打入底层深渊) ====== */
-        .library-sidebar { position: fixed; top: 20px; left: 20px; background: rgba(255,255,255,0.7); backdrop-filter: blur(15px); padding: 15px 20px; border-radius: 12px; z-index: 0 !important; box-shadow: 0 4px 20px rgba(0,0,0,0.08); max-height: 90vh; overflow-y: auto; border: 1px solid rgba(255,255,255,0.5); width: 220px; transition: 0.3s;}
+        .library-sidebar { position: fixed; top: 20px; left: 20px; background: rgba(255,255,255,0.7); backdrop-filter: blur(15px); padding: 15px 20px; border-radius: 12px; z-index: 5 !important; box-shadow: 0 4px 20px rgba(0,0,0,0.08); max-height: 90vh; overflow-y: auto; border: 1px solid rgba(255,255,255,0.5); width: 220px; transition: 0.3s;}
         .lib-row { margin-bottom: 15px; border-bottom: 1px dashed rgba(0,0,0,0.1); padding-bottom: 10px;}
         .lib-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
         .lib-icon { font-size: 16px; user-select: none; }
@@ -57,8 +57,8 @@
         .tray-item { font-size: 45px; cursor: pointer; user-select: none; transition: 0.2s; display: flex; justify-content: center; align-items: center; width: 60px; height: 60px;}
         .tray-item:hover { transform: scale(1.2) translateY(-5px) rotate(5deg); }
 
-        /* ====== 日记本整体容器 (被赋予最高指令层级) ====== */
-        .journal-container { position: relative; width: 950px; height: 600px; transition: all 0.6s ease; z-index: 100 !important; }
+        /* ====== 日记本整体容器 (绝对提权) ====== */
+        .journal-container { position: relative; width: 950px; height: 600px; transition: all 0.6s ease; z-index: 500 !important; }
         
         .bookmarks { position: absolute; top: 38px; left: 935px; display: flex; flex-direction: column; gap: 5px; transition: left 0.6s cubic-bezier(0.4, 0, 0.2, 1); z-index: 10; }
         .journal-opened .bookmarks { left: -60px; }
@@ -107,14 +107,14 @@
         .close-book-btn { position: absolute; top: 15px; left: 20px; font-size: 13px; font-weight: bold; color: var(--text-light); cursor: pointer; z-index: 50; transition: 0.2s;}
         .close-book-btn:hover { color: var(--text-dark); }
 
-        /* ====== 照片与画板级可编辑便签的终极框架 ====== */
-        .draggable-photo, .draggable-text, .draggable-sticker { position: absolute; cursor: move; user-select: none; z-index: 40; display: inline-block; padding: 15px; }
+        /* ====== 图层引擎核心类 ====== */
+        .draggable-photo, .draggable-text, .draggable-sticker { position: absolute; cursor: move; user-select: none; display: inline-block; padding: 15px; }
         
         /* 拍立得相框 */
         .polaroid-wrapper { background: #fff; padding: 8px 8px 30px 8px; box-shadow: 2px 5px 15px rgba(0,0,0,0.15); width: 150px; height: 175px; box-sizing: border-box; display: flex; flex-direction: column; pointer-events: none;}
         .polaroid-photo { width: 100%; height: 100%; background-size: cover; background-position: center; background-color: #eaeaea; border: 1px solid rgba(0,0,0,0.05);}
         
-        /* 沉浸式文本框设计 (废弃丑陋弹窗，直接在纸上输写) */
+        /* 沉浸式文本框设计 */
         .text-content { 
             font-family: cursive, "PingFang SC"; font-size: 15px; line-height: 1.6; 
             padding: 8px 12px; white-space: pre-wrap; text-align: left; 
@@ -122,9 +122,9 @@
             transition: 0.2s; outline: none; cursor: text;
         }
         .draggable-text:hover .text-content { border-color: rgba(0,0,0,0.15); border-radius: 4px; background: rgba(255,255,255,0.4); }
-        .text-content:focus { border-color: var(--accent-red); background: rgba(255,255,255,0.8); border-radius: 4px;}
+        .text-content:focus { border-color: var(--accent-red); background: rgba(255,255,255,0.9); border-radius: 4px;}
 
-        .sticker-content { pointer-events: none; }
+        .sticker-content { pointer-events: none; font-size: 40px;}
         .sticker-ctrls { position: absolute; top: -5px; right: -5px; background: #fff; border-radius: 20px; padding: 3px 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.25); display: none; gap: 5px; z-index: 51; border: 1px solid #ddd; align-items: center;}
         .draggable-sticker:hover .sticker-ctrls, .draggable-photo:hover .sticker-ctrls, .draggable-text:hover .sticker-ctrls { display: flex; }
         
@@ -139,7 +139,7 @@
         /* 音乐部件 */
         .add-music-btn { position: absolute; bottom: 30px; left: 40px; width: 40px; height: 40px; background: rgba(255,255,255,0.7); border: 2px dashed var(--text-light); border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 18px; color: var(--text-light); cursor: pointer; transition: 0.2s; z-index: 10;}
         .add-music-btn:hover { background: #fff; color: var(--text-dark); border-color: var(--text-dark); }
-        .music-player-widget { position: absolute; width: 210px; background: rgba(255,255,255,0.9); border-radius: 12px; padding: 10px 15px; box-shadow: 2px 5px 15px rgba(0,0,0,0.15); z-index: 45; border: 1px solid #ddd; backdrop-filter: blur(5px); display: none; flex-direction: column; gap: 6px; box-sizing: border-box; cursor: move; }
+        .music-player-widget { position: absolute; width: 210px; background: rgba(255,255,255,0.9); border-radius: 12px; padding: 10px 15px; box-shadow: 2px 5px 15px rgba(0,0,0,0.15); border: 1px solid #ddd; backdrop-filter: blur(5px); display: none; flex-direction: column; gap: 6px; box-sizing: border-box; cursor: move; }
         .music-header { display: flex; align-items: center; gap: 5px; }
         .music-input { flex: 1; border: none; background: transparent; border-bottom: 1px dashed #ccc; font-size: 11px; color: var(--text-dark); outline: none; text-align: left; padding-bottom: 2px;}
         .upload-music-btn { background: var(--text-light); color: #fff; border: none; border-radius: 4px; padding: 2px 5px; font-size: 10px; cursor: pointer;}
@@ -300,10 +300,14 @@
     function getEast8Year() { return getEast8Date().getFullYear(); }
     function getEast8Month() { return getEast8Date().getMonth() + 1; }
 
+    // ====== 全局 Z-index 引擎 ======
+    // 用于确保新添加的元素和被点击的元素永远在最上层
+    let globalZIndex = 100;
+
     function generateBlankEntry(year, month, isPlaceholder = false) {
         return {
             month: month, date: `${year}年${month}月${isPlaceholder ? '1日' : getEast8Date().getDate() + '日'}`, weather: "天气...",
-            photos: [], texts: [], 
+            photos: [], texts: [], stickers: [], // 升维：贴纸也接入持久化数据库
             agentTitle: "", agentText: "", userEntries: [], 
             musicLink: "", musicIsLocalBase64: false
         };
@@ -322,6 +326,7 @@
                 b.entries.forEach(e => {
                     if(!e.photos) e.photos = [];
                     if(!e.texts) e.texts = [];
+                    if(!e.stickers) e.stickers = [];
                 });
             });
             j.books = j.books.filter(b => b.year <= realYear);
@@ -338,7 +343,7 @@
     function getActiveEntries() { let j = systemDB.find(x => x.id === activeJournalId); let b = j.books.find(x => x.year === activeYear); return b.entries; }
     function saveToDatabase() { localStorage.setItem('alecSystemDB_v2', JSON.stringify(systemDB)); }
 
-    // ================= 贴纸系统 =================
+    // ================= 贴纸弹匣系统 =================
     const myStickers = [ '🌸', '⭐', '📌', '🎀', '☕', '📝', '📸', '🌿', '🍄', '🌙', '☁️', '🎈', '🎨', '🚀', '🔮', '🧸', '💌', '💡' ];
     let stickerPage = 0; const stickersPerPage = 6;
     function renderStickers() {
@@ -408,15 +413,15 @@
         });
     }
 
-    // ================= 照片流与透明便签的终极编辑器 =================
+    // ================= 画布级渲染器 (照片、便签、贴纸) =================
     function renderPhotosAndTexts(entry) {
-        document.querySelectorAll('.draggable-photo, .draggable-text').forEach(el => el.remove());
+        document.querySelectorAll('.draggable-photo, .draggable-text, .draggable-sticker').forEach(el => el.remove());
         
-        // 渲染拍立得相册
+        // 渲染照片
         if(entry.photos) {
             entry.photos.forEach((pData, idx) => {
                 const s = document.createElement('div'); s.className = 'draggable-photo'; s.dataset.idx = idx;
-                s.style.left = pData.left; s.style.top = pData.top;
+                s.style.left = pData.left; s.style.top = pData.top; s.style.zIndex = pData.zIndex || 40;
                 s.innerHTML = `<div class="polaroid-wrapper" style="transform: ${pData.transform};"><div class="polaroid-photo" style="background-image: url(${pData.src})"></div></div>
                                <div class="sticker-ctrls"><button class="s-ctrl-btn" onclick="modifyMedia(this, 'rotL', 'photo')">↺</button><button class="s-ctrl-btn" onclick="modifyMedia(this, 'rotR', 'photo')">↻</button><button class="s-ctrl-btn" onclick="modifyMedia(this, 'up', 'photo')">+</button><button class="s-ctrl-btn" onclick="modifyMedia(this, 'down', 'photo')">-</button><button class="s-ctrl-btn s-ctrl-del" onclick="deleteMedia(this, 'photo')">×</button></div>`;
                 document.getElementById('journal-pages').appendChild(s);
@@ -424,13 +429,12 @@
             });
         }
         
-        // 渲染沉浸式文本框 (可直接打字，带独立调色盘)
+        // 渲染无框文本便签
         if(entry.texts) {
             entry.texts.forEach((tData, idx) => {
                 let color = tData.color || '#3a2f29';
-                if(color.startsWith('var')) color = '#3a2f29'; // 兼容旧颜色
                 const s = document.createElement('div'); s.className = 'draggable-text'; s.dataset.idx = idx;
-                s.style.left = tData.left; s.style.top = tData.top;
+                s.style.left = tData.left; s.style.top = tData.top; s.style.zIndex = tData.zIndex || 40;
                 s.innerHTML = `<div class="text-content" style="transform: ${tData.transform}; color: ${color};" contenteditable="true" onblur="saveMediaState()" title="点击直接输入文字">${tData.text}</div>
                                <div class="sticker-ctrls">
                                    <input type="color" class="s-ctrl-color" value="${color}" onchange="changeTextColor(this)" title="修改文字颜色">
@@ -440,40 +444,54 @@
                 makeDraggable(s, true);
             });
         }
+
+        // 渲染永久化贴纸
+        if(entry.stickers) {
+            entry.stickers.forEach((sData, idx) => {
+                const s = document.createElement('div'); s.className = 'draggable-sticker'; s.dataset.idx = idx;
+                s.style.left = sData.left; s.style.top = sData.top; s.style.zIndex = sData.zIndex || 40;
+                s.innerHTML = `<div class="sticker-content" style="transform: ${sData.transform};">${sData.content}</div>
+                               <div class="sticker-ctrls"><button class="s-ctrl-btn" onclick="modifyMedia(this, 'rotL', 'sticker')">↺</button><button class="s-ctrl-btn" onclick="modifyMedia(this, 'rotR', 'sticker')">↻</button><button class="s-ctrl-btn" onclick="modifyMedia(this, 'up', 'sticker')">+</button><button class="s-ctrl-btn" onclick="modifyMedia(this, 'down', 'sticker')">-</button><button class="s-ctrl-btn s-ctrl-del" onclick="deleteMedia(this, 'sticker')">×</button></div>`;
+                document.getElementById('journal-pages').appendChild(s);
+                makeDraggable(s, true);
+            });
+        }
     }
 
+    // 核心新增：自动赋权 Z-index
     function handlePhotoUpload(event) {
         const file = event.target.files[0];
         if (file) {
             if(file.size > 2 * 1024 * 1024) alert("提示：请尽量上传2MB以下图片防止缓存溢出。");
             const reader = new FileReader();
             reader.onload = function(e) { 
-                getActiveEntries()[currentIndex].photos.push({ src: e.target.result, left: '60px', top: '60px', transform: 'scale(1) rotate('+(Math.random()*10-5)+'deg)' });
+                globalZIndex++;
+                getActiveEntries()[currentIndex].photos.push({ src: e.target.result, left: '60px', top: '60px', transform: 'scale(1) rotate('+(Math.random()*10-5)+'deg)', zIndex: globalZIndex });
                 saveToDatabase(); renderPage(currentIndex); 
             }
             reader.readAsDataURL(file);
         }
     }
 
-    // 唤起新画板级便签
     function addTextNode() {
+        globalZIndex++;
         getActiveEntries()[currentIndex].texts.push({ 
-            text: "在此输入内容...", left: '80px', top: '150px', transform: 'scale(1) rotate(0deg)', color: '#3a2f29' 
+            text: "在此输入内容...", left: '80px', top: '150px', transform: 'scale(1) rotate(0deg)', color: '#3a2f29', zIndex: globalZIndex 
         });
         saveToDatabase(); renderPage(currentIndex);
     }
 
-    // 文字专属：调色引擎
-    function changeTextColor(inputEl) {
-        const node = inputEl.closest('.draggable-text');
-        const textContent = node.querySelector('.text-content');
-        textContent.style.color = inputEl.value;
-        saveMediaState();
+    function spawnSticker(content) { 
+        globalZIndex++;
+        getActiveEntries()[currentIndex].stickers.push({ content: content, left: '150px', top: '250px', transform: 'scale(1) rotate(0deg)', zIndex: globalZIndex });
+        saveToDatabase(); renderPage(currentIndex); 
     }
 
-    // 物理变形算法
+    function changeTextColor(inputEl) { const node = inputEl.closest('.draggable-text'); node.querySelector('.text-content').style.color = inputEl.value; saveMediaState(); }
+
     function modifyMedia(btn, action, type) { 
-        const node = btn.closest(`.draggable-${type}`); const c = node.querySelector(type === 'photo' ? '.polaroid-wrapper' : '.text-content'); 
+        const node = btn.closest(`.draggable-${type}`); 
+        let c; if(type==='photo') c = node.querySelector('.polaroid-wrapper'); else if(type==='text') c = node.querySelector('.text-content'); else c = node.querySelector('.sticker-content');
         let s = parseFloat(c.style.transform.match(/scale\(([^)]+)\)/)[1]); let r = parseInt(c.style.transform.match(/rotate\(([^)]+)deg\)/)[1]); 
         if(action==='rotL') r-=10; if(action==='rotR') r+=10; if(action==='up') s+=0.1; if(action==='down') s=Math.max(0.5, s-0.1); 
         c.style.transform = `scale(${s}) rotate(${r}deg)`; 
@@ -484,10 +502,11 @@
         const node = btn.closest(`.draggable-${type}`); let idx = parseInt(node.dataset.idx);
         if(type === 'photo') getActiveEntries()[currentIndex].photos.splice(idx, 1);
         if(type === 'text') getActiveEntries()[currentIndex].texts.splice(idx, 1);
+        if(type === 'sticker') getActiveEntries()[currentIndex].stickers.splice(idx, 1);
         saveToDatabase(); renderPage(currentIndex);
     }
     
-    // 静默序列化引擎：保存坐标、角度、颜色、文本
+    // 静默序列化：保存所有挂件的物理属性 (包括 Z-index)
     function saveMediaState() {
         let entries = getActiveEntries();
         document.querySelectorAll('.draggable-photo').forEach(node => {
@@ -495,17 +514,26 @@
             if(entries[currentIndex].photos[idx]) {
                 entries[currentIndex].photos[idx].left = node.style.left; entries[currentIndex].photos[idx].top = node.style.top;
                 entries[currentIndex].photos[idx].transform = node.querySelector('.polaroid-wrapper').style.transform;
+                entries[currentIndex].photos[idx].zIndex = parseInt(node.style.zIndex) || 40;
             }
         });
         document.querySelectorAll('.draggable-text').forEach(node => {
             let idx = parseInt(node.dataset.idx);
             if(entries[currentIndex].texts[idx]) {
                 let textEl = node.querySelector('.text-content');
-                entries[currentIndex].texts[idx].left = node.style.left; 
-                entries[currentIndex].texts[idx].top = node.style.top;
+                entries[currentIndex].texts[idx].left = node.style.left; entries[currentIndex].texts[idx].top = node.style.top;
                 entries[currentIndex].texts[idx].text = textEl.innerText;
                 entries[currentIndex].texts[idx].transform = textEl.style.transform;
                 entries[currentIndex].texts[idx].color = textEl.style.color;
+                entries[currentIndex].texts[idx].zIndex = parseInt(node.style.zIndex) || 40;
+            }
+        });
+        document.querySelectorAll('.draggable-sticker').forEach(node => {
+            let idx = parseInt(node.dataset.idx);
+            if(entries[currentIndex].stickers[idx]) {
+                entries[currentIndex].stickers[idx].left = node.style.left; entries[currentIndex].stickers[idx].top = node.style.top;
+                entries[currentIndex].stickers[idx].transform = node.querySelector('.sticker-content').style.transform;
+                entries[currentIndex].stickers[idx].zIndex = parseInt(node.style.zIndex) || 40;
             }
         });
         saveToDatabase();
@@ -519,7 +547,6 @@
         document.getElementById('display-date').value = data.date; document.getElementById('display-weather').value = data.weather; document.getElementById('display-agent-title').value = data.agentTitle; document.getElementById('display-agent-text').value = data.agentText;
         document.getElementById('display-page-num').innerText = `${entries.length - index} / ${entries.length}`;
 
-        // 画布装载
         renderPhotosAndTexts(data);
 
         const playerWidget = document.getElementById('music-player-widget'); const addBtn = document.getElementById('add-music-btn');
@@ -533,17 +560,20 @@
 
         renderUserEntries(data.userEntries);
         document.getElementById('btn-prev').classList.toggle('disabled', index === entries.length - 1); document.getElementById('btn-next').classList.toggle('disabled', index === 0);
-        document.querySelectorAll('.draggable-sticker').forEach(s => s.remove());
         updateMonthBookmark();
     }
 
-    // ====== 智能拖拽物理引擎 ======
+    // ====== 智能拖拽引擎：点击即置顶 ======
     function makeDraggable(elmnt, needsSave = false) {
         let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0; elmnt.onmousedown = dragMouseDown;
         function dragMouseDown(e) { 
-            // 保护输入操作：如果点击的是文本框本体、或者是调色按钮，系统让步，禁止拖动
             if(e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' || e.target.isContentEditable) return; 
-            e.preventDefault(); pos3 = e.clientX; pos4 = e.clientY; document.onmouseup = closeDragElement; document.onmousemove = elementDrag; document.querySelectorAll('.draggable-sticker, .draggable-photo, .draggable-text, .music-player-widget').forEach(s => s.style.zIndex = 45); elmnt.style.zIndex = 50; 
+            e.preventDefault(); pos3 = e.clientX; pos4 = e.clientY; 
+            document.onmouseup = closeDragElement; document.onmousemove = elementDrag; 
+            
+            // 核心物理交互：点击即赋予最高层级
+            globalZIndex++;
+            elmnt.style.zIndex = globalZIndex;
         }
         function elementDrag(e) { e.preventDefault(); pos1 = pos3 - e.clientX; pos2 = pos4 - e.clientY; pos3 = e.clientX; pos4 = e.clientY; elmnt.style.top = (elmnt.offsetTop - pos2) + "px"; elmnt.style.left = (elmnt.offsetLeft - pos1) + "px"; }
         function closeDragElement() { document.onmouseup = null; document.onmousemove = null; if(needsSave) saveMediaState(); }
@@ -568,13 +598,6 @@
     function changePage(dir) { let entries = getActiveEntries(); let n = currentIndex + dir; if(n>=0 && n<entries.length){ currentIndex = n; renderPage(n); } }
 
     function toggleTray() { const t = document.getElementById('sticker-tray'); t.style.display = t.style.display === 'flex' ? 'none' : 'flex'; }
-    function spawnSticker(content) { 
-        const s = document.createElement('div'); s.className = 'draggable-sticker'; s.style.left = '200px'; s.style.top = '250px'; 
-        s.innerHTML = `<div class="sticker-content" style="transform: scale(1) rotate(0deg);">${content}</div><div class="sticker-ctrls"><button class="s-ctrl-btn" onclick="modifySticker(this, 'rotL')">↺</button><button class="s-ctrl-btn" onclick="modifySticker(this, 'rotR')">↻</button><button class="s-ctrl-btn" onclick="modifySticker(this, 'up')">+</button><button class="s-ctrl-btn" onclick="modifySticker(this, 'down')">-</button><button class="s-ctrl-btn s-ctrl-del" onclick="this.closest('.draggable-sticker').remove()">×</button></div>`; 
-        document.getElementById('journal-pages').appendChild(s); makeDraggable(s); toggleTray(); 
-    }
-    function modifySticker(btn, action) { const c = btn.closest('.draggable-sticker').querySelector('.sticker-content'); let s = parseFloat(c.style.transform.match(/scale\(([^)]+)\)/)[1]); let r = parseInt(c.style.transform.match(/rotate\(([^)]+)deg\)/)[1]); if(action==='rotL') r-=15; if(action==='rotR') r+=15; if(action==='up') s+=0.2; if(action==='down') s=Math.max(0.5, s-0.2); c.style.transform = `scale(${s}) rotate(${r}deg)`; }
-
     function openSearch(e) { e.stopPropagation(); const c = document.getElementById('search-container'); if(!c.classList.contains('searching')) { c.classList.add('searching'); setTimeout(()=>document.getElementById('search-input').focus(), 300); } }
     document.addEventListener('click', e => { const c = document.getElementById('search-container'); if(c.classList.contains('searching') && !c.contains(e.target)) { c.classList.remove('searching'); } });
     function executeSearch(e) { 
