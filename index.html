@@ -15,22 +15,24 @@
         /* ====== 自定义字体引擎 ====== */
         @font-face {
             font-family: 'AlecCustomFont';
-            /* 👇👇👇 Alec，把你上传到 GitHub 的字体文件名写在下面这行的括号里 👇👇👇 */
+            /* 如果你传了字体，把名字填在这里 */
             src: url('请把你上传的字体名字写在这里.ttf'); 
             font-weight: normal;
             font-style: normal;
         }
 
+        /* ====== 视觉资产 01：桌面底图 ====== */
         body { 
             margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; 
-            background-color: #382c26; 
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.06'/%3E%3C/svg%3E");
-            /* 全局文字接入你的专属字体 */
+            background-color: #382c26; /* 兜底底色 */
+            background-image: url('bg_desktop.jpg'); /* 接入你的专属桌面 */
+            background-size: cover; 
+            background-position: center;
             font-family: 'AlecCustomFont', "PingFang SC", "Microsoft YaHei", serif; 
             color: var(--text-dark); overflow: hidden; 
         }
 
-        /* 左上角控制台 (强制降维) */
+        /* 左上角控制台 */
         .library-sidebar { position: fixed; top: 20px; left: 20px; background: rgba(245, 240, 230, 0.95); padding: 15px 20px; border-radius: 12px; z-index: 5 !important; box-shadow: 0 4px 20px rgba(0,0,0,0.2); max-height: 90vh; overflow-y: auto; border: 1px solid #d0c8c0; width: 220px; transition: 0.3s;}
         .lib-row { margin-bottom: 15px; border-bottom: 1px dashed rgba(0,0,0,0.1); padding-bottom: 10px;}
         .lib-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
@@ -104,7 +106,19 @@
         .search-input-wrapper input { width: 85px; border: none; border-radius: 4px; padding: 6px; font-size: 12px; outline: none; color: var(--text-dark); font-family: inherit;}
         .search-input-wrapper button { background: #fff; border: none; border-radius: 4px; cursor: pointer; padding: 0 8px; font-size: 12px; font-weight: bold; color: var(--accent-blue); transition: 0.2s; font-family: inherit;}
 
-        .journal-cover { position: absolute; left: 50%; top: 0; bottom: 0; width: 475px; background: var(--leather-cover); border-radius: 5px 20px 20px 5px; box-shadow: 15px 15px 40px rgba(0,0,0,0.5); display: flex; flex-direction: column; justify-content: center; align-items: center; color: #d4c3b3; z-index: 50; cursor: pointer; transform-origin: left center; transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
+        /* ====== 视觉资产 02：闭合封面 ====== */
+        .journal-cover { 
+            position: absolute; left: 50%; top: 0; bottom: 0; width: 475px; 
+            background-color: transparent; 
+            background-image: url('bg_cover.png'); /* 接入你的专属封面 */
+            background-size: 100% 100%; 
+            border-radius: 5px 20px 20px 5px; box-shadow: 15px 15px 40px rgba(0,0,0,0.5); 
+            display: flex; flex-direction: column; justify-content: center; align-items: center; 
+            color: #d4c3b3; z-index: 50; cursor: pointer; transform-origin: left center; 
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); 
+        }
+        
+        /* 封面的阴影折痕（如果你画的封面不需要这个系统自带的黑边，随时告诉我删掉） */
         .journal-cover::before { content: ''; position: absolute; left: 15px; top: 0; bottom: 0; width: 4px; background: rgba(0,0,0,0.3); }
         .cover-title { font-size: 32px; font-weight: bold; letter-spacing: 5px; border-bottom: 2px solid #d4c3b3; padding-bottom: 10px; margin-bottom: 20px; font-family: inherit;}
         
@@ -142,10 +156,10 @@
         .s-ctrl-btn { border: none; background: transparent; font-size: 12px; cursor: pointer; padding: 2px 4px; border-radius: 4px; font-family: inherit;}
         .s-ctrl-del { color: red; font-weight: bold;}
 
-        /* ====== 音乐部件 (修复消失Bug：注入绝对层级) ====== */
+        /* ====== 音乐部件 ====== */
         .add-music-btn { position: absolute; bottom: 30px; left: 40px; width: 40px; height: 40px; background: rgba(255,255,255,0.7); border: 2px dashed var(--text-light); border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 18px; color: var(--text-light); cursor: pointer; transition: 0.2s; z-index: 10; font-family: inherit;}
         .add-music-btn:hover { background: #fff; color: var(--text-dark); border-color: var(--text-dark); }
-        .music-player-widget { position: absolute; width: 210px; background: rgba(255,255,255,0.9); border-radius: 12px; padding: 10px 15px; box-shadow: 2px 5px 15px rgba(0,0,0,0.15); border: 1px solid #ddd; backdrop-filter: blur(5px); display: none; flex-direction: column; gap: 6px; box-sizing: border-box; cursor: move; z-index: 55; /* 核心修复点：强制拔高，绝不被纸张吞噬 */}
+        .music-player-widget { position: absolute; width: 210px; background: rgba(255,255,255,0.9); border-radius: 12px; padding: 10px 15px; box-shadow: 2px 5px 15px rgba(0,0,0,0.15); border: 1px solid #ddd; backdrop-filter: blur(5px); display: none; flex-direction: column; gap: 6px; box-sizing: border-box; cursor: move; z-index: 55; }
         .music-header { display: flex; align-items: center; gap: 5px; }
         .music-input { flex: 1; border: none; background: transparent; border-bottom: 1px dashed #ccc; font-size: 11px; color: var(--text-dark); outline: none; text-align: left; padding-bottom: 2px; font-family: inherit;}
         .upload-music-btn { background: var(--text-light); color: #fff; border: none; border-radius: 4px; padding: 2px 5px; font-size: 10px; cursor: pointer; font-family: inherit;}
@@ -536,11 +550,7 @@
         if (data.musicLink || data.musicIsLocalBase64) {
             addBtn.style.display = 'none'; playerWidget.style.display = 'flex';
             document.getElementById('music-input-display').value = data.musicIsLocalBase64 ? "[本地音频已加载]" : data.musicLink;
-            // 物理修复：赋予音乐弹窗初始坐标，并强制赋予极高 Z-index，确保它绝不会被纸张盖住
-            if (!playerWidget.style.top || playerWidget.style.top === '') {
-                playerWidget.style.top = '400px'; 
-                playerWidget.style.left = '140px';
-            }
+            if (!playerWidget.style.top || playerWidget.style.top === '') { playerWidget.style.top = '400px'; playerWidget.style.left = '140px'; }
             playerWidget.style.zIndex = ++globalZIndex;
             if(data.musicLink && data.musicLink !== "https://") audioPlayer.src = data.musicLink;
         } else { addBtn.style.display = 'flex'; playerWidget.style.display = 'none'; }
@@ -562,13 +572,13 @@
     }
     makeDraggable(document.getElementById('music-player-widget'));
 
-    // ====== 音乐引擎 (绝对闭环修复) ======
     function addMusic() { 
         getActiveEntries()[currentIndex].musicLink = "https://"; 
         getActiveEntries()[currentIndex].musicIsLocalBase64 = false;
-        saveToDatabase(); // 核心修复：添加指令必须立刻死锁入库
+        saveToDatabase(); 
         renderPage(currentIndex); 
     }
+    
     function removeMusic() { getActiveEntries()[currentIndex].musicLink = ""; getActiveEntries()[currentIndex].musicIsLocalBase64 = false; saveToDatabase(); resetPlayer(); renderPage(currentIndex); }
     function autoSaveMusic() { const val = document.getElementById('music-input-display').value; getActiveEntries()[currentIndex].musicLink = val; getActiveEntries()[currentIndex].musicIsLocalBase64 = false; saveToDatabase(); audioPlayer.src = val; }
     function handleAudioUpload(event) { 
