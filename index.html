@@ -19,8 +19,8 @@
             font-family: "PingFang SC", "Microsoft YaHei", serif; color: var(--text-dark); overflow: hidden; 
         }
 
-        /* ====== 左上角控制台 (被最高权限强制打入底层深渊) ====== */
-        .library-sidebar { position: fixed; top: 20px; left: 20px; background: rgba(255,255,255,0.7); backdrop-filter: blur(15px); padding: 15px 20px; border-radius: 12px; z-index: 5 !important; box-shadow: 0 4px 20px rgba(0,0,0,0.08); max-height: 90vh; overflow-y: auto; border: 1px solid rgba(255,255,255,0.5); width: 220px; transition: 0.3s;}
+        /* ====== 左上角控制台 (剥夺特效，换为实体材质，杜绝渲染越界) ====== */
+        .library-sidebar { position: fixed; top: 20px; left: 20px; background: rgba(245, 240, 230, 0.95); padding: 15px 20px; border-radius: 12px; z-index: 5 !important; box-shadow: 0 4px 20px rgba(0,0,0,0.2); max-height: 90vh; overflow-y: auto; border: 1px solid #d0c8c0; width: 220px; transition: 0.3s;}
         .lib-row { margin-bottom: 15px; border-bottom: 1px dashed rgba(0,0,0,0.1); padding-bottom: 10px;}
         .lib-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
         .lib-icon { font-size: 16px; user-select: none; }
@@ -32,8 +32,8 @@
         .lib-book-badge.active-book { background: var(--text-dark); color: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
         .lib-add-btn { background: transparent; color: var(--text-light); padding: 2px 6px; border-radius: 4px; font-size: 14px; cursor: pointer; font-weight: bold;}
         .lib-add-btn:hover { color: var(--text-dark); background: rgba(0,0,0,0.05);}
-        .lib-add-journal-btn { width: 100%; text-align: center; padding: 10px 0; background: rgba(0,0,0,0.03); border-radius: 8px; cursor: pointer; font-size: 12px; color: var(--text-light); font-weight: bold; transition: 0.2s; box-sizing: border-box;}
-        .lib-add-journal-btn:hover { background: rgba(0,0,0,0.08); color: var(--text-dark);}
+        .lib-add-journal-btn { width: 100%; text-align: center; padding: 10px 0; background: rgba(0,0,0,0.05); border-radius: 8px; cursor: pointer; font-size: 12px; color: var(--text-light); font-weight: bold; transition: 0.2s; box-sizing: border-box;}
+        .lib-add-journal-btn:hover { background: rgba(0,0,0,0.1); color: var(--text-dark);}
 
         /* 密码锁 */
         .lock-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(56, 44, 38, 0.8); backdrop-filter: blur(20px); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.6s ease, visibility 0.6s; }
@@ -57,7 +57,7 @@
         .tray-item { font-size: 45px; cursor: pointer; user-select: none; transition: 0.2s; display: flex; justify-content: center; align-items: center; width: 60px; height: 60px;}
         .tray-item:hover { transform: scale(1.2) translateY(-5px) rotate(5deg); }
 
-        /* ====== 日记本整体容器 (绝对提权) ====== */
+        /* ====== 日记本整体容器 ====== */
         .journal-container { position: relative; width: 950px; height: 600px; transition: all 0.6s ease; z-index: 500 !important; }
         
         .bookmarks { position: absolute; top: 38px; left: 935px; display: flex; flex-direction: column; gap: 5px; transition: left 0.6s cubic-bezier(0.4, 0, 0.2, 1); z-index: 10; }
@@ -70,7 +70,9 @@
         .journal-opened .bm-month { border-radius: 8px 0 0 8px; padding: 8px 20px 8px 15px; margin-left: 0; margin-right: -10px; text-align: left; }
         .bm-month:not(.disabled-month):hover { background: #dcd0c3; }
         .journal-opened .bm-month.active { background: var(--accent-red); color: #fff; margin-right: -2px; z-index: 30; box-shadow: -3px 2px 10px rgba(0,0,0,0.15); }
-        .disabled-month { opacity: 0.3; pointer-events: none; filter: grayscale(100%); cursor: default; }
+        
+        /* 剥离 filter 滤镜，改为实体置灰，彻底修复渲染重叠 Bug */
+        .disabled-month { background: #d0c8c0 !important; color: #a8a096 !important; pointer-events: none; cursor: default; opacity: 0.6; box-shadow: none !important; filter: none !important; }
 
         .bookmarks-right { position: absolute; top: 70px; right: 10px; display: flex; flex-direction: column; gap: 10px; z-index: 10; transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); opacity: 0; pointer-events: none;}
         .journal-opened .bookmarks-right { right: -35px; opacity: 1; pointer-events: auto;}
@@ -87,7 +89,6 @@
         .bookmark-top { position: absolute; top: -10px; right: 120px; background: var(--accent-blue); color: #fff; padding: 8px 10px 25px 10px; border-radius: 8px 8px 0 0; font-size: 14px; font-weight: bold; cursor: pointer; z-index: 10; opacity: 0; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); box-sizing: border-box; overflow: hidden; width: 140px; display: flex; flex-direction: column; align-items: center; box-shadow: 0 -2px 10px rgba(0,0,0,0.1);}
         .journal-opened .bookmark-top { opacity: 1; top: -30px;}
         .bookmark-top:not(.searching):hover { top: -38px; }
-
         .bookmark-top.searching { top: -85px !important; cursor: default; padding-bottom: 30px;}
         .search-label { padding-bottom: 10px; transition: 0.3s; }
         .search-input-wrapper { display: flex; opacity: 0; transition: opacity 0.3s; width: 100%; justify-content: center; gap: 5px;}
@@ -110,11 +111,9 @@
         /* ====== 图层引擎核心类 ====== */
         .draggable-photo, .draggable-text, .draggable-sticker { position: absolute; cursor: move; user-select: none; display: inline-block; padding: 15px; }
         
-        /* 拍立得相框 */
         .polaroid-wrapper { background: #fff; padding: 8px 8px 30px 8px; box-shadow: 2px 5px 15px rgba(0,0,0,0.15); width: 150px; height: 175px; box-sizing: border-box; display: flex; flex-direction: column; pointer-events: none;}
         .polaroid-photo { width: 100%; height: 100%; background-size: cover; background-position: center; background-color: #eaeaea; border: 1px solid rgba(0,0,0,0.05);}
         
-        /* 沉浸式文本框设计 */
         .text-content { 
             font-family: cursive, "PingFang SC"; font-size: 15px; line-height: 1.6; 
             padding: 8px 12px; white-space: pre-wrap; text-align: left; 
@@ -122,13 +121,12 @@
             transition: 0.2s; outline: none; cursor: text;
         }
         .draggable-text:hover .text-content { border-color: rgba(0,0,0,0.15); border-radius: 4px; background: rgba(255,255,255,0.4); }
-        .text-content:focus { border-color: var(--accent-red); background: rgba(255,255,255,0.9); border-radius: 4px;}
+        .text-content:focus { border-color: var(--accent-red); background: rgba(255,255,255,0.9); border-radius: 4px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);}
 
         .sticker-content { pointer-events: none; font-size: 40px;}
         .sticker-ctrls { position: absolute; top: -5px; right: -5px; background: #fff; border-radius: 20px; padding: 3px 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.25); display: none; gap: 5px; z-index: 51; border: 1px solid #ddd; align-items: center;}
         .draggable-sticker:hover .sticker-ctrls, .draggable-photo:hover .sticker-ctrls, .draggable-text:hover .sticker-ctrls { display: flex; }
         
-        /* 专属调色盘按钮 */
         .s-ctrl-color { width: 16px; height: 16px; padding: 0; border: 1px solid rgba(0,0,0,0.1); border-radius: 50%; cursor: pointer; background: transparent; overflow: hidden; margin-right: 2px;}
         .s-ctrl-color::-webkit-color-swatch-wrapper { padding: 0; }
         .s-ctrl-color::-webkit-color-swatch { border: none; border-radius: 50%; }
@@ -300,21 +298,26 @@
     function getEast8Year() { return getEast8Date().getFullYear(); }
     function getEast8Month() { return getEast8Date().getMonth() + 1; }
 
-    // ====== 全局 Z-index 引擎 ======
-    // 用于确保新添加的元素和被点击的元素永远在最上层
+    // ====== 全局图层追踪器 ======
     let globalZIndex = 100;
 
     function generateBlankEntry(year, month, isPlaceholder = false) {
         return {
             month: month, date: `${year}年${month}月${isPlaceholder ? '1日' : getEast8Date().getDate() + '日'}`, weather: "天气...",
-            photos: [], texts: [], stickers: [], // 升维：贴纸也接入持久化数据库
+            photos: [], texts: [], stickers: [], 
             agentTitle: "", agentText: "", userEntries: [], 
             musicLink: "", musicIsLocalBase64: false
         };
     }
 
-    // ================= 数据库引擎 =================
-    let systemDB = JSON.parse(localStorage.getItem('alecSystemDB_v2'));
+    // ================= 核弹级数据库引擎 (附带极限扩容保护) =================
+    let systemDB;
+    try {
+        systemDB = JSON.parse(localStorage.getItem('alecSystemDB_v2'));
+    } catch(e) {
+        systemDB = null;
+    }
+    
     const realYear = getEast8Year(); const realMonth = getEast8Month();
 
     if (!systemDB || systemDB.length === 0) {
@@ -324,6 +327,7 @@
             j.books.forEach(b => { 
                 if (b.year === realYear) b.entries = b.entries.filter(e => e.month <= realMonth); 
                 b.entries.forEach(e => {
+                    // 数据防漏网补丁
                     if(!e.photos) e.photos = [];
                     if(!e.texts) e.texts = [];
                     if(!e.stickers) e.stickers = [];
@@ -340,10 +344,23 @@
     let activeJournalId = systemDB[0].id; let activeYear = systemDB[0].books[0].year;
     let currentIndex = 0; let audioPlayer = document.getElementById('real-audio-player');
 
-    function getActiveEntries() { let j = systemDB.find(x => x.id === activeJournalId); let b = j.books.find(x => x.year === activeYear); return b.entries; }
-    function saveToDatabase() { localStorage.setItem('alecSystemDB_v2', JSON.stringify(systemDB)); }
+    function getActiveEntries() { 
+        let j = systemDB.find(x => x.id === activeJournalId); 
+        let b = j.books.find(x => x.year === activeYear); 
+        return b.entries; 
+    }
+    
+    // 强制防崩溃存储中枢
+    function saveToDatabase() { 
+        try {
+            localStorage.setItem('alecSystemDB_v2', JSON.stringify(systemDB)); 
+        } catch(e) {
+            alert("⚠️ 系统超载警告：浏览器的本地存储已达上限（通常为5MB）。\n系统无法保存你刚刚贴入的高清照片或长音乐。\n请刷新页面，删除一些旧照片后再试！");
+            console.error("Storage full:", e);
+        }
+    }
 
-    // ================= 贴纸弹匣系统 =================
+    // ================= 贴纸系统 =================
     const myStickers = [ '🌸', '⭐', '📌', '🎀', '☕', '📝', '📸', '🌿', '🍄', '🌙', '☁️', '🎈', '🎨', '🚀', '🔮', '🧸', '💌', '💡' ];
     let stickerPage = 0; const stickersPerPage = 6;
     function renderStickers() {
@@ -417,7 +434,6 @@
     function renderPhotosAndTexts(entry) {
         document.querySelectorAll('.draggable-photo, .draggable-text, .draggable-sticker').forEach(el => el.remove());
         
-        // 渲染照片
         if(entry.photos) {
             entry.photos.forEach((pData, idx) => {
                 const s = document.createElement('div'); s.className = 'draggable-photo'; s.dataset.idx = idx;
@@ -429,7 +445,6 @@
             });
         }
         
-        // 渲染无框文本便签
         if(entry.texts) {
             entry.texts.forEach((tData, idx) => {
                 let color = tData.color || '#3a2f29';
@@ -445,7 +460,6 @@
             });
         }
 
-        // 渲染永久化贴纸
         if(entry.stickers) {
             entry.stickers.forEach((sData, idx) => {
                 const s = document.createElement('div'); s.className = 'draggable-sticker'; s.dataset.idx = idx;
@@ -458,32 +472,39 @@
         }
     }
 
-    // 核心新增：自动赋权 Z-index
+    // ====== 产生媒体的核心逻辑 (赋权置顶) ======
     function handlePhotoUpload(event) {
         const file = event.target.files[0];
         if (file) {
-            if(file.size > 2 * 1024 * 1024) alert("提示：请尽量上传2MB以下图片防止缓存溢出。");
+            if(file.size > 3 * 1024 * 1024) alert("提示：请尽量上传小图防止缓存溢出。");
             const reader = new FileReader();
             reader.onload = function(e) { 
+                let entries = getActiveEntries();
+                if(!entries[currentIndex].photos) entries[currentIndex].photos = [];
                 globalZIndex++;
-                getActiveEntries()[currentIndex].photos.push({ src: e.target.result, left: '60px', top: '60px', transform: 'scale(1) rotate('+(Math.random()*10-5)+'deg)', zIndex: globalZIndex });
+                entries[currentIndex].photos.push({ src: e.target.result, left: '60px', top: '60px', transform: 'scale(1) rotate('+(Math.random()*10-5)+'deg)', zIndex: globalZIndex });
                 saveToDatabase(); renderPage(currentIndex); 
             }
             reader.readAsDataURL(file);
         }
+        event.target.value = ''; // 极其重要：重置上传通道，防止连续传同图失效
     }
 
     function addTextNode() {
+        let entries = getActiveEntries();
+        if(!entries[currentIndex].texts) entries[currentIndex].texts = [];
         globalZIndex++;
-        getActiveEntries()[currentIndex].texts.push({ 
+        entries[currentIndex].texts.push({ 
             text: "在此输入内容...", left: '80px', top: '150px', transform: 'scale(1) rotate(0deg)', color: '#3a2f29', zIndex: globalZIndex 
         });
         saveToDatabase(); renderPage(currentIndex);
     }
 
     function spawnSticker(content) { 
+        let entries = getActiveEntries();
+        if(!entries[currentIndex].stickers) entries[currentIndex].stickers = [];
         globalZIndex++;
-        getActiveEntries()[currentIndex].stickers.push({ content: content, left: '150px', top: '250px', transform: 'scale(1) rotate(0deg)', zIndex: globalZIndex });
+        entries[currentIndex].stickers.push({ content: content, left: '150px', top: '250px', transform: 'scale(1) rotate(0deg)', zIndex: globalZIndex });
         saveToDatabase(); renderPage(currentIndex); 
     }
 
@@ -500,13 +521,13 @@
     
     function deleteMedia(btn, type) {
         const node = btn.closest(`.draggable-${type}`); let idx = parseInt(node.dataset.idx);
-        if(type === 'photo') getActiveEntries()[currentIndex].photos.splice(idx, 1);
-        if(type === 'text') getActiveEntries()[currentIndex].texts.splice(idx, 1);
-        if(type === 'sticker') getActiveEntries()[currentIndex].stickers.splice(idx, 1);
+        let entries = getActiveEntries();
+        if(type === 'photo') entries[currentIndex].photos.splice(idx, 1);
+        if(type === 'text') entries[currentIndex].texts.splice(idx, 1);
+        if(type === 'sticker') entries[currentIndex].stickers.splice(idx, 1);
         saveToDatabase(); renderPage(currentIndex);
     }
     
-    // 静默序列化：保存所有挂件的物理属性 (包括 Z-index)
     function saveMediaState() {
         let entries = getActiveEntries();
         document.querySelectorAll('.draggable-photo').forEach(node => {
@@ -544,6 +565,10 @@
 
     function renderPage(index) {
         let entries = getActiveEntries(); const data = entries[index];
+        
+        // 数据防漏补丁：确保一切渲染前都不为空
+        if(!data.photos) data.photos = []; if(!data.texts) data.texts = []; if(!data.stickers) data.stickers = [];
+        
         document.getElementById('display-date').value = data.date; document.getElementById('display-weather').value = data.weather; document.getElementById('display-agent-title').value = data.agentTitle; document.getElementById('display-agent-text').value = data.agentText;
         document.getElementById('display-page-num').innerText = `${entries.length - index} / ${entries.length}`;
 
@@ -563,17 +588,20 @@
         updateMonthBookmark();
     }
 
-    // ====== 智能拖拽引擎：点击即置顶 ======
+    // ====== 修复版的终极智能拖拽引擎 ======
     function makeDraggable(elmnt, needsSave = false) {
         let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0; elmnt.onmousedown = dragMouseDown;
         function dragMouseDown(e) { 
-            if(e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' || e.target.isContentEditable) return; 
-            e.preventDefault(); pos3 = e.clientX; pos4 = e.clientY; 
-            document.onmouseup = closeDragElement; document.onmousemove = elementDrag; 
-            
-            // 核心物理交互：点击即赋予最高层级
+            // 核心物理交互：不管点的是什么，只要碰到了挂件，立刻提权到最顶层
             globalZIndex++;
             elmnt.style.zIndex = globalZIndex;
+            if(needsSave) saveMediaState(); // 静默保存最新图层高度
+
+            // 保护输入操作：如果是按钮或正在打字，不触发跟随鼠标移动
+            if(e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' || e.target.isContentEditable || e.target.tagName === 'TEXTAREA' || e.target.type === 'color') return; 
+            
+            e.preventDefault(); pos3 = e.clientX; pos4 = e.clientY; 
+            document.onmouseup = closeDragElement; document.onmousemove = elementDrag; 
         }
         function elementDrag(e) { e.preventDefault(); pos1 = pos3 - e.clientX; pos2 = pos4 - e.clientY; pos3 = e.clientX; pos4 = e.clientY; elmnt.style.top = (elmnt.offsetTop - pos2) + "px"; elmnt.style.left = (elmnt.offsetLeft - pos1) + "px"; }
         function closeDragElement() { document.onmouseup = null; document.onmousemove = null; if(needsSave) saveMediaState(); }
@@ -584,7 +612,19 @@
     function addMusic() { getActiveEntries()[currentIndex].musicLink = "https://"; renderPage(currentIndex); }
     function removeMusic() { getActiveEntries()[currentIndex].musicLink = ""; getActiveEntries()[currentIndex].musicIsLocalBase64 = false; saveToDatabase(); resetPlayer(); renderPage(currentIndex); }
     function autoSaveMusic() { const val = document.getElementById('music-input-display').value; getActiveEntries()[currentIndex].musicLink = val; getActiveEntries()[currentIndex].musicIsLocalBase64 = false; saveToDatabase(); audioPlayer.src = val; }
-    function handleAudioUpload(event) { const file = event.target.files[0]; if (file) { const reader = new FileReader(); reader.onload = function(e) { getActiveEntries()[currentIndex].musicLink = e.target.result; getActiveEntries()[currentIndex].musicIsLocalBase64 = true; saveToDatabase(); renderPage(currentIndex); }; reader.readAsDataURL(file); } }
+    function handleAudioUpload(event) { 
+        const file = event.target.files[0]; 
+        if (file) { 
+            const reader = new FileReader(); 
+            reader.onload = function(e) { 
+                getActiveEntries()[currentIndex].musicLink = e.target.result; 
+                getActiveEntries()[currentIndex].musicIsLocalBase64 = true; 
+                saveToDatabase(); renderPage(currentIndex); 
+            }; 
+            reader.readAsDataURL(file); 
+        } 
+        event.target.value = ''; // 重置通道
+    }
     function togglePlay() { if(audioPlayer.paused) { if(!audioPlayer.src) { alert("请上传音乐。"); return; } audioPlayer.play().then(() => { document.getElementById('play-pause-btn').innerText = '||'; document.getElementById('music-status').innerText = '播放中'; }).catch(e => alert("播放失败。")); } else { audioPlayer.pause(); document.getElementById('play-pause-btn').innerText = '▶'; document.getElementById('music-status').innerText = '已暂停'; } }
     function resetPlayer() { audioPlayer.pause(); audioPlayer.currentTime = 0; document.getElementById('play-pause-btn').innerText = '▶'; document.getElementById('music-status').innerText = '就绪';}
 
