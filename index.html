@@ -60,16 +60,51 @@
         .bookmarks { position: absolute; top: 38px; left: 935px; display: flex; flex-direction: column; gap: 5px; transition: left 0.6s cubic-bezier(0.4, 0, 0.2, 1); z-index: 10; }
         .journal-opened .bookmarks { left: -60px; }
         
-        /* 视觉资产：书签轴 (修改为 contain，绝对尊重原图比例) */
-        .bm-year { width: 60px; height: 35px; background: url('ui_tab_year.png') no-repeat right center / contain; color: transparent !important; box-shadow: none !important; padding: 0 !important; background-color: transparent !important; margin-bottom: 8px; position: relative; z-index: 10; font-family: inherit;}
-        .journal-opened .bm-year { background-position: left center; }
+        /* ======================================================== */
+        /* ====== 修复区：年份与月份书签 (动态字体悬浮 + 绝对拼合) ====== */
+        /* ======================================================== */
         
-        .bm-month { width: 50px; height: 30px; background: url('ui_tab_month_normal.png') no-repeat right center / contain; color: transparent !important; box-shadow: none !important; padding: 0 !important; background-color: transparent !important; margin-bottom: 3px; position: relative; z-index: 10; cursor: pointer; transition: 0.3s; font-family: inherit;}
-        .journal-opened .bm-month { background-position: left center; margin-left: 0;}
-        .bm-month:not(.disabled-month):hover { transform: translateX(3px); }
-        .journal-opened .bm-month.active { background: url('ui_tab_month_normal.png') no-repeat left center / contain; transform: translateX(-5px); z-index: 30; }
-        .disabled-month { background-image: url('ui_tab_month_disabl.png') !important; pointer-events: none; cursor: default; }
+        .bm-year { 
+            width: 60px !important; height: 35px !important; 
+            padding: 0 !important; margin-bottom: 8px; 
+            background: url('ui_tab_year.png') no-repeat center / 100% 100%; 
+            color: #fff !important; /* 恢复年份文字显示，并在你的底图上居中 */
+            display: flex; align-items: center; justify-content: center;
+            font-weight: bold; font-size: 16px; 
+            box-shadow: none !important; background-color: transparent !important; border-radius: 0 !important;
+            position: relative; z-index: 10; font-family: inherit;
+        }
+        
+        .bm-month { 
+            width: 50px !important; height: 30px !important; 
+            padding: 0 !important; margin-bottom: 3px; margin-left: 0 !important;
+            background: url('ui_tab_month_normal.png') no-repeat center / 100% 100%; 
+            color: var(--text-dark) !important; /* 恢复月份文字显示 */
+            display: flex; align-items: center; justify-content: center;
+            font-size: 13px; font-weight: bold; 
+            box-shadow: none !important; background-color: transparent !important; border-radius: 0 !important;
+            position: relative; z-index: 10; cursor: pointer; transition: transform 0.3s; font-family: inherit;
+        }
+        
+        .bm-month:not(.disabled-month):hover { transform: translateX(4px); }
+        
+        /* 激活态修复：挂载你画的 active 图片 */
+        .journal-opened .bm-month.active { 
+            background: url('ui_tab_month_active.png') no-repeat center / 100% 100%; 
+            color: #fff !important; /* 激活时文字变白 */
+            transform: translateX(-6px); 
+            z-index: 30; 
+        }
+        
+        /* 置灰态修复：修正拼写错误 */
+        .disabled-month { 
+            background-image: url('ui_tab_month_disabled.png') !important; 
+            color: rgba(0,0,0,0.3) !important; /* 未解锁月份文字变暗 */
+            pointer-events: none; cursor: default; 
+        }
+        /* ======================================================== */
 
+        /* 交互悬浮挂件区域 (暂时保持透明文本，直到你画了它们) */
         .bookmarks-right { position: absolute; top: 70px; right: 10px; display: flex; flex-direction: column; gap: 10px; z-index: 10; transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); opacity: 0; pointer-events: none;}
         .journal-opened .bookmarks-right { right: -35px; opacity: 1; pointer-events: auto;}
         .bm-add { background: var(--text-dark); color: #fff; padding: 15px 10px 15px 15px; border-radius: 0 10px 10px 0; font-weight: bold; font-size: 15px; cursor: pointer; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); transition: 0.2s; writing-mode: vertical-rl; letter-spacing: 2px; margin-left: -10px; position: relative; z-index: 10; font-family: inherit;}
@@ -90,7 +125,6 @@
         .search-input-wrapper input { width: 85px; border: none; border-radius: 4px; padding: 6px; font-size: 12px; outline: none; color: var(--text-dark); font-family: inherit;}
         .search-input-wrapper button { background: #fff; border: none; border-radius: 4px; cursor: pointer; padding: 0 8px; font-size: 12px; font-weight: bold; color: var(--accent-blue); transition: 0.2s; font-family: inherit;}
 
-        /* ====== 视觉资产：闭合封面 ====== */
         .journal-cover { 
             position: absolute; left: 50%; top: 0; bottom: 0; width: 475px; 
             background-color: transparent; background-image: url('bg_cover.png'); background-size: 100% 100%; 
@@ -104,20 +138,15 @@
         
         .journal-inner { position: absolute; top: 10px; left: 0; right: 0; bottom: 10px; background: transparent; border-radius: 10px; box-shadow: 10px 10px 40px rgba(0,0,0,0.5); display: flex; opacity: 0; pointer-events: none; transition: opacity 0.3s ease 0.3s; box-sizing: border-box; z-index: 20;}
 
-        /* ====== 视觉资产：双页空间 ====== */
         .page-left { flex: 1; height: 100%; padding: 30px 40px; position: relative; display: flex; flex-direction: column; background: url('bg_page_left.png') no-repeat center / 100% 100%; z-index: 1; box-sizing: border-box;}
         .page-right { flex: 1; height: 100%; padding: 30px 40px; display: flex; flex-direction: column; background: url('bg_page_right.png') no-repeat center / 100% 100%; z-index: 10; box-sizing: border-box; }
         
-        .close-book-btn { position: absolute; top: 15px; left: 20px; width: 40px; height: 20px; background: url('ui_btn_close.png') no-repeat center / contain; color: transparent !important; cursor: pointer; z-index: 50; transition: 0.2s;}
+        .close-book-btn { position: absolute; top: 15px; left: 20px; width: 40px; height: 20px; background: url('ui_btn_close.png') no-repeat center / 100% 100%; color: transparent !important; cursor: pointer; z-index: 50; transition: 0.2s;}
         
-        /* 物理类 */
         .draggable-photo, .draggable-text, .draggable-sticker { position: absolute; cursor: move; user-select: none; display: inline-block; padding: 15px; }
         
-        /* ====== 视觉资产：拍立得架构彻底重构 ====== */
         .polaroid-wrapper { position: relative; width: 150px; height: 175px; display: flex; justify-content: center; box-shadow: none; padding: 0; background: transparent; pointer-events: none;}
-        /* 你画的镂空相框，强制在最顶层 (z-index: 2) */
         .polaroid-frame { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none; }
-        /* 塞在相框洞口底下的照片 (z-index: 1)。这里就是百分比坐标： */
         .polaroid-photo { position: absolute; top: 12%; left: 8%; width: 84%; height: 68%; background-size: cover; background-position: center; z-index: 1; background-color: #eaeaea; }
         
         .text-content { font-family: inherit; font-size: 15px; line-height: 1.6; padding: 8px 12px; white-space: pre-wrap; text-align: left; border: 1px dashed transparent; min-width: 120px; min-height: 30px; transition: 0.2s; outline: none; cursor: text;}
@@ -135,22 +164,55 @@
         .s-ctrl-btn { border: none; background: transparent; font-size: 12px; cursor: pointer; padding: 2px 4px; border-radius: 4px; font-family: inherit;}
         .s-ctrl-del { color: red; font-weight: bold;}
 
-        /* ====== 视觉资产：音乐部件 (全面放大、防拉伸修复) ====== */
+        /* ====== 音乐部件 ====== */
         .add-music-btn { position: absolute; bottom: 30px; left: 40px; width: 40px; height: 40px; background: rgba(255,255,255,0.7); border: 2px dashed var(--text-light); border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 18px; color: var(--text-light); cursor: pointer; transition: 0.2s; z-index: 10; font-family: inherit;}
         .add-music-btn:hover { background: #fff; color: var(--text-dark); border-color: var(--text-dark); }
-        /* 放大后的悬浮主控板 */
-        .music-player-widget { position: absolute; background: url('bg_music_board.png') no-repeat center / 100% 100%; border: none; box-shadow: none; backdrop-filter: none; width: 240px; height: 85px; padding: 12px 18px; box-sizing: border-box; display: none; flex-direction: column; gap: 6px; cursor: move; z-index: 55; }
-        .music-header { display: flex; align-items: center; gap: 8px; margin-top: 2px;}
-        .music-input { flex: 1; border: none; background: transparent; border-bottom: 1px dashed rgba(0,0,0,0.2); font-size: 12px; color: var(--text-dark); outline: none; text-align: left; padding-bottom: 2px; font-family: inherit;}
         
-        /* 音乐组件：精确定位 */
-        .upload-music-btn { background: url('ui_music_upload.png') no-repeat center / contain; color: transparent !important; border: none; width: 28px; height: 28px; cursor: pointer;}
-        .close-music-btn { position: absolute; top: -8px; right: -8px; background: url('ui_music_close.png') no-repeat center / contain; color: transparent !important; box-shadow: none; border: none; width: 24px; height: 24px; cursor: pointer;}
-        .music-controls { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
+        .music-player-widget { 
+            position: absolute; 
+            width: 240px; height: 85px; 
+            background: url('bg_music_board.png') no-repeat center / 100% 100%; 
+            border: none; box-shadow: none; backdrop-filter: none; 
+            padding: 0; margin: 0; box-sizing: border-box; 
+            display: none; cursor: move; z-index: 55; 
+        }
         
-        .play-btn { width: 32px; height: 32px; background: url('ui_music_play.png') no-repeat center / contain; background-color: #3a2f29; border-radius: 50%; color: transparent !important; border: none; display: flex; justify-content: center; align-items: center; cursor: pointer; font-size: 11px;}
-        .play-btn.playing { background: url('ui_music_pause.png') no-repeat center / contain; border-radius: 0; background-color: transparent;}
+        .music-input { 
+            position: absolute; 
+            top: 20px; left: 20px; 
+            width: 145px; 
+            border: none; background: transparent; border-bottom: 1px dashed rgba(0,0,0,0.2); 
+            font-size: 12px; color: var(--text-dark); outline: none; text-align: left; padding-bottom: 2px; font-family: inherit;
+        }
         
+        .upload-music-btn { 
+            position: absolute; 
+            top: 15px; left: 175px; 
+            width: 28px; height: 28px; 
+            background: url('ui_music_upload.png') no-repeat center / 100% 100%; color: transparent !important; border: none; cursor: pointer;
+        }
+        
+        .play-btn { 
+            position: absolute; 
+            bottom: 15px; left: 20px; 
+            width: 32px; height: 32px; 
+            background: url('ui_music_play.png') no-repeat center / 100% 100%; background-color: transparent; border-radius: 50%; color: transparent !important; border: none; cursor: pointer;
+        }
+        .play-btn.playing { background: url('ui_music_pause.png') no-repeat center / 100% 100%; border-radius: 0; background-color: transparent;}
+        
+        .music-status-text {
+            position: absolute;
+            bottom: 24px; left: 60px;
+            font-size: 11px; color: #888; font-family: inherit;
+        }
+
+        .close-music-btn { 
+            position: absolute; 
+            top: -5px; right: -5px; 
+            width: 24px; height: 24px; 
+            background: url('ui_music_close.png') no-repeat center / 100% 100%; color: transparent !important; border: none; cursor: pointer;
+        }
+
         .page-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--text-dark); padding-bottom: 8px; margin-bottom: 15px; flex-shrink: 0;}
         
         .seamless-input { border: 1px dashed transparent; background: transparent; font-size: 15px; font-weight: bold; color: var(--text-dark); outline: none; transition: 0.2s; padding: 2px 5px; font-family: inherit;}
@@ -168,12 +230,11 @@
         .user-input { width: 100%; box-sizing: border-box; background: rgba(255,255,255,0.7); border: 1px dashed rgba(0,0,0,0.15); border-radius: 8px; padding: 10px 12px 35px 12px; font-size: 13px; color: var(--accent-blue); resize: none; outline: none; line-height: 1.5; min-height: 70px; margin-top: 10px; font-family: inherit;}
         .save-btn { float: right; margin-top: -30px; margin-right: 8px; background: var(--accent-blue); color: #fff; border: none; padding: 4px 12px; border-radius: 12px; font-size: 11px; cursor: pointer; position: relative; z-index: 10; font-family: inherit;}
 
-        /* 翻页与删除 (改成 contain 防拉伸) */
         .page-controls { display: flex; justify-content: space-between; align-items: center; margin-top: auto; font-size: 13px; color: var(--text-light); border-top: 1px dashed rgba(0,0,0,0.1); padding-top: 12px; flex-shrink: 0; }
-        #btn-prev { width: 40px; height: 20px; background: url('ui_btn_prev.png') no-repeat center / contain; color: transparent !important; cursor: pointer; }
-        #btn-next { width: 40px; height: 20px; background: url('ui_btn_next.png') no-repeat center / contain; color: transparent !important; cursor: pointer; }
+        #btn-prev { width: 40px; height: 20px; background: url('ui_btn_prev.png') no-repeat center / 100% 100%; color: transparent !important; cursor: pointer; }
+        #btn-next { width: 40px; height: 20px; background: url('ui_btn_next.png') no-repeat center / 100% 100%; color: transparent !important; cursor: pointer; }
         .nav-btn.disabled { opacity: 0.3; pointer-events: none; }
-        .delete-page-btn { width: 30px; height: 30px; background: url('ui_btn_trash.png') no-repeat center / contain; color: transparent !important; cursor: pointer; transition: 0.2s;}
+        .delete-page-btn { width: 30px; height: 30px; background: url('ui_btn_trash.png') no-repeat center / 100% 100%; color: transparent !important; cursor: pointer; transition: 0.2s;}
         .delete-page-btn:hover { transform: scale(1.1); }
 
         body.journal-opened .journal-cover { transform: rotateY(-180deg); opacity: 0; pointer-events: none; }
@@ -203,18 +264,18 @@
 <div class="journal-container">
     <div class="bookmarks" id="bookmark-list">
         <div class="bm-year" id="display-bm-year">2026</div>
-        <div class="bm-month" onclick="jumpToMonth(12, this)">12</div>
-        <div class="bm-month" onclick="jumpToMonth(11, this)">11</div>
-        <div class="bm-month" onclick="jumpToMonth(10, this)">10</div>
-        <div class="bm-month" onclick="jumpToMonth(9, this)">9</div>
-        <div class="bm-month" onclick="jumpToMonth(8, this)">8</div>
-        <div class="bm-month" onclick="jumpToMonth(7, this)">7</div>
-        <div class="bm-month" onclick="jumpToMonth(6, this)">6</div>
-        <div class="bm-month" onclick="jumpToMonth(5, this)">5</div>
-        <div class="bm-month" onclick="jumpToMonth(4, this)">4</div>
-        <div class="bm-month" onclick="jumpToMonth(3, this)">3</div>
-        <div class="bm-month" onclick="jumpToMonth(2, this)">2</div>
-        <div class="bm-month" onclick="jumpToMonth(1, this)">1</div>
+        <div class="bm-month" onclick="jumpToMonth(12, this)">12月</div>
+        <div class="bm-month" onclick="jumpToMonth(11, this)">11月</div>
+        <div class="bm-month" onclick="jumpToMonth(10, this)">10月</div>
+        <div class="bm-month" onclick="jumpToMonth(9, this)">9月</div>
+        <div class="bm-month" onclick="jumpToMonth(8, this)">8月</div>
+        <div class="bm-month" onclick="jumpToMonth(7, this)">7月</div>
+        <div class="bm-month" onclick="jumpToMonth(6, this)">6月</div>
+        <div class="bm-month" onclick="jumpToMonth(5, this)">5月</div>
+        <div class="bm-month" onclick="jumpToMonth(4, this)">4月</div>
+        <div class="bm-month" onclick="jumpToMonth(3, this)">3月</div>
+        <div class="bm-month" onclick="jumpToMonth(2, this)">2月</div>
+        <div class="bm-month" onclick="jumpToMonth(1, this)">1月</div>
     </div>
 
     <div class="bookmarks-right">
@@ -248,16 +309,13 @@
 
         <div id="music-player-widget" class="music-player-widget">
             <button class="close-music-btn" onclick="removeMusic()">X</button>
-            <div class="music-header">
-                <input type="text" id="music-input-display" class="music-input" placeholder="输入音频直链(.mp3)..." oninput="autoSaveMusic()">
-                <button class="upload-music-btn" onclick="document.getElementById('audio-upload-input').click()">U</button>
-                <input type="file" id="audio-upload-input" style="display: none;" accept="audio/*" onchange="handleAudioUpload(event)">
-            </div>
-            <div class="music-controls">
-                <button class="play-btn" id="play-pause-btn" onclick="togglePlay()">▶</button>
-                <span id="music-status" style="font-size: 10px; color: #888; margin-left: 5px;">就绪</span>
-                <audio id="real-audio-player" style="display:none;" onended="resetPlayer()"></audio>
-            </div>
+            <input type="text" id="music-input-display" class="music-input" placeholder="输入 GitHub 地址..." oninput="autoSaveMusic()">
+            <button class="upload-music-btn" onclick="document.getElementById('audio-upload-input').click()">U</button>
+            <input type="file" id="audio-upload-input" style="display: none;" accept="audio/*" onchange="handleAudioUpload(event)">
+            
+            <button class="play-btn" id="play-pause-btn" onclick="togglePlay()">P</button>
+            <span id="music-status" class="music-status-text">就绪</span>
+            <audio id="real-audio-player" style="display:none;" onended="resetPlayer()"></audio>
         </div>
 
         <div class="page-right">
@@ -376,7 +434,6 @@
         html += `<div class="lib-add-journal-btn" onclick="addJournal()">+ 添加新记录对象</div>`;
         html += `<div style="margin-top: 15px; font-size: 10px; color: var(--text-light); border-top: 1px dashed rgba(0,0,0,0.1); padding-top: 10px; text-align: center;">💾 记忆存储容量: ${getStorageUse()}MB / 5.00MB</div>`;
         document.getElementById('library-container').innerHTML = html;
-        let activeJ = systemDB.find(x => x.id === activeJournalId);
     }
     function renameJournal(id, newName) { let j = systemDB.find(x => x.id === id); if(j && newName.trim()) { j.name = newName.trim(); saveToDatabase(); renderLibrary(); } }
     function addJournal() { let newName = prompt("给新的日记本起个名字:", "新日记"); if(newName && newName.trim()) { systemDB.push({ id: 'j_' + Date.now(), name: newName.trim(), books: [{ year: realYear, entries: [ generateBlankEntry(realYear, realMonth) ] }] }); saveToDatabase(); renderLibrary(); } }
@@ -422,7 +479,6 @@
             entry.photos.forEach((pData, idx) => {
                 const s = document.createElement('div'); s.className = 'draggable-photo'; s.dataset.idx = idx;
                 s.style.left = pData.left; s.style.top = pData.top; s.style.zIndex = pData.zIndex || 40;
-                /* 新版 HTML 结构：把相框作为独立图层盖在照片之上 */
                 s.innerHTML = `<div class="polaroid-wrapper" style="transform: ${pData.transform};">
                                   <div class="polaroid-photo" style="background-image: url(${pData.src})"></div>
                                   <img class="polaroid-frame" src="frame_polaroid.png" draggable="false">
@@ -521,6 +577,14 @@
     function closeJournal() { document.body.classList.remove('journal-opened'); setTimeout(() => { currentIndex = 0; renderPage(0); }, 600); }
     function openJournalToLatest() { document.body.classList.add('journal-opened'); currentIndex = 0; renderPage(0); }
 
+    function processMusicLink(url) {
+        let finalUrl = url.trim();
+        if (finalUrl.includes('github.com') && finalUrl.includes('/blob/')) {
+            finalUrl = finalUrl.replace('github.com', 'raw.githubusercontent.com').replace('/blob/', '/');
+        }
+        return finalUrl;
+    }
+
     function renderPage(index) {
         let entries = getActiveEntries(); const data = entries[index];
         if(!data.photos) data.photos = []; if(!data.texts) data.texts = []; if(!data.stickers) data.stickers = [];
@@ -536,7 +600,9 @@
             document.getElementById('music-input-display').value = data.musicIsLocalBase64 ? "[本地音频已加载]" : data.musicLink;
             if (!playerWidget.style.top || playerWidget.style.top === '') { playerWidget.style.top = '400px'; playerWidget.style.left = '140px'; }
             playerWidget.style.zIndex = ++globalZIndex;
-            if(data.musicLink && data.musicLink !== "https://") audioPlayer.src = data.musicLink;
+            if(data.musicLink && data.musicLink !== "https://") {
+                audioPlayer.src = processMusicLink(data.musicLink);
+            }
         } else { addBtn.style.display = 'flex'; playerWidget.style.display = 'none'; }
 
         renderUserEntries(data.userEntries);
@@ -564,7 +630,15 @@
     }
     
     function removeMusic() { getActiveEntries()[currentIndex].musicLink = ""; getActiveEntries()[currentIndex].musicIsLocalBase64 = false; saveToDatabase(); resetPlayer(); renderPage(currentIndex); }
-    function autoSaveMusic() { const val = document.getElementById('music-input-display').value; getActiveEntries()[currentIndex].musicLink = val; getActiveEntries()[currentIndex].musicIsLocalBase64 = false; saveToDatabase(); audioPlayer.src = val; }
+    
+    function autoSaveMusic() { 
+        const val = document.getElementById('music-input-display').value; 
+        getActiveEntries()[currentIndex].musicLink = val; 
+        getActiveEntries()[currentIndex].musicIsLocalBase64 = false; 
+        saveToDatabase(); 
+        audioPlayer.src = processMusicLink(val); 
+    }
+    
     function handleAudioUpload(event) { 
         const file = event.target.files[0]; 
         if (file) { 
@@ -581,17 +655,18 @@
         if(audioPlayer.paused) { 
             if(!audioPlayer.src || audioPlayer.src.endsWith("https://")) { alert("请先贴入音乐外链或上传本地音乐。"); return; } 
             audioPlayer.play().then(() => { 
-                btn.classList.add('playing'); btn.innerText = ''; document.getElementById('music-status').innerText = '播放中'; 
-            }).catch(e => alert("音乐链接失效或无法播放。")); 
+                btn.classList.add('playing'); document.getElementById('music-status').innerText = '播放中'; 
+            }).catch(e => alert("这首歌的格式或链接无效。\n（提示：如果你是在 GitHub 复制的普通网页链接，代码已经尝试自动修复它，但如果仍然失败，请确保你的 GitHub 仓库是 Public 公开的，或者直接使用短小的纯 .mp3 网址。）")); 
         } else { 
             audioPlayer.pause(); 
-            btn.classList.remove('playing'); btn.innerText = ''; document.getElementById('music-status').innerText = '已暂停'; 
+            btn.classList.remove('playing'); document.getElementById('music-status').innerText = '已暂停'; 
         } 
     }
+    
     function resetPlayer() { 
         try { audioPlayer.pause(); if(audioPlayer.readyState > 0) audioPlayer.currentTime = 0; } catch(e){}
         const btn = document.getElementById('play-pause-btn');
-        btn.classList.remove('playing'); btn.innerText = ''; document.getElementById('music-status').innerText = '就绪';
+        btn.classList.remove('playing'); document.getElementById('music-status').innerText = '就绪';
     }
 
     function renderUserEntries(entries) {
