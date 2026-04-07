@@ -6,15 +6,12 @@
     <title>Echo OS - Alec's Multi-Universe Journal</title>
     <style>
         :root {
-            /* 纸张颜色保留 */
             --paper-right: #fdfaf5; --paper-left: #f5f0e6; 
             --paper-line: #f0e6d3; --grid-line: #e3d9cd;
             --text-dark: #3a2f29; --text-light: #8a7b71;
             --accent-red: #c96554; --accent-blue: #6b8cce; --leather-cover: #5c4332; 
-            --tape-color: rgba(230, 200, 180, 0.7);
         }
 
-        /* 注入深咖色背景与细腻的SVG纸张噪点肌理 */
         body { 
             margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; 
             background-color: #382c26; 
@@ -22,8 +19,8 @@
             font-family: "PingFang SC", "Microsoft YaHei", serif; color: var(--text-dark); overflow: hidden; 
         }
 
-        /* ====== 左上角：多重宇宙图书馆控制台 (降维至 z-index: 5) ====== */
-        .library-sidebar { position: fixed; top: 20px; left: 20px; background: rgba(255,255,255,0.7); backdrop-filter: blur(15px); padding: 15px 20px; border-radius: 12px; z-index: 5; box-shadow: 0 4px 20px rgba(0,0,0,0.08); max-height: 90vh; overflow-y: auto; border: 1px solid rgba(255,255,255,0.5); width: 220px; transition: 0.3s;}
+        /* ====== 左上角控制台 (降维至 z-index: 1) ====== */
+        .library-sidebar { position: fixed; top: 20px; left: 20px; background: rgba(255,255,255,0.7); backdrop-filter: blur(15px); padding: 15px 20px; border-radius: 12px; z-index: 1; box-shadow: 0 4px 20px rgba(0,0,0,0.08); max-height: 90vh; overflow-y: auto; border: 1px solid rgba(255,255,255,0.5); width: 220px; transition: 0.3s;}
         .lib-row { margin-bottom: 15px; border-bottom: 1px dashed rgba(0,0,0,0.1); padding-bottom: 10px;}
         .lib-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
         .lib-icon { font-size: 16px; user-select: none; }
@@ -50,10 +47,9 @@
         .shake { animation: shake 0.4s; border-color: var(--accent-red) !important; color: var(--accent-red);}
         @keyframes shake { 0% { transform: translateX(0); } 25% { transform: translateX(-6px); } 50% { transform: translateX(6px); } 75% { transform: translateX(-6px); } 100% { transform: translateX(0); } }
 
-        /* ====== 底部巨型贴纸控制台 (带左右翻页) ====== */
+        /* 贴纸控制台 */
         .sticker-toggle-btn { position: fixed; bottom: 30px; right: 40px; background: rgba(255,255,255,0.9); color: var(--text-dark); padding: 12px 25px; border-radius: 25px; font-size: 15px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 1000; font-weight: bold; transition: 0.2s;}
         .sticker-toggle-btn:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.4); }
-        
         .sticker-tray { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: rgba(255,255,255,0.95); backdrop-filter: blur(15px); padding: 20px 30px; border-radius: 20px; box-shadow: 0 15px 40px rgba(0,0,0,0.3); display: none; z-index: 1000; border: 1px solid rgba(0,0,0,0.05); align-items: center; justify-content: space-between; box-sizing: border-box;}
         .st-nav-btn { font-size: 20px; color: var(--text-light); cursor: pointer; padding: 10px; font-weight: bold; transition: 0.2s; user-select: none;}
         .st-nav-btn:hover { color: var(--text-dark); transform: scale(1.2); }
@@ -61,10 +57,9 @@
         .tray-item { font-size: 45px; cursor: pointer; user-select: none; transition: 0.2s; display: flex; justify-content: center; align-items: center; width: 60px; height: 60px;}
         .tray-item:hover { transform: scale(1.2) translateY(-5px) rotate(5deg); }
 
-        .journal-container { position: relative; width: 950px; height: 600px; transition: all 0.6s ease; }
+        /* ====== 日记本整体容器 (提权至 z-index: 10，覆盖左侧菜单) ====== */
+        .journal-container { position: relative; width: 950px; height: 600px; transition: all 0.6s ease; z-index: 10; }
         
-        /* ====== Z-index 重构：左侧月份书签 (整体上移 3mm = ~12px) ====== */
-        /* top 原为 50px，现改为 38px */
         .bookmarks { position: absolute; top: 38px; left: 935px; display: flex; flex-direction: column; gap: 5px; transition: left 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
         .journal-opened .bookmarks { left: -60px; }
         
@@ -75,29 +70,25 @@
         .journal-opened .bm-month { border-radius: 8px 0 0 8px; padding: 8px 20px 8px 15px; margin-left: 0; margin-right: -10px; text-align: left; }
         .bm-month:not(.disabled-month):hover { background: #dcd0c3; }
         .journal-opened .bm-month.active { background: var(--accent-red); color: #fff; margin-right: -2px; z-index: 30; box-shadow: -3px 2px 10px rgba(0,0,0,0.15); }
-        
-        /* 超过今天的月份变为灰色不可点状态 */
         .disabled-month { opacity: 0.3; pointer-events: none; filter: grayscale(100%); cursor: default; }
 
-        /* ====== Z-index 重构：右侧书签与顶部搜索 ====== */
         .bookmarks-right { position: absolute; top: 70px; right: 10px; display: flex; flex-direction: column; gap: 10px; z-index: 10; transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); opacity: 0; pointer-events: none;}
         .journal-opened .bookmarks-right { right: -35px; opacity: 1; pointer-events: auto;}
         .bm-add { background: var(--text-dark); color: #fff; padding: 15px 10px 15px 15px; border-radius: 0 10px 10px 0; font-weight: bold; font-size: 15px; cursor: pointer; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); transition: 0.2s; writing-mode: vertical-rl; letter-spacing: 2px; margin-left: -10px; position: relative; z-index: 10;}
         .bm-add:hover { background: var(--accent-red); padding-right: 15px;}
 
-        /* ====== 终极版 UI：变形搜索框 (Morphing Bookmark) ====== */
-        .bookmark-top { position: absolute; top: -10px; right: 120px; background: var(--accent-blue); color: #fff; padding: 8px 20px 25px 20px; border-radius: 8px 8px 0 0; font-size: 14px; font-weight: bold; cursor: pointer; z-index: 10; opacity: 0; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); box-sizing: border-box; overflow: hidden; white-space: nowrap; box-shadow: 0 -2px 10px rgba(0,0,0,0.1);}
+        /* ====== 终极搜索框：垂直向上抽拉变形 ====== */
+        .bookmark-top { position: absolute; top: -10px; right: 120px; background: var(--accent-blue); color: #fff; padding: 8px 10px 25px 10px; border-radius: 8px 8px 0 0; font-size: 14px; font-weight: bold; cursor: pointer; z-index: 10; opacity: 0; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); box-sizing: border-box; overflow: hidden; width: 140px; display: flex; flex-direction: column; align-items: center; box-shadow: 0 -2px 10px rgba(0,0,0,0.1);}
         .journal-opened .bookmark-top { opacity: 1; top: -30px;}
-        .bookmark-top:not(.searching):hover { top: -38px; padding-bottom: 33px; }
+        .bookmark-top:not(.searching):hover { top: -38px; }
 
-        /* 检索激活时的变形状态 */
-        .bookmark-top.searching { top: -45px !important; width: 240px; right: 90px; padding: 8px 12px 35px 12px; cursor: default; box-shadow: 0 -5px 15px rgba(0,0,0,0.2);}
-        .search-input-wrapper { display: none; gap: 6px; opacity: 0; transition: opacity 0.3s ease 0.1s;}
-        .bookmark-top.searching .search-input-wrapper { display: flex; opacity: 1; }
-        .bookmark-top.searching #search-label { display: none; }
-        .search-input-wrapper input { flex: 1; border: none; border-radius: 4px; padding: 6px 10px; font-size: 12px; outline: none; color: var(--text-dark);}
-        .search-input-wrapper button { background: #fff; border: none; border-radius: 4px; cursor: pointer; padding: 0 12px; font-size: 13px; font-weight: bold; color: var(--accent-blue); transition: 0.2s;}
-        .search-input-wrapper button:hover { background: var(--desk-bg); }
+        /* 搜索激活：宽度不变，整体向上滑动抽出 */
+        .bookmark-top.searching { top: -85px !important; cursor: default; padding-bottom: 30px;}
+        .search-label { padding-bottom: 10px; transition: 0.3s; }
+        .search-input-wrapper { display: flex; opacity: 0; transition: opacity 0.3s; width: 100%; justify-content: center; gap: 5px;}
+        .bookmark-top.searching .search-input-wrapper { opacity: 1; }
+        .search-input-wrapper input { width: 85px; border: none; border-radius: 4px; padding: 6px; font-size: 12px; outline: none; color: var(--text-dark);}
+        .search-input-wrapper button { background: #fff; border: none; border-radius: 4px; cursor: pointer; padding: 0 8px; font-size: 12px; font-weight: bold; color: var(--accent-blue); transition: 0.2s;}
 
         .journal-cover { position: absolute; left: 50%; top: 0; bottom: 0; width: 475px; background: var(--leather-cover); border-radius: 5px 20px 20px 5px; box-shadow: 15px 15px 40px rgba(0,0,0,0.5); display: flex; flex-direction: column; justify-content: center; align-items: center; color: #d4c3b3; z-index: 50; cursor: pointer; transform-origin: left center; transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
         .journal-cover::before { content: ''; position: absolute; left: 15px; top: 0; bottom: 0; width: 4px; background: rgba(0,0,0,0.3); }
@@ -107,7 +98,7 @@
         .journal-inner::after { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 40px; transform: translateX(-50%); background: linear-gradient(to right, rgba(0,0,0,0.02) 0%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.02) 100%); z-index: 5; pointer-events: none; }
 
         /* 左页 */
-        .page-left { flex: 1; height: 100%; padding: 30px 40px; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: var(--paper-left); background-image: linear-gradient(var(--grid-line) 1px, transparent 1px), linear-gradient(90deg, var(--grid-line) 1px, transparent 1px); background-size: 20px 20px; z-index: 1; box-sizing: border-box;}
+        .page-left { flex: 1; height: 100%; padding: 30px 40px; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: space-between; background-color: var(--paper-left); background-image: linear-gradient(var(--grid-line) 1px, transparent 1px), linear-gradient(90deg, var(--grid-line) 1px, transparent 1px); background-size: 20px 20px; z-index: 1; box-sizing: border-box;}
         .close-book-btn { position: absolute; top: 15px; left: 20px; font-size: 13px; font-weight: bold; color: var(--text-light); cursor: pointer; z-index: 50; }
         
         .scrapbook-note { font-family: cursive, "PingFang SC"; font-size: 14px; color: var(--text-dark); line-height: 1.6; text-align: center; padding: 10px 15px; width: 80%; max-height: 90px; overflow-y: auto; background: rgba(255,255,255,0.6); border-radius: 8px; box-shadow: 2px 2px 5px rgba(0,0,0,0.02); cursor: context-menu; position: relative; transition: 0.2s; box-sizing: border-box;}
@@ -116,10 +107,12 @@
         .scrapbook-note:hover::before { opacity: 1; }
         .note-edit-area { width: 80%; height: 90px; font-family: cursive, "PingFang SC"; font-size: 14px; line-height: 1.6; padding: 10px; border: 2px dashed var(--accent-red); border-radius: 8px; background: #fff; outline: none; resize: none; text-align: center; box-sizing: border-box;}
 
-        .media-center { display: flex; flex-direction: column; align-items: center; margin: 15px 0; position: relative; flex-shrink: 0; }
-        .tape { position: absolute; top: -10px; left: 20px; width: 60px; height: 20px; background: var(--tape-color); transform: rotate(-3deg); z-index: 10; }
-        .polaroid-frame { width: 200px; height: 240px; background: #fff; padding: 12px 12px 35px 12px; box-shadow: 2px 5px 15px rgba(0,0,0,0.1); transform: rotate(-1deg); display: flex; justify-content: center; align-items: center; cursor: pointer; transition: 0.2s; box-sizing: border-box; overflow: hidden;}
-        .polaroid-image { width: 100%; height: 100%; background-color: #eaeaea; background-size: cover; background-position: center; display: flex; justify-content: center; align-items: center; border: 1px solid #eee; color: #aaa; font-size: 12px; text-align: center; }
+        /* ====== 新增的无限制照片流 (脱离固定相框) ====== */
+        .add-photo-btn { padding: 10px 20px; background: rgba(255,255,255,0.7); border: 2px dashed var(--text-light); border-radius: 8px; font-size: 13px; color: var(--text-light); font-weight: bold; cursor: pointer; transition: 0.2s; margin-top: auto; margin-bottom: 20px; z-index: 10;}
+        .add-photo-btn:hover { background: #fff; color: var(--text-dark); border-color: var(--text-dark); }
+        
+        .draggable-photo { position: absolute; cursor: move; user-select: none; z-index: 40; display: inline-block; padding: 10px; }
+        .photo-content { background-color: #fff; padding: 6px 6px 20px 6px; box-shadow: 2px 5px 15px rgba(0,0,0,0.15); background-size: cover; background-position: center; border: 1px solid #ddd; width: 140px; height: 160px; pointer-events: none;}
 
         .music-player-widget { position: absolute; width: 210px; background: rgba(255,255,255,0.9); border-radius: 12px; padding: 10px 15px; box-shadow: 2px 5px 15px rgba(0,0,0,0.15); z-index: 45; border: 1px solid #ddd; backdrop-filter: blur(5px); display: none; flex-direction: column; gap: 6px; box-sizing: border-box; cursor: move; }
         .music-header { display: flex; align-items: center; gap: 5px; }
@@ -128,7 +121,7 @@
         .music-controls { display: flex; align-items: center; gap: 8px; margin-top: 5px; }
         .play-btn { width: 26px; height: 26px; border-radius: 50%; background: var(--text-dark); color: #fff; border: none; display: flex; justify-content: center; align-items: center; cursor: pointer; font-size: 11px;}
         .close-music-btn { position: absolute; top: -6px; right: -6px; background: var(--accent-red); color: #fff; border: none; border-radius: 50%; width: 18px; height: 18px; font-size: 10px; display: flex; justify-content: center; align-items: center; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
-        .add-music-btn { margin-top: 15px; width: 40px; height: 40px; background: rgba(255,255,255,0.7); border: 2px dashed var(--text-light); border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 18px; color: var(--text-light); cursor: pointer; transition: 0.2s; }
+        .add-music-btn { position: absolute; bottom: 30px; right: 40px; width: 40px; height: 40px; background: rgba(255,255,255,0.7); border: 2px dashed var(--text-light); border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 18px; color: var(--text-light); cursor: pointer; transition: 0.2s; z-index: 10;}
 
         /* 右页 */
         .page-right { flex: 1; height: 100%; padding: 30px 40px; display: flex; flex-direction: column; background-image: linear-gradient(var(--paper-line) 1px, transparent 1px); background-size: 100% 32px; background-position: 0 45px; z-index: 10; box-sizing: border-box; }
@@ -140,7 +133,6 @@
         .seamless-textarea:hover, .seamless-textarea:focus { border-color: rgba(0,0,0,0.1); background: rgba(255,255,255,0.5); border-radius: 8px;}
 
         .agent-box { height: 140px; margin-bottom: 10px; padding: 5px; border-radius: 8px; box-sizing: border-box; background-color: rgba(255,255,255,0.3); display: flex; flex-direction: column;}
-        
         .user-section-wrapper { height: 200px; overflow-y: auto; padding: 10px; margin-bottom: 10px; border-radius: 8px; box-sizing: border-box; background-color: rgba(255,255,255,0.4); }
         .user-section-wrapper::-webkit-scrollbar { width: 4px; }
         .user-section-wrapper::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 2px; }
@@ -160,7 +152,7 @@
         .draggable-sticker { position: absolute; cursor: move; user-select: none; z-index: 50; display: inline-block; padding: 10px; }
         .sticker-content { pointer-events: none; }
         .sticker-ctrls { position: absolute; top: -15px; right: -15px; background: #fff; border-radius: 20px; padding: 2px 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); display: none; gap: 5px; z-index: 51; border: 1px solid #ddd;}
-        .draggable-sticker:hover .sticker-ctrls { display: flex; }
+        .draggable-sticker:hover .sticker-ctrls, .draggable-photo:hover .sticker-ctrls { display: flex; }
         .s-ctrl-btn { border: none; background: transparent; font-size: 12px; cursor: pointer; padding: 2px 4px; border-radius: 4px; }
         .s-ctrl-del { color: red; font-weight: bold;}
 
@@ -185,8 +177,7 @@
 
 <div class="sticker-tray" id="sticker-tray">
     <div class="st-nav-btn" id="st-prev" onclick="changeStickerPage(-1)">❮</div>
-    <div class="st-content" id="sticker-tray-content">
-        </div>
+    <div class="st-content" id="sticker-tray-content"></div>
     <div class="st-nav-btn" id="st-next" onclick="changeStickerPage(1)">❯</div>
 </div>
 
@@ -212,10 +203,10 @@
     </div>
 
     <div class="bookmark-top" id="search-container" onclick="openSearch(event)">
-        <span id="search-label">🔍 检索</span>
+        <div class="search-label" id="search-label">🔍 检索</div>
         <div id="search-input-wrapper" class="search-input-wrapper">
-            <input type="text" id="search-input" placeholder="输入关键字..." onkeypress="if(event.key==='Enter') executeSearch(event)">
-            <button onclick="executeSearch(event)">🔍</button>
+            <input type="text" id="search-input" placeholder="关键字..." onkeypress="if(event.key==='Enter') executeSearch(event)">
+            <button onclick="executeSearch(event)">Go</button>
         </div>
     </div>
 
@@ -225,18 +216,14 @@
     </div>
 
     <div class="journal-inner" id="journal-pages">
-        <div class="page-left">
+        <div class="page-left" id="page-left-zone">
             <div class="close-book-btn" onclick="closeJournal()">❮ 合上</div>
-            <div id="note-top" class="scrapbook-note" oncontextmenu="editNote(event, this)"></div>
+            <div id="note-top" class="scrapbook-note" oncontextmenu="editNote(event, this)" style="margin-top: 30px;"></div>
             
-            <div class="media-center">
-                <div class="tape"></div>
-                <input type="file" id="photo-upload-input" style="display: none;" accept="image/*" onchange="handlePhotoUpload(event)">
-                <div class="polaroid-frame" onclick="document.getElementById('photo-upload-input').click()">
-                    <div class="polaroid-image" id="display-photo">点击传图</div>
-                </div>
-                <div id="add-music-btn" class="add-music-btn" onclick="addMusic()">+ 🎵</div>
-            </div>
+            <input type="file" id="photo-upload-input" style="display: none;" accept="image/*" onchange="handlePhotoUpload(event)">
+            <div class="add-photo-btn" onclick="document.getElementById('photo-upload-input').click()">📸 贴入新照片</div>
+            
+            <div id="add-music-btn" class="add-music-btn" onclick="addMusic()">🎵</div>
             <div id="note-bottom" class="scrapbook-note" oncontextmenu="editNote(event, this)"></div>
         </div>
 
@@ -291,7 +278,6 @@
     }
     function handlePasswordEnter(e) { if(e.key === 'Enter') checkPassword(); }
 
-    // 绝对物理时间中枢
     function getEast8Date() { return new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Shanghai"})); }
     function getEast8DateString() { const d = getEast8Date(); return `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日`; }
     function getEast8Year() { return getEast8Date().getFullYear(); }
@@ -299,106 +285,71 @@
 
     function generateBlankEntry(year, month, isPlaceholder = false) {
         return {
-            month: month, date: `${year}年${month}月${isPlaceholder ? '1日' : getEast8Date().getDate() + '日'}`, weather: "天气...", photo: "", 
+            month: month, date: `${year}年${month}月${isPlaceholder ? '1日' : getEast8Date().getDate() + '日'}`, weather: "天气...",
+            photos: [], // [重构点] 升级为相册数组，支持多张可缩放照片
             agentTitle: "", agentText: "", userEntries: [], 
             topNote: "点击右键编辑", bottomNote: "点击右键编辑", musicLink: "", musicIsLocalBase64: false
         };
     }
 
-    // ================= 数据库引擎与自愈逻辑 =================
+    // ================= 数据库引擎 =================
     let systemDB = JSON.parse(localStorage.getItem('alecSystemDB_v2'));
-    const realYear = getEast8Year();
-    const realMonth = getEast8Month();
+    const realYear = getEast8Year(); const realMonth = getEast8Month();
 
     if (!systemDB || systemDB.length === 0) {
         systemDB = [{ id: 'j_' + Date.now(), name: "ECHO的日记", books: [{ year: realYear, entries: [ generateBlankEntry(realYear, realMonth) ] }] }];
     } else {
-        // [核心架构更新]：系统自愈机制，自动抹除所有未来的幽灵记录，防止 12 月强制前置Bug
-        systemDB.forEach(j => {
-            j.books.forEach(b => { if (b.year === realYear) { b.entries = b.entries.filter(e => e.month <= realMonth); } });
-            j.books = j.books.filter(b => b.year <= realYear);
-        });
-        // 确保清理后至少有一张活页
-        systemDB.forEach(j => {
-            if(j.books.length === 0) j.books.push({ year: realYear, entries: [ generateBlankEntry(realYear, realMonth) ] });
-            else if(j.books[0].entries.length === 0) j.books[0].entries.push(generateBlankEntry(j.books[0].year, realMonth));
-        });
+        // [数据迁移] 自动将旧的单一相框图片，转换为全新的相册数据结构
+        systemDB.forEach(j => j.books.forEach(b => b.entries.forEach(e => {
+            if(e.photo && typeof e.photo === 'string') {
+                e.photos = [{src: e.photo, left: '40px', top: '120px', transform: 'scale(1) rotate(-2deg)'}];
+                delete e.photo;
+            }
+            if(!e.photos) e.photos = [];
+        })));
     }
 
-    let activeJournalId = systemDB[0].id;
-    let activeYear = systemDB[0].books[0].year;
-    let currentIndex = 0;
-    let audioPlayer = document.getElementById('real-audio-player');
+    let activeJournalId = systemDB[0].id; let activeYear = systemDB[0].books[0].year;
+    let currentIndex = 0; let audioPlayer = document.getElementById('real-audio-player');
 
-    function getActiveEntries() {
-        let j = systemDB.find(x => x.id === activeJournalId); let b = j.books.find(x => x.year === activeYear); return b.entries;
-    }
+    function getActiveEntries() { let j = systemDB.find(x => x.id === activeJournalId); let b = j.books.find(x => x.year === activeYear); return b.entries; }
     function saveToDatabase() { localStorage.setItem('alecSystemDB_v2', JSON.stringify(systemDB)); }
 
-    // ================= 贴纸弹匣系统 =================
-    // 你以后只需要往这个数组里填你的贴纸图片代码：比如 '<img src="你的贴纸1.png" width="100">'
-    const myStickers = [
-        '🌸', '⭐', '📌', '🎀', '☕', '📝', '📸', '🌿', '🍄', '🌙', '☁️', '🎈', '🎨', '🚀', '🔮', '🧸', '💌', '💡'
-    ];
-    let stickerPage = 0;
-    const stickersPerPage = 6;
-
+    // ================= 贴纸系统 =================
+    const myStickers = [ '🌸', '⭐', '📌', '🎀', '☕', '📝', '📸', '🌿', '🍄', '🌙', '☁️', '🎈', '🎨', '🚀', '🔮', '🧸', '💌', '💡' ];
+    let stickerPage = 0; const stickersPerPage = 6;
     function renderStickers() {
         const tray = document.getElementById('sticker-tray-content'); let html = '';
-        let start = stickerPage * stickersPerPage; let end = start + stickersPerPage;
-        let currentSlice = myStickers.slice(start, end);
+        let start = stickerPage * stickersPerPage; let end = start + stickersPerPage; let currentSlice = myStickers.slice(start, end);
         currentSlice.forEach(s => { let safeS = s.replace(/'/g, "\\'"); html += `<div class="tray-item" onclick="spawnSticker('${safeS}')">${s}</div>`; });
         tray.innerHTML = html;
-        document.getElementById('st-prev').style.opacity = stickerPage > 0 ? '1' : '0.2';
-        document.getElementById('st-prev').style.pointerEvents = stickerPage > 0 ? 'auto' : 'none';
-        document.getElementById('st-next').style.opacity = end < myStickers.length ? '1' : '0.2';
-        document.getElementById('st-next').style.pointerEvents = end < myStickers.length ? 'auto' : 'none';
+        document.getElementById('st-prev').style.opacity = stickerPage > 0 ? '1' : '0.2'; document.getElementById('st-prev').style.pointerEvents = stickerPage > 0 ? 'auto' : 'none';
+        document.getElementById('st-next').style.opacity = end < myStickers.length ? '1' : '0.2'; document.getElementById('st-next').style.pointerEvents = end < myStickers.length ? 'auto' : 'none';
     }
     function changeStickerPage(dir) { stickerPage += dir; renderStickers(); }
-    renderStickers(); // 初始化贴纸工作台
+    renderStickers();
 
-    // ================= 左上角图书馆渲染 =================
+    // ================= 图书馆控制台 =================
     function renderLibrary() {
         let html = '';
         systemDB.forEach(journal => {
-            html += `<div class="lib-row">`;
-            html += `<div class="lib-header"><span class="lib-icon">📖</span><input type="text" class="lib-name-input" value="${journal.name}" onchange="renameJournal('${journal.id}', this.value)"></div>`;
-            html += `<div class="lib-books">`;
+            html += `<div class="lib-row"><div class="lib-header"><span class="lib-icon">📖</span><input type="text" class="lib-name-input" value="${journal.name}" onchange="renameJournal('${journal.id}', this.value)"></div><div class="lib-books">`;
             journal.books.forEach(book => {
                 let isActive = (journal.id === activeJournalId && book.year === activeYear) ? 'active-book' : '';
                 html += `<div class="lib-book-badge ${isActive}" onclick="switchBook('${journal.id}', ${book.year})">${book.year}</div>`;
             });
-            html += `<div class="lib-add-btn" onclick="addYear('${journal.id}')" title="添加新年份">+</div>`;
-            html += `</div></div>`;
+            html += `<div class="lib-add-btn" onclick="addYear('${journal.id}')" title="添加新年份">+</div></div></div>`;
         });
         html += `<div class="lib-add-journal-btn" onclick="addJournal()">+ 添加新记录对象</div>`;
         document.getElementById('library-container').innerHTML = html;
-
         let activeJ = systemDB.find(x => x.id === activeJournalId);
         document.getElementById('display-cover-title').innerText = activeJ.name.toUpperCase();
         document.getElementById('display-bm-year').innerText = activeYear;
     }
-
     function renameJournal(id, newName) { let j = systemDB.find(x => x.id === id); if(j && newName.trim()) { j.name = newName.trim(); saveToDatabase(); renderLibrary(); } }
-    function addJournal() {
-        let newName = prompt("给新的日记本起个名字 (如: CHASE的日记):", "新日记");
-        if(newName && newName.trim()) {
-            systemDB.push({ id: 'j_' + Date.now(), name: newName.trim(), books: [{ year: realYear, entries: [ generateBlankEntry(realYear, realMonth) ] }] });
-            saveToDatabase(); renderLibrary();
-        }
-    }
-    function addYear(jId) {
-        let j = systemDB.find(x => x.id === jId); let nYear = prompt("请输入要添加的年份 (如: 2027):", realYear + 1);
-        if(nYear && !isNaN(nYear)) {
-            nYear = parseInt(nYear);
-            if(!j.books.find(b => b.year === nYear)) { j.books.push({ year: nYear, entries: [ generateBlankEntry(nYear, 1, true) ] }); j.books.sort((a,b)=> b.year - a.year); saveToDatabase(); renderLibrary(); } 
-            else { alert("该年份已存在！"); }
-        }
-    }
-    function switchBook(jId, year) {
-        activeJournalId = jId; activeYear = year; currentIndex = 0; renderLibrary();
-        if (document.body.classList.contains('journal-opened')) renderPage(0);
-    }
+    function addJournal() { let newName = prompt("给新的日记本起个名字:", "新日记"); if(newName && newName.trim()) { systemDB.push({ id: 'j_' + Date.now(), name: newName.trim(), books: [{ year: realYear, entries: [ generateBlankEntry(realYear, realMonth) ] }] }); saveToDatabase(); renderLibrary(); } }
+    function addYear(jId) { let j = systemDB.find(x => x.id === jId); let nYear = prompt("请输入要添加的年份:", realYear + 1); if(nYear && !isNaN(nYear)) { nYear = parseInt(nYear); if(!j.books.find(b => b.year === nYear)) { j.books.push({ year: nYear, entries: [ generateBlankEntry(nYear, 1, true) ] }); j.books.sort((a,b)=> b.year - a.year); saveToDatabase(); renderLibrary(); } else { alert("该年份已存在！"); } } }
+    function switchBook(jId, year) { activeJournalId = jId; activeYear = year; currentIndex = 0; renderLibrary(); if (document.body.classList.contains('journal-opened')) renderPage(0); }
     renderLibrary();
 
     // ================= 日记核心操作 =================
@@ -412,115 +363,131 @@
         if(mMatch) entries[currentIndex].month = parseInt(mMatch[1]);
         saveToDatabase(); updateMonthBookmark();
     }
-
-    function createNewPage() {
-        let entries = getActiveEntries(); entries.unshift(generateBlankEntry(activeYear, realMonth));
-        saveToDatabase(); currentIndex = 0; renderPage(0);
-    }
-
-    function deleteCurrentPage() {
-        if(confirm("最高权限警告：确定彻底删除此页记录？不可恢复。")) {
-            let entries = getActiveEntries(); entries.splice(currentIndex, 1);
-            if(entries.length === 0) { createNewPage(); } 
-            else { if(currentIndex >= entries.length) currentIndex = entries.length - 1; saveToDatabase(); renderPage(currentIndex); }
-        }
-    }
+    function createNewPage() { let entries = getActiveEntries(); entries.unshift(generateBlankEntry(activeYear, realMonth)); saveToDatabase(); currentIndex = 0; renderPage(0); }
+    function deleteCurrentPage() { if(confirm("确定删除此页？不可恢复。")) { let entries = getActiveEntries(); entries.splice(currentIndex, 1); if(entries.length === 0) createNewPage(); else { if(currentIndex >= entries.length) currentIndex = entries.length - 1; saveToDatabase(); renderPage(currentIndex); } } }
 
     function jumpToMonth(targetMonth, el) {
-        // [阻断器] 如果是灰色未来月份，禁止穿越
         if(el && el.classList.contains('disabled-month')) return;
-
-        if (!document.body.classList.contains('journal-opened')) { document.body.classList.add('journal-opened'); }
-        let entries = getActiveEntries();
-        let foundIndex = entries.findIndex(e => e.month === targetMonth);
+        if (!document.body.classList.contains('journal-opened')) document.body.classList.add('journal-opened');
+        let entries = getActiveEntries(); let foundIndex = entries.findIndex(e => e.month === targetMonth);
         if (foundIndex !== -1) { currentIndex = foundIndex; renderPage(currentIndex); } 
-        else {
-            let blank = generateBlankEntry(activeYear, targetMonth, true);
-            entries.push(blank); entries.sort((a, b) => (b.month || 0) - (a.month || 0));
-            saveToDatabase(); currentIndex = entries.findIndex(e => e === blank); renderPage(currentIndex);
-        }
+        else { let blank = generateBlankEntry(activeYear, targetMonth, true); entries.push(blank); entries.sort((a, b) => (b.month || 0) - (a.month || 0)); saveToDatabase(); currentIndex = entries.findIndex(e => e === blank); renderPage(currentIndex); }
     }
 
     function updateMonthBookmark() {
         let entries = getActiveEntries(); if(!entries || entries.length === 0) return;
         let currentMonth = entries[currentIndex].month;
         document.querySelectorAll('.bm-month').forEach(bm => {
-            let m = parseInt(bm.innerText);
-            bm.classList.remove('active');
+            let m = parseInt(bm.innerText); bm.classList.remove('active');
             if (m === currentMonth) bm.classList.add('active');
-            
-            // 时空封锁：屏蔽所有超过真实时间的未来月份
             bm.classList.remove('disabled-month');
-            if (activeYear > realYear || (activeYear === realYear && m > realMonth)) {
-                bm.classList.add('disabled-month');
-            }
+            if (activeYear > realYear || (activeYear === realYear && m > realMonth)) bm.classList.add('disabled-month');
         });
     }
 
-    // ====== 生命周期核心：合上并重置记忆 ======
-    function closeJournal() { 
-        document.body.classList.remove('journal-opened'); 
-        // 彻底复原时间指针，抹除翻阅痕迹
-        setTimeout(() => { currentIndex = 0; renderPage(0); }, 600);
-    }
-
-    function openJournalToLatest() { document.body.classList.add('journal-opened'); currentIndex = 0; renderPage(0); }
-
-    function renderPage(index) {
-        let entries = getActiveEntries(); const data = entries[index];
-        document.getElementById('display-date').value = data.date;
-        document.getElementById('display-weather').value = data.weather;
-        document.getElementById('display-agent-title').value = data.agentTitle;
-        document.getElementById('display-agent-text').value = data.agentText;
-        
-        const photoDiv = document.getElementById('display-photo');
-        if(data.photo) { photoDiv.style.backgroundImage = `url(${data.photo})`; photoDiv.innerText = ""; } 
-        else { photoDiv.style.backgroundImage = "none"; photoDiv.innerText = "点击传图"; }
-
-        document.getElementById('display-page-num').innerText = `${entries.length - index} / ${entries.length}`;
-        document.getElementById('note-top').innerText = data.topNote;
-        document.getElementById('note-bottom').innerText = data.bottomNote;
-
-        const playerWidget = document.getElementById('music-player-widget'); const addBtn = document.getElementById('add-music-btn');
-        resetPlayer(); 
-        
-        if (data.musicLink || data.musicIsLocalBase64) {
-            addBtn.style.display = 'none'; playerWidget.style.display = 'flex';
-            document.getElementById('music-input-display').value = data.musicIsLocalBase64 ? "[本地音频已加载]" : data.musicLink;
-            playerWidget.style.top = '360px'; playerWidget.style.left = '140px';
-            if(data.musicLink) audioPlayer.src = data.musicLink;
-        } else { addBtn.style.display = 'flex'; playerWidget.style.display = 'none'; }
-
-        renderUserEntries(data.userEntries);
-        document.getElementById('btn-prev').classList.toggle('disabled', index === entries.length - 1);
-        document.getElementById('btn-next').classList.toggle('disabled', index === 0);
-        document.querySelectorAll('.draggable-sticker').forEach(s => s.remove());
-        updateMonthBookmark();
+    // ================= 照片流生成系统 =================
+    // 动态渲染所有已保存的照片
+    function renderPhotos(photosArray) {
+        document.querySelectorAll('.draggable-photo').forEach(el => el.remove());
+        if(!photosArray) return;
+        photosArray.forEach((pData, idx) => {
+            const s = document.createElement('div');
+            s.className = 'draggable-photo'; s.dataset.idx = idx;
+            s.style.left = pData.left; s.style.top = pData.top;
+            s.innerHTML = `<div class="photo-content" style="transform: ${pData.transform}; background-image: url(${pData.src})"></div>
+                           <div class="sticker-ctrls"><button class="s-ctrl-btn" onclick="modifyPhoto(this, 'rotL')">↺</button><button class="s-ctrl-btn" onclick="modifyPhoto(this, 'rotR')">↻</button><button class="s-ctrl-btn" onclick="modifyPhoto(this, 'up')">+</button><button class="s-ctrl-btn" onclick="modifyPhoto(this, 'down')">-</button><button class="s-ctrl-btn s-ctrl-del" onclick="deletePhoto(this)">×</button></div>`;
+            document.getElementById('page-left-zone').appendChild(s);
+            makeDraggable(s, true); // 传入 true 表示需要触发相册的物理保存
+        });
     }
 
     function handlePhotoUpload(event) {
         const file = event.target.files[0];
         if (file) {
-            if(file.size > 2 * 1024 * 1024) alert("提示：为防止浏览器缓存溢出，建议上传 2MB 以下的图片哦。");
+            if(file.size > 2 * 1024 * 1024) alert("提示：请尽量上传2MB以下图片防止缓存溢出。");
             const reader = new FileReader();
-            reader.onload = function(e) { getActiveEntries()[currentIndex].photo = e.target.result; saveToDatabase(); renderPage(currentIndex); }
+            reader.onload = function(e) { 
+                let entries = getActiveEntries();
+                entries[currentIndex].photos.push({ src: e.target.result, left: '50px', top: '100px', transform: 'scale(1) rotate('+(Math.random()*10-5)+'deg)' });
+                saveToDatabase(); renderPage(currentIndex); 
+            }
             reader.readAsDataURL(file);
         }
     }
 
+    // 修改并保存照片物理状态
+    function modifyPhoto(btn, action) { 
+        const node = btn.closest('.draggable-photo'); const c = node.querySelector('.photo-content'); 
+        let s = parseFloat(c.style.transform.match(/scale\(([^)]+)\)/)[1]); let r = parseInt(c.style.transform.match(/rotate\(([^)]+)deg\)/)[1]); 
+        if(action==='rotL') r-=10; if(action==='rotR') r+=10; if(action==='up') s+=0.1; if(action==='down') s=Math.max(0.5, s-0.1); 
+        c.style.transform = `scale(${s}) rotate(${r}deg)`; 
+        saveMediaState();
+    }
+    function deletePhoto(btn) {
+        const node = btn.closest('.draggable-photo'); let idx = parseInt(node.dataset.idx);
+        getActiveEntries()[currentIndex].photos.splice(idx, 1);
+        saveToDatabase(); renderPage(currentIndex);
+    }
+    
+    // 静默序列化保存相册坐标
+    function saveMediaState() {
+        let entries = getActiveEntries();
+        document.querySelectorAll('.draggable-photo').forEach(node => {
+            let idx = parseInt(node.dataset.idx);
+            if(entries[currentIndex].photos[idx]) {
+                entries[currentIndex].photos[idx].left = node.style.left;
+                entries[currentIndex].photos[idx].top = node.style.top;
+                entries[currentIndex].photos[idx].transform = node.querySelector('.photo-content').style.transform;
+            }
+        });
+        saveToDatabase();
+    }
+
+    function closeJournal() { document.body.classList.remove('journal-opened'); setTimeout(() => { currentIndex = 0; renderPage(0); }, 600); }
+    function openJournalToLatest() { document.body.classList.add('journal-opened'); currentIndex = 0; renderPage(0); }
+
+    function renderPage(index) {
+        let entries = getActiveEntries(); const data = entries[index];
+        document.getElementById('display-date').value = data.date; document.getElementById('display-weather').value = data.weather; document.getElementById('display-agent-title').value = data.agentTitle; document.getElementById('display-agent-text').value = data.agentText;
+        document.getElementById('display-page-num').innerText = `${entries.length - index} / ${entries.length}`;
+        document.getElementById('note-top').innerText = data.topNote; document.getElementById('note-bottom').innerText = data.bottomNote;
+
+        // 渲染无尽照片流
+        renderPhotos(data.photos);
+
+        const playerWidget = document.getElementById('music-player-widget'); const addBtn = document.getElementById('add-music-btn');
+        resetPlayer(); 
+        if (data.musicLink || data.musicIsLocalBase64) {
+            addBtn.style.display = 'none'; playerWidget.style.display = 'flex';
+            document.getElementById('music-input-display').value = data.musicIsLocalBase64 ? "[本地音频已加载]" : data.musicLink;
+            playerWidget.style.top = '400px'; playerWidget.style.left = '140px';
+            if(data.musicLink) audioPlayer.src = data.musicLink;
+        } else { addBtn.style.display = 'flex'; playerWidget.style.display = 'none'; }
+
+        renderUserEntries(data.userEntries);
+        document.getElementById('btn-prev').classList.toggle('disabled', index === entries.length - 1); document.getElementById('btn-next').classList.toggle('disabled', index === 0);
+        document.querySelectorAll('.draggable-sticker').forEach(s => s.remove());
+        updateMonthBookmark();
+    }
+
+    // ====== 拖拽物理引擎 ======
+    function makeDraggable(elmnt, isPhoto = false) {
+        let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0; elmnt.onmousedown = dragMouseDown;
+        function dragMouseDown(e) { if(e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT') return; e.preventDefault(); pos3 = e.clientX; pos4 = e.clientY; document.onmouseup = closeDragElement; document.onmousemove = elementDrag; document.querySelectorAll('.draggable-sticker, .draggable-photo, .music-player-widget').forEach(s => s.style.zIndex = 45); elmnt.style.zIndex = 50; }
+        function elementDrag(e) { e.preventDefault(); pos1 = pos3 - e.clientX; pos2 = pos4 - e.clientY; pos3 = e.clientX; pos4 = e.clientY; elmnt.style.top = (elmnt.offsetTop - pos2) + "px"; elmnt.style.left = (elmnt.offsetLeft - pos1) + "px"; }
+        function closeDragElement() { 
+            document.onmouseup = null; document.onmousemove = null; 
+            if(isPhoto) saveMediaState(); // 松开鼠标瞬间，物理序列化保存
+        }
+    }
+    makeDraggable(document.getElementById('music-player-widget'));
+
+    // ====== 工具方法 ======
     function addMusic() { getActiveEntries()[currentIndex].musicLink = "https://"; renderPage(currentIndex); }
     function removeMusic() { getActiveEntries()[currentIndex].musicLink = ""; getActiveEntries()[currentIndex].musicIsLocalBase64 = false; saveToDatabase(); resetPlayer(); renderPage(currentIndex); }
     function autoSaveMusic() { const val = document.getElementById('music-input-display').value; getActiveEntries()[currentIndex].musicLink = val; getActiveEntries()[currentIndex].musicIsLocalBase64 = false; saveToDatabase(); audioPlayer.src = val; }
-    function handleAudioUpload(event) {
-        const file = event.target.files[0];
-        if (file) { const reader = new FileReader(); reader.onload = function(e) { getActiveEntries()[currentIndex].musicLink = e.target.result; getActiveEntries()[currentIndex].musicIsLocalBase64 = true; saveToDatabase(); renderPage(currentIndex); }; reader.readAsDataURL(file); }
-    }
-    function togglePlay() {
-        if(audioPlayer.paused) {
-            if(!audioPlayer.src) { alert("请上传本地音乐或输入纯音频(.mp3)直链。"); return; }
-            audioPlayer.play().then(() => { document.getElementById('play-pause-btn').innerText = '||'; document.getElementById('music-status').innerText = '播放中'; }).catch(e => alert("无法播放，请尝试本地文件。"));
-        } else { audioPlayer.pause(); document.getElementById('play-pause-btn').innerText = '▶'; document.getElementById('music-status').innerText = '已暂停'; }
-    }
+    function handleAudioUpload(event) { const file = event.target.files[0]; if (file) { const reader = new FileReader(); reader.onload = function(e) { getActiveEntries()[currentIndex].musicLink = e.target.result; getActiveEntries()[currentIndex].musicIsLocalBase64 = true; saveToDatabase(); renderPage(currentIndex); }; reader.readAsDataURL(file); } }
+    function togglePlay() { if(audioPlayer.paused) { if(!audioPlayer.src) { alert("请上传音乐。"); return; } audioPlayer.play().then(() => { document.getElementById('play-pause-btn').innerText = '||'; document.getElementById('music-status').innerText = '播放中'; }).catch(e => alert("播放失败。")); } else { audioPlayer.pause(); document.getElementById('play-pause-btn').innerText = '▶'; document.getElementById('music-status').innerText = '已暂停'; } }
     function resetPlayer() { audioPlayer.pause(); audioPlayer.currentTime = 0; document.getElementById('play-pause-btn').innerText = '▶'; document.getElementById('music-status').innerText = '就绪';}
 
     function renderUserEntries(entries) {
@@ -529,31 +496,10 @@
         html += `<textarea class="user-input" id="current-user-input" placeholder="随时记录你的想法..."></textarea><button class="save-btn" onclick="saveUserText()">封存</button>`;
         container.innerHTML = html; container.scrollTop = container.scrollHeight;
     }
-    function saveUserText() {
-        const input = document.getElementById('current-user-input'); const text = input.value.trim(); if(!text) return;
-        const d = getEast8Date();
-        const timeStr = `2026-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
-        getActiveEntries()[currentIndex].userEntries.push({ text: text, timestamp: timeStr });
-        saveToDatabase(); renderPage(currentIndex);
-    }
-    function editNote(e, el) {
-        e.preventDefault(); const textarea = document.createElement('textarea'); textarea.className = 'note-edit-area'; textarea.value = el.innerText;
-        textarea.onblur = function() { const val = this.value.trim() || '右键编辑'; el.innerText = val; el.style.display = 'block'; if(el.id === 'note-top') getActiveEntries()[currentIndex].topNote = val; else getActiveEntries()[currentIndex].bottomNote = val; saveToDatabase(); this.remove(); };
-        textarea.onkeydown = function(ev) { if(ev.key === 'Enter' && !ev.shiftKey) { ev.preventDefault(); this.blur(); } };
-        el.style.display = 'none'; el.parentNode.insertBefore(textarea, el); textarea.focus();
-    }
-
+    function saveUserText() { const input = document.getElementById('current-user-input'); const text = input.value.trim(); if(!text) return; const d = getEast8Date(); const timeStr = `2026-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`; getActiveEntries()[currentIndex].userEntries.push({ text: text, timestamp: timeStr }); saveToDatabase(); renderPage(currentIndex); }
+    function editNote(e, el) { e.preventDefault(); const textarea = document.createElement('textarea'); textarea.className = 'note-edit-area'; textarea.value = el.innerText; textarea.onblur = function() { const val = this.value.trim() || '右键编辑'; el.innerText = val; el.style.display = 'block'; if(el.id === 'note-top') getActiveEntries()[currentIndex].topNote = val; else getActiveEntries()[currentIndex].bottomNote = val; saveToDatabase(); this.remove(); }; textarea.onkeydown = function(ev) { if(ev.key === 'Enter' && !ev.shiftKey) { ev.preventDefault(); this.blur(); } }; el.style.display = 'none'; el.parentNode.insertBefore(textarea, el); textarea.focus(); }
     function changePage(dir) { let entries = getActiveEntries(); let n = currentIndex + dir; if(n>=0 && n<entries.length){ currentIndex = n; renderPage(n); } }
 
-    function makeDraggable(elmnt) {
-        let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0; elmnt.onmousedown = dragMouseDown;
-        function dragMouseDown(e) { if(e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT') return; e.preventDefault(); pos3 = e.clientX; pos4 = e.clientY; document.onmouseup = closeDragElement; document.onmousemove = elementDrag; document.querySelectorAll('.draggable-sticker, .music-player-widget').forEach(s => s.style.zIndex = 45); elmnt.style.zIndex = 50; }
-        function elementDrag(e) { e.preventDefault(); pos1 = pos3 - e.clientX; pos2 = pos4 - e.clientY; pos3 = e.clientX; pos4 = e.clientY; elmnt.style.top = (elmnt.offsetTop - pos2) + "px"; elmnt.style.left = (elmnt.offsetLeft - pos1) + "px"; }
-        function closeDragElement() { document.onmouseup = null; document.onmousemove = null; }
-    }
-    makeDraggable(document.getElementById('music-player-widget'));
-
-    // ================= 贴纸与变形搜索系统 =================
     function toggleTray() { const t = document.getElementById('sticker-tray'); t.style.display = t.style.display === 'flex' ? 'none' : 'flex'; }
     function spawnSticker(content) { 
         const s = document.createElement('div'); s.className = 'draggable-sticker'; s.style.left = '200px'; s.style.top = '250px'; 
@@ -562,23 +508,12 @@
     }
     function modifySticker(btn, action) { const c = btn.closest('.draggable-sticker').querySelector('.sticker-content'); let s = parseFloat(c.style.transform.match(/scale\(([^)]+)\)/)[1]); let r = parseInt(c.style.transform.match(/rotate\(([^)]+)deg\)/)[1]); if(action==='rotL') r-=15; if(action==='rotR') r+=15; if(action==='up') s+=0.2; if(action==='down') s=Math.max(0.5, s-0.2); c.style.transform = `scale(${s}) rotate(${r}deg)`; }
 
-    // 变形书签触发逻辑
-    function openSearch(e) {
-        e.stopPropagation(); const c = document.getElementById('search-container');
-        if(!c.classList.contains('searching')) { c.classList.add('searching'); setTimeout(()=>document.getElementById('search-input').focus(), 300); }
-    }
-    document.addEventListener('click', e => {
-        const c = document.getElementById('search-container');
-        if(c.classList.contains('searching') && !c.contains(e.target)) { c.classList.remove('searching'); }
-    });
+    // 抽拉式检索
+    function openSearch(e) { e.stopPropagation(); const c = document.getElementById('search-container'); if(!c.classList.contains('searching')) { c.classList.add('searching'); setTimeout(()=>document.getElementById('search-input').focus(), 300); } }
+    document.addEventListener('click', e => { const c = document.getElementById('search-container'); if(c.classList.contains('searching') && !c.contains(e.target)) { c.classList.remove('searching'); } });
     function executeSearch(e) { 
-        if(e) e.stopPropagation();
-        const query = document.getElementById('search-input').value.trim();
-        if(!query) return; let entries = getActiveEntries(); let found = -1;
-        for(let i=0; i<entries.length; i++) {
-            const d = entries[i]; const content = (d.date + d.agentText + d.topNote + d.bottomNote + d.userEntries.map(u=>u.text).join('')).toLowerCase();
-            if(content.includes(query.toLowerCase())) { found = i; break; }
-        }
+        if(e) e.stopPropagation(); const query = document.getElementById('search-input').value.trim(); if(!query) return; let entries = getActiveEntries(); let found = -1;
+        for(let i=0; i<entries.length; i++) { const d = entries[i]; const content = (d.date + d.agentText + d.topNote + d.bottomNote + d.userEntries.map(u=>u.text).join('')).toLowerCase(); if(content.includes(query.toLowerCase())) { found = i; break; } }
         if(found !== -1) { currentIndex = found; renderPage(found); document.getElementById('search-container').classList.remove('searching'); document.getElementById('search-input').value = ''; } 
         else { alert(`未在当前日记本中找到包含 "${query}" 的记录。`); }
     }
