@@ -19,7 +19,7 @@
             font-family: "PingFang SC", "Microsoft YaHei", serif; color: var(--text-dark); overflow: hidden; 
         }
 
-        /* ====== 左上角控制台 (剥夺特效，换为实体材质，杜绝渲染越界) ====== */
+        /* ====== 左上角控制台 ====== */
         .library-sidebar { position: fixed; top: 20px; left: 20px; background: rgba(245, 240, 230, 0.95); padding: 15px 20px; border-radius: 12px; z-index: 5 !important; box-shadow: 0 4px 20px rgba(0,0,0,0.2); max-height: 90vh; overflow-y: auto; border: 1px solid #d0c8c0; width: 220px; transition: 0.3s;}
         .lib-row { margin-bottom: 15px; border-bottom: 1px dashed rgba(0,0,0,0.1); padding-bottom: 10px;}
         .lib-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
@@ -70,8 +70,6 @@
         .journal-opened .bm-month { border-radius: 8px 0 0 8px; padding: 8px 20px 8px 15px; margin-left: 0; margin-right: -10px; text-align: left; }
         .bm-month:not(.disabled-month):hover { background: #dcd0c3; }
         .journal-opened .bm-month.active { background: var(--accent-red); color: #fff; margin-right: -2px; z-index: 30; box-shadow: -3px 2px 10px rgba(0,0,0,0.15); }
-        
-        /* 剥离 filter 滤镜，改为实体置灰，彻底修复渲染重叠 Bug */
         .disabled-month { background: #d0c8c0 !important; color: #a8a096 !important; pointer-events: none; cursor: default; opacity: 0.6; box-shadow: none !important; filter: none !important; }
 
         .bookmarks-right { position: absolute; top: 70px; right: 10px; display: flex; flex-direction: column; gap: 10px; z-index: 10; transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); opacity: 0; pointer-events: none;}
@@ -79,7 +77,6 @@
         .bm-add { background: var(--text-dark); color: #fff; padding: 15px 10px 15px 15px; border-radius: 0 10px 10px 0; font-weight: bold; font-size: 15px; cursor: pointer; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); transition: 0.2s; writing-mode: vertical-rl; letter-spacing: 2px; margin-left: -10px; position: relative; z-index: 10;}
         .bm-add:hover { background: var(--accent-red); padding-right: 15px;}
 
-        /* 底部挂件书签 */
         .bookmarks-bottom { position: absolute; bottom: -20px; left: 80px; display: flex; gap: 15px; z-index: 9; transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); opacity: 0; pointer-events: none;}
         .journal-opened .bookmarks-bottom { bottom: -35px; opacity: 1; pointer-events: auto;}
         .bm-bottom-btn { background: var(--text-dark); color: #fff; padding: 8px 18px 25px 18px; border-radius: 0 0 10px 10px; font-weight: bold; font-size: 13px; cursor: pointer; box-shadow: 2px 5px 10px rgba(0,0,0,0.2); transition: 0.2s; position: relative; z-index: 10;}
@@ -310,13 +307,9 @@
         };
     }
 
-    // ================= 核弹级数据库引擎 (附带极限扩容保护) =================
+    // ================= 核弹级数据库防线 =================
     let systemDB;
-    try {
-        systemDB = JSON.parse(localStorage.getItem('alecSystemDB_v2'));
-    } catch(e) {
-        systemDB = null;
-    }
+    try { systemDB = JSON.parse(localStorage.getItem('alecSystemDB_v2')); } catch(e) { systemDB = null; }
     
     const realYear = getEast8Year(); const realMonth = getEast8Month();
 
@@ -327,10 +320,7 @@
             j.books.forEach(b => { 
                 if (b.year === realYear) b.entries = b.entries.filter(e => e.month <= realMonth); 
                 b.entries.forEach(e => {
-                    // 数据防漏网补丁
-                    if(!e.photos) e.photos = [];
-                    if(!e.texts) e.texts = [];
-                    if(!e.stickers) e.stickers = [];
+                    if(!e.photos) e.photos = []; if(!e.texts) e.texts = []; if(!e.stickers) e.stickers = [];
                 });
             });
             j.books = j.books.filter(b => b.year <= realYear);
@@ -344,23 +334,18 @@
     let activeJournalId = systemDB[0].id; let activeYear = systemDB[0].books[0].year;
     let currentIndex = 0; let audioPlayer = document.getElementById('real-audio-player');
 
-    function getActiveEntries() { 
-        let j = systemDB.find(x => x.id === activeJournalId); 
-        let b = j.books.find(x => x.year === activeYear); 
-        return b.entries; 
-    }
+    function getActiveEntries() { let j = systemDB.find(x => x.id === activeJournalId); let b = j.books.find(x => x.year === activeYear); return b.entries; }
     
-    // 强制防崩溃存储中枢
+    // 强制报错捕获，防止内存撑爆导致系统瘫痪
     function saveToDatabase() { 
         try {
             localStorage.setItem('alecSystemDB_v2', JSON.stringify(systemDB)); 
         } catch(e) {
-            alert("⚠️ 系统超载警告：浏览器的本地存储已达上限（通常为5MB）。\n系统无法保存你刚刚贴入的高清照片或长音乐。\n请刷新页面，删除一些旧照片后再试！");
-            console.error("Storage full:", e);
+            alert("⚠️ 系统超载警告：浏览器的本地存储已达上限（通常为5MB）。\n刚才的数据未保存。建议你刷新页面，删除一些过往的照片后再试！");
         }
     }
 
-    // ================= 贴纸系统 =================
+    // ================= 贴纸弹匣系统 =================
     const myStickers = [ '🌸', '⭐', '📌', '🎀', '☕', '📝', '📸', '🌿', '🍄', '🌙', '☁️', '🎈', '🎨', '🚀', '🔮', '🧸', '💌', '💡' ];
     let stickerPage = 0; const stickersPerPage = 6;
     function renderStickers() {
@@ -472,22 +457,44 @@
         }
     }
 
-    // ====== 产生媒体的核心逻辑 (赋权置顶) ======
+    // ====== 视觉压缩引擎 (Canvas Compression) ======
+    // 用于极限减小图片体积，防止撑爆 5MB LocalStorage 限制
     function handlePhotoUpload(event) {
         const file = event.target.files[0];
-        if (file) {
-            if(file.size > 3 * 1024 * 1024) alert("提示：请尽量上传小图防止缓存溢出。");
-            const reader = new FileReader();
-            reader.onload = function(e) { 
+        if (!file) return;
+        
+        const reader = new FileReader();
+        reader.onload = function(e) { 
+            const img = new Image();
+            img.onload = function() {
+                // 压缩内核
+                const canvas = document.createElement('canvas');
+                let width = img.width; let height = img.height;
+                const MAX_SIZE = 800; // 控制在800像素，足够高清且极其省内存
+                
+                if (width > height) { if (width > MAX_SIZE) { height *= MAX_SIZE / width; width = MAX_SIZE; } } 
+                else { if (height > MAX_SIZE) { width *= MAX_SIZE / height; height = MAX_SIZE; } }
+                
+                canvas.width = width; canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+                
+                // 强制转化为 JPEG，采用 0.6 激进画质，百倍降低体积
+                const compressedBase64 = canvas.toDataURL('image/jpeg', 0.6);
+
                 let entries = getActiveEntries();
                 if(!entries[currentIndex].photos) entries[currentIndex].photos = [];
                 globalZIndex++;
-                entries[currentIndex].photos.push({ src: e.target.result, left: '60px', top: '60px', transform: 'scale(1) rotate('+(Math.random()*10-5)+'deg)', zIndex: globalZIndex });
+                entries[currentIndex].photos.push({ 
+                    src: compressedBase64, left: '60px', top: '60px', 
+                    transform: 'scale(1) rotate('+(Math.random()*10-5)+'deg)', zIndex: globalZIndex 
+                });
                 saveToDatabase(); renderPage(currentIndex); 
-            }
-            reader.readAsDataURL(file);
+            };
+            img.src = e.target.result;
         }
-        event.target.value = ''; // 极其重要：重置上传通道，防止连续传同图失效
+        reader.readAsDataURL(file);
+        event.target.value = ''; // 极其重要：重置上传通道
     }
 
     function addTextNode() {
@@ -588,16 +595,16 @@
         updateMonthBookmark();
     }
 
-    // ====== 修复版的终极智能拖拽引擎 ======
+    // ====== 终极智能拖拽引擎 ======
     function makeDraggable(elmnt, needsSave = false) {
         let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0; elmnt.onmousedown = dragMouseDown;
         function dragMouseDown(e) { 
-            // 核心物理交互：不管点的是什么，只要碰到了挂件，立刻提权到最顶层
+            // 核心物理交互：点击瞬间强制置顶，并立刻保存层级状态
             globalZIndex++;
             elmnt.style.zIndex = globalZIndex;
-            if(needsSave) saveMediaState(); // 静默保存最新图层高度
+            if(needsSave) saveMediaState();
 
-            // 保护输入操作：如果是按钮或正在打字，不触发跟随鼠标移动
+            // 保护输入操作
             if(e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' || e.target.isContentEditable || e.target.tagName === 'TEXTAREA' || e.target.type === 'color') return; 
             
             e.preventDefault(); pos3 = e.clientX; pos4 = e.clientY; 
@@ -612,9 +619,15 @@
     function addMusic() { getActiveEntries()[currentIndex].musicLink = "https://"; renderPage(currentIndex); }
     function removeMusic() { getActiveEntries()[currentIndex].musicLink = ""; getActiveEntries()[currentIndex].musicIsLocalBase64 = false; saveToDatabase(); resetPlayer(); renderPage(currentIndex); }
     function autoSaveMusic() { const val = document.getElementById('music-input-display').value; getActiveEntries()[currentIndex].musicLink = val; getActiveEntries()[currentIndex].musicIsLocalBase64 = false; saveToDatabase(); audioPlayer.src = val; }
+    
+    // 音频防线拦截
     function handleAudioUpload(event) { 
         const file = event.target.files[0]; 
         if (file) { 
+            if(file.size > 2 * 1024 * 1024) {
+                alert("⚠️ 拦截：音频文件过大（超过2MB）。\n前端无法无损压缩音频，这极易导致日记本崩溃。\n强烈建议使用外链，或压缩你的 MP3 文件后再上传。");
+                event.target.value = ''; return;
+            }
             const reader = new FileReader(); 
             reader.onload = function(e) { 
                 getActiveEntries()[currentIndex].musicLink = e.target.result; 
@@ -623,8 +636,9 @@
             }; 
             reader.readAsDataURL(file); 
         } 
-        event.target.value = ''; // 重置通道
+        event.target.value = ''; 
     }
+    
     function togglePlay() { if(audioPlayer.paused) { if(!audioPlayer.src) { alert("请上传音乐。"); return; } audioPlayer.play().then(() => { document.getElementById('play-pause-btn').innerText = '||'; document.getElementById('music-status').innerText = '播放中'; }).catch(e => alert("播放失败。")); } else { audioPlayer.pause(); document.getElementById('play-pause-btn').innerText = '▶'; document.getElementById('music-status').innerText = '已暂停'; } }
     function resetPlayer() { audioPlayer.pause(); audioPlayer.currentTime = 0; document.getElementById('play-pause-btn').innerText = '▶'; document.getElementById('music-status').innerText = '就绪';}
 
