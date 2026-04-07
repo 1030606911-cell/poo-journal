@@ -12,7 +12,7 @@
             --accent-red: #c96554; --accent-blue: #6b8cce; --leather-cover: #5c4332; 
         }
 
-        /* ====== 自定义字体渲染引擎 ====== */
+        /* ====== 自定义字体引擎 ====== */
         @font-face {
             font-family: 'AlecCustomFont';
             /* 👇👇👇 Alec，把你上传到 GitHub 的字体文件名写在下面这行的括号里 👇👇👇 */
@@ -25,12 +25,12 @@
             margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; 
             background-color: #382c26; 
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.06'/%3E%3C/svg%3E");
-            /* 注入你的专属字体，如果加载失败，会自动退回到默认字体 */
+            /* 全局文字接入你的专属字体 */
             font-family: 'AlecCustomFont', "PingFang SC", "Microsoft YaHei", serif; 
             color: var(--text-dark); overflow: hidden; 
         }
 
-        /* 左上角控制台 */
+        /* 左上角控制台 (强制降维) */
         .library-sidebar { position: fixed; top: 20px; left: 20px; background: rgba(245, 240, 230, 0.95); padding: 15px 20px; border-radius: 12px; z-index: 5 !important; box-shadow: 0 4px 20px rgba(0,0,0,0.2); max-height: 90vh; overflow-y: auto; border: 1px solid #d0c8c0; width: 220px; transition: 0.3s;}
         .lib-row { margin-bottom: 15px; border-bottom: 1px dashed rgba(0,0,0,0.1); padding-bottom: 10px;}
         .lib-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
@@ -43,7 +43,7 @@
         .lib-book-badge.active-book { background: var(--text-dark); color: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
         .lib-add-btn { background: transparent; color: var(--text-light); padding: 2px 6px; border-radius: 4px; font-size: 14px; cursor: pointer; font-weight: bold;}
         .lib-add-btn:hover { color: var(--text-dark); background: rgba(0,0,0,0.05);}
-        .lib-add-journal-btn { width: 100%; text-align: center; padding: 10px 0; background: rgba(0,0,0,0.05); border-radius: 8px; cursor: pointer; font-size: 12px; color: var(--text-light); font-weight: bold; transition: 0.2s; box-sizing: border-box;}
+        .lib-add-journal-btn { width: 100%; text-align: center; padding: 10px 0; background: rgba(0,0,0,0.05); border-radius: 8px; cursor: pointer; font-size: 12px; color: var(--text-light); font-weight: bold; transition: 0.2s; box-sizing: border-box; font-family: inherit;}
         .lib-add-journal-btn:hover { background: rgba(0,0,0,0.1); color: var(--text-dark);}
 
         /* 密码锁 */
@@ -116,16 +116,14 @@
         .close-book-btn { position: absolute; top: 15px; left: 20px; font-size: 13px; font-weight: bold; color: var(--text-light); cursor: pointer; z-index: 50; transition: 0.2s; font-family: inherit;}
         .close-book-btn:hover { color: var(--text-dark); }
 
-        /* ====== 图层引擎核心类 ====== */
+        /* ====== 图层物理类 ====== */
         .draggable-photo, .draggable-text, .draggable-sticker { position: absolute; cursor: move; user-select: none; display: inline-block; padding: 15px; }
         
         .polaroid-wrapper { background: #fff; padding: 8px 8px 30px 8px; box-shadow: 2px 5px 15px rgba(0,0,0,0.15); width: 150px; height: 175px; box-sizing: border-box; display: flex; flex-direction: column; pointer-events: none;}
         .polaroid-photo { width: 100%; height: 100%; background-size: cover; background-position: center; background-color: #eaeaea; border: 1px solid rgba(0,0,0,0.05);}
         
-        /* 文本框绑定自定义字体 */
         .text-content { 
-            font-family: 'AlecCustomFont', cursive, "PingFang SC"; 
-            font-size: 15px; line-height: 1.6; 
+            font-family: inherit; font-size: 15px; line-height: 1.6; 
             padding: 8px 12px; white-space: pre-wrap; text-align: left; 
             border: 1px dashed transparent; min-width: 120px; min-height: 30px;
             transition: 0.2s; outline: none; cursor: text;
@@ -144,10 +142,10 @@
         .s-ctrl-btn { border: none; background: transparent; font-size: 12px; cursor: pointer; padding: 2px 4px; border-radius: 4px; font-family: inherit;}
         .s-ctrl-del { color: red; font-weight: bold;}
 
-        /* 音乐部件 */
+        /* ====== 音乐部件 (修复消失Bug：注入绝对层级) ====== */
         .add-music-btn { position: absolute; bottom: 30px; left: 40px; width: 40px; height: 40px; background: rgba(255,255,255,0.7); border: 2px dashed var(--text-light); border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 18px; color: var(--text-light); cursor: pointer; transition: 0.2s; z-index: 10; font-family: inherit;}
         .add-music-btn:hover { background: #fff; color: var(--text-dark); border-color: var(--text-dark); }
-        .music-player-widget { position: absolute; width: 210px; background: rgba(255,255,255,0.9); border-radius: 12px; padding: 10px 15px; box-shadow: 2px 5px 15px rgba(0,0,0,0.15); border: 1px solid #ddd; backdrop-filter: blur(5px); display: none; flex-direction: column; gap: 6px; box-sizing: border-box; cursor: move; }
+        .music-player-widget { position: absolute; width: 210px; background: rgba(255,255,255,0.9); border-radius: 12px; padding: 10px 15px; box-shadow: 2px 5px 15px rgba(0,0,0,0.15); border: 1px solid #ddd; backdrop-filter: blur(5px); display: none; flex-direction: column; gap: 6px; box-sizing: border-box; cursor: move; z-index: 55; /* 核心修复点：强制拔高，绝不被纸张吞噬 */}
         .music-header { display: flex; align-items: center; gap: 5px; }
         .music-input { flex: 1; border: none; background: transparent; border-bottom: 1px dashed #ccc; font-size: 11px; color: var(--text-dark); outline: none; text-align: left; padding-bottom: 2px; font-family: inherit;}
         .upload-music-btn { background: var(--text-light); color: #fff; border: none; border-radius: 4px; padding: 2px 5px; font-size: 10px; cursor: pointer; font-family: inherit;}
@@ -159,9 +157,9 @@
         .page-right { flex: 1; height: 100%; padding: 30px 40px; display: flex; flex-direction: column; background-image: linear-gradient(var(--paper-line) 1px, transparent 1px); background-size: 100% 32px; background-position: 0 45px; z-index: 10; box-sizing: border-box; }
         .page-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--text-dark); padding-bottom: 8px; margin-bottom: 15px; flex-shrink: 0;}
         
-        .seamless-input { border: 1px dashed transparent; background: transparent; font-size: 15px; font-weight: bold; color: var(--text-dark); outline: none; transition: 0.2s; padding: 2px 5px; font-family: 'AlecCustomFont', inherit;}
+        .seamless-input { border: 1px dashed transparent; background: transparent; font-size: 15px; font-weight: bold; color: var(--text-dark); outline: none; transition: 0.2s; padding: 2px 5px; font-family: inherit;}
         .seamless-input:hover, .seamless-input:focus { border-color: rgba(0,0,0,0.1); background: rgba(255,255,255,0.5); border-radius: 4px; }
-        .seamless-textarea { width: 100%; height: 100%; border: 1px dashed transparent; background: transparent; font-size: 14px; line-height: 2.1; color: var(--text-dark); outline: none; resize: none; font-family: 'AlecCustomFont', inherit; padding: 5px; text-indent: 2em; box-sizing: border-box;}
+        .seamless-textarea { width: 100%; height: 100%; border: 1px dashed transparent; background: transparent; font-size: 14px; line-height: 2.1; color: var(--text-dark); outline: none; resize: none; font-family: inherit; padding: 5px; text-indent: 2em; box-sizing: border-box;}
         .seamless-textarea:hover, .seamless-textarea:focus { border-color: rgba(0,0,0,0.1); background: rgba(255,255,255,0.5); border-radius: 8px;}
 
         .agent-box { height: 140px; margin-bottom: 10px; padding: 5px; border-radius: 8px; box-sizing: border-box; background-color: rgba(255,255,255,0.3); display: flex; flex-direction: column;}
@@ -169,9 +167,9 @@
         .user-section-wrapper::-webkit-scrollbar { width: 4px; }
         .user-section-wrapper::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 2px; }
         .sealed-entry { background: rgba(107,140,206,0.06); border-left: 3px solid var(--accent-blue); padding: 8px 12px; margin-bottom: 10px; border-radius: 0 8px 8px 0; }
-        .sealed-text { font-size: 13px; color: var(--text-dark); line-height: 1.5; word-break: break-all; font-family: 'AlecCustomFont', inherit;}
+        .sealed-text { font-size: 13px; color: var(--text-dark); line-height: 1.5; word-break: break-all; font-family: inherit;}
         .sealed-time { font-size: 10px; color: var(--text-light); text-align: right; margin-top: 4px; font-family: monospace; }
-        .user-input { width: 100%; box-sizing: border-box; background: rgba(255,255,255,0.7); border: 1px dashed rgba(0,0,0,0.15); border-radius: 8px; padding: 10px 12px 35px 12px; font-size: 13px; color: var(--accent-blue); resize: none; outline: none; line-height: 1.5; min-height: 70px; margin-top: 10px; font-family: 'AlecCustomFont', inherit;}
+        .user-input { width: 100%; box-sizing: border-box; background: rgba(255,255,255,0.7); border: 1px dashed rgba(0,0,0,0.15); border-radius: 8px; padding: 10px 12px 35px 12px; font-size: 13px; color: var(--accent-blue); resize: none; outline: none; line-height: 1.5; min-height: 70px; margin-top: 10px; font-family: inherit;}
         .save-btn { float: right; margin-top: -30px; margin-right: 8px; background: var(--accent-blue); color: #fff; border: none; padding: 4px 12px; border-radius: 12px; font-size: 11px; cursor: pointer; position: relative; z-index: 10; font-family: inherit;}
 
         /* 翻页与删除 */
@@ -356,7 +354,6 @@
         } catch(e) { alert("⚠️ 内存超载警告：浏览器硬盘(5MB)已满！刚才的数据未能保存。\n\n解决方案：\n1. 刷新页面。\n2. 删掉最近上传的几张超大照片或长音乐。\n3. 使用外链音乐，不占本地内存。"); }
     }
 
-    // ================= 贴纸系统 (未来你的自定义贴纸都填在这里) =================
     const myStickers = [ '🌸', '⭐', '📌', '🎀', '☕', '📝', '📸', '🌿', '🍄', '🌙', '☁️', '🎈', '🎨', '🚀', '🔮', '🧸', '💌', '💡' ];
     let stickerPage = 0; const stickersPerPage = 6;
     function renderStickers() {
@@ -539,8 +536,13 @@
         if (data.musicLink || data.musicIsLocalBase64) {
             addBtn.style.display = 'none'; playerWidget.style.display = 'flex';
             document.getElementById('music-input-display').value = data.musicIsLocalBase64 ? "[本地音频已加载]" : data.musicLink;
-            playerWidget.style.top = '400px'; playerWidget.style.left = '140px';
-            if(data.musicLink) audioPlayer.src = data.musicLink;
+            // 物理修复：赋予音乐弹窗初始坐标，并强制赋予极高 Z-index，确保它绝不会被纸张盖住
+            if (!playerWidget.style.top || playerWidget.style.top === '') {
+                playerWidget.style.top = '400px'; 
+                playerWidget.style.left = '140px';
+            }
+            playerWidget.style.zIndex = ++globalZIndex;
+            if(data.musicLink && data.musicLink !== "https://") audioPlayer.src = data.musicLink;
         } else { addBtn.style.display = 'flex'; playerWidget.style.display = 'none'; }
 
         renderUserEntries(data.userEntries);
@@ -548,7 +550,6 @@
         updateMonthBookmark();
     }
 
-    // ====== 智能拖拽 ======
     function makeDraggable(elmnt, needsSave = false) {
         let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0; elmnt.onmousedown = dragMouseDown;
         function dragMouseDown(e) { 
@@ -561,17 +562,13 @@
     }
     makeDraggable(document.getElementById('music-player-widget'));
 
-    // ====== 音乐中心 (修复了致命的死锁写入Bug) ======
+    // ====== 音乐引擎 (绝对闭环修复) ======
     function addMusic() { 
         getActiveEntries()[currentIndex].musicLink = "https://"; 
         getActiveEntries()[currentIndex].musicIsLocalBase64 = false;
-        
-        /* 👇 就是下面这一行！上次被我弄丢的救命咒语 👇 */
-        saveToDatabase(); 
-        
+        saveToDatabase(); // 核心修复：添加指令必须立刻死锁入库
         renderPage(currentIndex); 
     }
-    
     function removeMusic() { getActiveEntries()[currentIndex].musicLink = ""; getActiveEntries()[currentIndex].musicIsLocalBase64 = false; saveToDatabase(); resetPlayer(); renderPage(currentIndex); }
     function autoSaveMusic() { const val = document.getElementById('music-input-display').value; getActiveEntries()[currentIndex].musicLink = val; getActiveEntries()[currentIndex].musicIsLocalBase64 = false; saveToDatabase(); audioPlayer.src = val; }
     function handleAudioUpload(event) { 
@@ -584,8 +581,11 @@
         } 
         event.target.value = ''; 
     }
-    function togglePlay() { if(audioPlayer.paused) { if(!audioPlayer.src) { alert("请上传音乐。"); return; } audioPlayer.play().then(() => { document.getElementById('play-pause-btn').innerText = '||'; document.getElementById('music-status').innerText = '播放中'; }).catch(e => alert("播放失败。")); } else { audioPlayer.pause(); document.getElementById('play-pause-btn').innerText = '▶'; document.getElementById('music-status').innerText = '已暂停'; } }
-    function resetPlayer() { audioPlayer.pause(); audioPlayer.currentTime = 0; document.getElementById('play-pause-btn').innerText = '▶'; document.getElementById('music-status').innerText = '就绪';}
+    function togglePlay() { if(audioPlayer.paused) { if(!audioPlayer.src || audioPlayer.src.endsWith("https://")) { alert("请先贴入音乐外链或上传本地音乐。"); return; } audioPlayer.play().then(() => { document.getElementById('play-pause-btn').innerText = '||'; document.getElementById('music-status').innerText = '播放中'; }).catch(e => alert("音乐链接失效或无法播放。")); } else { audioPlayer.pause(); document.getElementById('play-pause-btn').innerText = '▶'; document.getElementById('music-status').innerText = '已暂停'; } }
+    function resetPlayer() { 
+        try { audioPlayer.pause(); if(audioPlayer.readyState > 0) audioPlayer.currentTime = 0; } catch(e){}
+        document.getElementById('play-pause-btn').innerText = '▶'; document.getElementById('music-status').innerText = '就绪';
+    }
 
     function renderUserEntries(entries) {
         const container = document.getElementById('user-entries-container'); let html = '';
