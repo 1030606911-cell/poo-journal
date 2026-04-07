@@ -45,10 +45,7 @@
         .password-input:focus { border-color: var(--accent-blue); background: rgba(255,255,255,0.2);}
         .unlock-btn { margin-top: 25px; background: #fff; color: var(--text-dark); border: none; padding: 12px 40px; border-radius: 25px; font-size: 14px; cursor: pointer; transition: 0.2s; font-weight: bold; letter-spacing: 2px; font-family: inherit;}
         .unlock-btn:hover { background: var(--accent-blue); color: #fff; transform: translateY(-2px);}
-        .shake { animation: shake 0.4s; border-color: var(--accent-red) !important; color: var(--accent-red);}
-        @keyframes shake { 0% { transform: translateX(0); } 25% { transform: translateX(-6px); } 50% { transform: translateX(6px); } 75% { transform: translateX(-6px); } 100% { transform: translateX(0); } }
 
-        /* 贴纸控制台 */
         .sticker-toggle-btn { position: fixed; bottom: 30px; right: 40px; background: rgba(255,255,255,0.9); color: var(--text-dark); padding: 12px 25px; border-radius: 25px; font-size: 15px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 1000; font-weight: bold; transition: 0.2s; font-family: inherit;}
         .sticker-toggle-btn:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.4); }
         .sticker-tray { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: rgba(255,255,255,0.95); backdrop-filter: blur(15px); padding: 20px 30px; border-radius: 20px; box-shadow: 0 15px 40px rgba(0,0,0,0.3); display: none; z-index: 1000; border: 1px solid rgba(0,0,0,0.05); align-items: center; justify-content: space-between; box-sizing: border-box;}
@@ -58,20 +55,19 @@
         .tray-item { font-size: 45px; cursor: pointer; user-select: none; transition: 0.2s; display: flex; justify-content: center; align-items: center; width: 60px; height: 60px;}
         .tray-item:hover { transform: scale(1.2) translateY(-5px) rotate(5deg); }
 
-        /* ====== 日记本整体容器 ====== */
         .journal-container { position: relative; width: 950px; height: 600px; transition: all 0.6s ease; z-index: 500 !important; }
         
         .bookmarks { position: absolute; top: 38px; left: 935px; display: flex; flex-direction: column; gap: 5px; transition: left 0.6s cubic-bezier(0.4, 0, 0.2, 1); z-index: 10; }
         .journal-opened .bookmarks { left: -60px; }
         
-        /* 视觉资产：书签轴 (幽灵文本技术：隐藏原生文字，完全暴露你的UI图片) */
-        .bm-year { width: 60px; height: 35px; background: url('ui_tab_year.png') no-repeat center / 100% 100%; color: transparent !important; box-shadow: none !important; padding: 0 !important; background-color: transparent !important; margin-bottom: 8px; position: relative; z-index: 10; font-family: inherit;}
-        .journal-opened .bm-year { box-shadow: none; border-radius: 0; padding: 0; }
+        /* 视觉资产：书签轴 (修改为 contain，绝对尊重原图比例) */
+        .bm-year { width: 60px; height: 35px; background: url('ui_tab_year.png') no-repeat right center / contain; color: transparent !important; box-shadow: none !important; padding: 0 !important; background-color: transparent !important; margin-bottom: 8px; position: relative; z-index: 10; font-family: inherit;}
+        .journal-opened .bm-year { background-position: left center; }
         
-        .bm-month { width: 50px; height: 30px; background: url('ui_tab_month_normal.png') no-repeat center / 100% 100%; color: transparent !important; box-shadow: none !important; padding: 0 !important; background-color: transparent !important; margin-bottom: 3px; position: relative; z-index: 10; cursor: pointer; transition: 0.3s; font-family: inherit;}
-        .journal-opened .bm-month { box-shadow: none; border-radius: 0; padding: 0; margin-left: 0;}
+        .bm-month { width: 50px; height: 30px; background: url('ui_tab_month_normal.png') no-repeat right center / contain; color: transparent !important; box-shadow: none !important; padding: 0 !important; background-color: transparent !important; margin-bottom: 3px; position: relative; z-index: 10; cursor: pointer; transition: 0.3s; font-family: inherit;}
+        .journal-opened .bm-month { background-position: left center; margin-left: 0;}
         .bm-month:not(.disabled-month):hover { transform: translateX(3px); }
-        .journal-opened .bm-month.active { background: url('ui_tab_month_normal.png') no-repeat center / 100% 100%; transform: translateX(-5px); z-index: 30; }
+        .journal-opened .bm-month.active { background: url('ui_tab_month_normal.png') no-repeat left center / contain; transform: translateX(-5px); z-index: 30; }
         .disabled-month { background-image: url('ui_tab_month_disabl.png') !important; pointer-events: none; cursor: default; }
 
         .bookmarks-right { position: absolute; top: 70px; right: 10px; display: flex; flex-direction: column; gap: 10px; z-index: 10; transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); opacity: 0; pointer-events: none;}
@@ -100,7 +96,7 @@
             background-color: transparent; background-image: url('bg_cover.png'); background-size: 100% 100%; 
             border-radius: 5px 20px 20px 5px; box-shadow: 15px 15px 40px rgba(0,0,0,0.5); 
             display: flex; flex-direction: column; justify-content: center; align-items: center; 
-            color: transparent; /* 强制隐形系统自带的标题文字 */
+            color: transparent; 
             z-index: 50; cursor: pointer; transform-origin: left center; transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); 
         }
         .cover-title { font-size: 32px; font-weight: bold; border-bottom: none; padding-bottom: 10px; margin-bottom: 20px; font-family: inherit;}
@@ -108,20 +104,21 @@
         
         .journal-inner { position: absolute; top: 10px; left: 0; right: 0; bottom: 10px; background: transparent; border-radius: 10px; box-shadow: 10px 10px 40px rgba(0,0,0,0.5); display: flex; opacity: 0; pointer-events: none; transition: opacity 0.3s ease 0.3s; box-sizing: border-box; z-index: 20;}
 
-        /* ====== 视觉资产：双页空间 (去除了默认的纯色，暴露你的网格图) ====== */
+        /* ====== 视觉资产：双页空间 ====== */
         .page-left { flex: 1; height: 100%; padding: 30px 40px; position: relative; display: flex; flex-direction: column; background: url('bg_page_left.png') no-repeat center / 100% 100%; z-index: 1; box-sizing: border-box;}
         .page-right { flex: 1; height: 100%; padding: 30px 40px; display: flex; flex-direction: column; background: url('bg_page_right.png') no-repeat center / 100% 100%; z-index: 10; box-sizing: border-box; }
         
-        /* 视觉资产：页面控制按钮 */
-        .close-book-btn { position: absolute; top: 15px; left: 20px; width: 40px; height: 20px; background: url('ui_btn_close.png') no-repeat center / 100% 100%; color: transparent !important; cursor: pointer; z-index: 50; transition: 0.2s;}
+        .close-book-btn { position: absolute; top: 15px; left: 20px; width: 40px; height: 20px; background: url('ui_btn_close.png') no-repeat center / contain; color: transparent !important; cursor: pointer; z-index: 50; transition: 0.2s;}
         
         /* 物理类 */
         .draggable-photo, .draggable-text, .draggable-sticker { position: absolute; cursor: move; user-select: none; display: inline-block; padding: 15px; }
         
-        /* 视觉资产：拍立得架构重塑 */
-        .polaroid-wrapper { background: url('frame_polaroid.png') no-repeat center / 100% 100%; background-color: transparent; box-shadow: none; padding: 0; width: 150px; height: 175px; position: relative; z-index: 1; pointer-events: none;}
-        /* 照片被强制塞进底层洞口，如果在你画的图里透出不准，来修改这四个百分比数字👇 */
-        .polaroid-photo { position: absolute; top: 10%; left: 8%; width: 84%; height: 70%; background-size: cover; background-position: center; border: none; z-index: -1; background-color: #f0f0f0;}
+        /* ====== 视觉资产：拍立得架构彻底重构 ====== */
+        .polaroid-wrapper { position: relative; width: 150px; height: 175px; display: flex; justify-content: center; box-shadow: none; padding: 0; background: transparent; pointer-events: none;}
+        /* 你画的镂空相框，强制在最顶层 (z-index: 2) */
+        .polaroid-frame { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none; }
+        /* 塞在相框洞口底下的照片 (z-index: 1)。这里就是百分比坐标： */
+        .polaroid-photo { position: absolute; top: 12%; left: 8%; width: 84%; height: 68%; background-size: cover; background-position: center; z-index: 1; background-color: #eaeaea; }
         
         .text-content { font-family: inherit; font-size: 15px; line-height: 1.6; padding: 8px 12px; white-space: pre-wrap; text-align: left; border: 1px dashed transparent; min-width: 120px; min-height: 30px; transition: 0.2s; outline: none; cursor: text;}
         .draggable-text:hover .text-content { border-color: rgba(0,0,0,0.15); border-radius: 4px; background: rgba(255,255,255,0.4); }
@@ -138,20 +135,21 @@
         .s-ctrl-btn { border: none; background: transparent; font-size: 12px; cursor: pointer; padding: 2px 4px; border-radius: 4px; font-family: inherit;}
         .s-ctrl-del { color: red; font-weight: bold;}
 
-        /* ====== 视觉资产：音乐部件 ====== */
+        /* ====== 视觉资产：音乐部件 (全面放大、防拉伸修复) ====== */
         .add-music-btn { position: absolute; bottom: 30px; left: 40px; width: 40px; height: 40px; background: rgba(255,255,255,0.7); border: 2px dashed var(--text-light); border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 18px; color: var(--text-light); cursor: pointer; transition: 0.2s; z-index: 10; font-family: inherit;}
         .add-music-btn:hover { background: #fff; color: var(--text-dark); border-color: var(--text-dark); }
-        /* 音乐主控板 */
-        .music-player-widget { position: absolute; background: url('bg_music_board.png') no-repeat center / 100% 100%; border: none; box-shadow: none; backdrop-filter: none; width: 210px; height: 72px; padding: 10px 15px; box-sizing: border-box; display: none; flex-direction: column; gap: 6px; cursor: move; z-index: 55; }
-        .music-header { display: flex; align-items: center; gap: 5px; }
-        .music-input { flex: 1; border: none; background: transparent; border-bottom: 1px dashed rgba(0,0,0,0.2); font-size: 11px; color: var(--text-dark); outline: none; text-align: left; padding-bottom: 2px; font-family: inherit;}
-        /* 音乐按钮集 */
-        .upload-music-btn { background: url('ui_music_upload.png') no-repeat center / 100% 100%; color: transparent !important; border: none; width: 24px; height: 24px; cursor: pointer;}
-        .close-music-btn { position: absolute; top: -5px; right: -5px; background: url('ui_music_close.png') no-repeat center / 100% 100%; color: transparent !important; box-shadow: none; border: none; width: 18px; height: 18px; cursor: pointer;}
-        .music-controls { display: flex; align-items: center; gap: 8px; margin-top: 5px; }
-        /* 播放与暂停切换 */
-        .play-btn { width: 28px; height: 28px; background: #3a2f29; border-radius: 50%; color: #fff; border: none; display: flex; justify-content: center; align-items: center; cursor: pointer; font-size: 11px;}
-        .play-btn.playing { background: url('ui_music_pause.png') no-repeat center / 100% 100%; color: transparent !important; border-radius: 0; background-color: transparent;}
+        /* 放大后的悬浮主控板 */
+        .music-player-widget { position: absolute; background: url('bg_music_board.png') no-repeat center / 100% 100%; border: none; box-shadow: none; backdrop-filter: none; width: 240px; height: 85px; padding: 12px 18px; box-sizing: border-box; display: none; flex-direction: column; gap: 6px; cursor: move; z-index: 55; }
+        .music-header { display: flex; align-items: center; gap: 8px; margin-top: 2px;}
+        .music-input { flex: 1; border: none; background: transparent; border-bottom: 1px dashed rgba(0,0,0,0.2); font-size: 12px; color: var(--text-dark); outline: none; text-align: left; padding-bottom: 2px; font-family: inherit;}
+        
+        /* 音乐组件：精确定位 */
+        .upload-music-btn { background: url('ui_music_upload.png') no-repeat center / contain; color: transparent !important; border: none; width: 28px; height: 28px; cursor: pointer;}
+        .close-music-btn { position: absolute; top: -8px; right: -8px; background: url('ui_music_close.png') no-repeat center / contain; color: transparent !important; box-shadow: none; border: none; width: 24px; height: 24px; cursor: pointer;}
+        .music-controls { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
+        
+        .play-btn { width: 32px; height: 32px; background: url('ui_music_play.png') no-repeat center / contain; background-color: #3a2f29; border-radius: 50%; color: transparent !important; border: none; display: flex; justify-content: center; align-items: center; cursor: pointer; font-size: 11px;}
+        .play-btn.playing { background: url('ui_music_pause.png') no-repeat center / contain; border-radius: 0; background-color: transparent;}
         
         .page-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--text-dark); padding-bottom: 8px; margin-bottom: 15px; flex-shrink: 0;}
         
@@ -170,12 +168,12 @@
         .user-input { width: 100%; box-sizing: border-box; background: rgba(255,255,255,0.7); border: 1px dashed rgba(0,0,0,0.15); border-radius: 8px; padding: 10px 12px 35px 12px; font-size: 13px; color: var(--accent-blue); resize: none; outline: none; line-height: 1.5; min-height: 70px; margin-top: 10px; font-family: inherit;}
         .save-btn { float: right; margin-top: -30px; margin-right: 8px; background: var(--accent-blue); color: #fff; border: none; padding: 4px 12px; border-radius: 12px; font-size: 11px; cursor: pointer; position: relative; z-index: 10; font-family: inherit;}
 
-        /* 视觉资产：翻页与删除 (幽灵文本) */
+        /* 翻页与删除 (改成 contain 防拉伸) */
         .page-controls { display: flex; justify-content: space-between; align-items: center; margin-top: auto; font-size: 13px; color: var(--text-light); border-top: 1px dashed rgba(0,0,0,0.1); padding-top: 12px; flex-shrink: 0; }
-        #btn-prev { width: 40px; height: 20px; background: url('ui_btn_prev.png') no-repeat center / 100% 100%; color: transparent !important; cursor: pointer; }
-        #btn-next { width: 40px; height: 20px; background: url('ui_btn_next.png') no-repeat center / 100% 100%; color: transparent !important; cursor: pointer; }
+        #btn-prev { width: 40px; height: 20px; background: url('ui_btn_prev.png') no-repeat center / contain; color: transparent !important; cursor: pointer; }
+        #btn-next { width: 40px; height: 20px; background: url('ui_btn_next.png') no-repeat center / contain; color: transparent !important; cursor: pointer; }
         .nav-btn.disabled { opacity: 0.3; pointer-events: none; }
-        .delete-page-btn { width: 30px; height: 30px; background: url('ui_btn_trash.png') no-repeat center / 100% 100%; color: transparent !important; cursor: pointer; transition: 0.2s;}
+        .delete-page-btn { width: 30px; height: 30px; background: url('ui_btn_trash.png') no-repeat center / contain; color: transparent !important; cursor: pointer; transition: 0.2s;}
         .delete-page-btn:hover { transform: scale(1.1); }
 
         body.journal-opened .journal-cover { transform: rotateY(-180deg); opacity: 0; pointer-events: none; }
@@ -424,7 +422,11 @@
             entry.photos.forEach((pData, idx) => {
                 const s = document.createElement('div'); s.className = 'draggable-photo'; s.dataset.idx = idx;
                 s.style.left = pData.left; s.style.top = pData.top; s.style.zIndex = pData.zIndex || 40;
-                s.innerHTML = `<div class="polaroid-wrapper" style="transform: ${pData.transform};"><div class="polaroid-photo" style="background-image: url(${pData.src})"></div></div>
+                /* 新版 HTML 结构：把相框作为独立图层盖在照片之上 */
+                s.innerHTML = `<div class="polaroid-wrapper" style="transform: ${pData.transform};">
+                                  <div class="polaroid-photo" style="background-image: url(${pData.src})"></div>
+                                  <img class="polaroid-frame" src="frame_polaroid.png" draggable="false">
+                               </div>
                                <div class="sticker-ctrls"><button class="s-ctrl-btn" onclick="modifyMedia(this, 'rotL', 'photo')">↺</button><button class="s-ctrl-btn" onclick="modifyMedia(this, 'rotR', 'photo')">↻</button><button class="s-ctrl-btn" onclick="modifyMedia(this, 'up', 'photo')">+</button><button class="s-ctrl-btn" onclick="modifyMedia(this, 'down', 'photo')">-</button><button class="s-ctrl-btn s-ctrl-del" onclick="deleteMedia(this, 'photo')">×</button></div>`;
                 document.getElementById('journal-pages').appendChild(s);
                 makeDraggable(s, true); 
@@ -574,7 +576,6 @@
         event.target.value = ''; 
     }
     
-    // JS 控制播放/暂停按钮的皮肤切换
     function togglePlay() { 
         const btn = document.getElementById('play-pause-btn');
         if(audioPlayer.paused) { 
@@ -584,13 +585,13 @@
             }).catch(e => alert("音乐链接失效或无法播放。")); 
         } else { 
             audioPlayer.pause(); 
-            btn.classList.remove('playing'); btn.innerText = '▶'; document.getElementById('music-status').innerText = '已暂停'; 
+            btn.classList.remove('playing'); btn.innerText = ''; document.getElementById('music-status').innerText = '已暂停'; 
         } 
     }
     function resetPlayer() { 
         try { audioPlayer.pause(); if(audioPlayer.readyState > 0) audioPlayer.currentTime = 0; } catch(e){}
         const btn = document.getElementById('play-pause-btn');
-        btn.classList.remove('playing'); btn.innerText = '▶'; document.getElementById('music-status').innerText = '就绪';
+        btn.classList.remove('playing'); btn.innerText = ''; document.getElementById('music-status').innerText = '就绪';
     }
 
     function renderUserEntries(entries) {
